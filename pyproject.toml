@@ -1,0 +1,68 @@
+[project]
+name = "etl-agent"
+version = "0.1.0"
+description = "ETL Agent mit PydanticAI, A2A und MCP Integration"
+readme = "README.md"
+requires-python = ">=3.10"
+dependencies = [
+    # PydanticAI und A2A Support
+    "openai>=1.70.0",
+    "pydantic-ai>=0.0.52",
+    "pydantic-ai-slim[a2a]>=0.0.14",
+    "fasta2a>=0.1.0",
+    "uvicorn>=0.34.0",
+    
+    # Database Connectors - Multi-DB Support wie Dataanalyzer
+    "pymongo>=4.6.0",
+    "sqlalchemy>=2.0.0",
+    "psycopg2-binary>=2.9.0",  # PostgreSQL
+    "mysql-connector-python>=8.0.0",  # MySQL/MariaDB
+    "oracledb>=1.4.0",  # Oracle
+    "pyodbc>=4.0.0",  # SQL Server
+    "cx-Oracle>=8.3.0",  # Oracle (alternative)
+    
+    # Data Processing
+    "pandas>=2.0.0",
+    "numpy>=1.24.0",
+    
+    # Web Framework & UI
+    "fastapi>=0.104.0",
+    "uvicorn[standard]>=0.24.0",
+    "gradio>=4.0.0",
+    
+    # Scheduler für ETL Jobs
+    "apscheduler>=3.10.0",
+    "celery>=5.3.0",
+    
+    # Utilities
+    "python-dotenv>=1.0.0",
+    "pydantic>=2.5.0",
+    "httpx>=0.25.0",
+    "rich>=13.0.0",  # Für bessere CLI-Ausgaben
+    "typer>=0.9.0",  # CLI Interface
+    "psutil>=5.9.0",  # Process-Management
+]
+
+[project.optional-dependencies]
+dev = [
+    "pytest>=7.4.0",
+    "pytest-asyncio>=0.21.0",
+    "black>=23.0.0",
+    "isort>=5.12.0",
+    "mypy>=1.7.0",
+]
+
+[build-system]
+requires = ["hatchling"]
+build-backend = "hatchling.build"
+
+[project.scripts]
+etl-agent = "etl_agent.cli:main"
+etl-server = "etl_agent.server:run_server"
+etl-gradio = "etl_agent.gradio_interface:launch"
+
+[tool.uv]
+dev-dependencies = [
+    "pytest>=7.4.0",
+    "pytest-asyncio>=0.21.0",
+]
