@@ -257,3 +257,1048 @@ Traceback (most recent call last):
 sqlalchemy.exc.ProgrammingError: (mysql.connector.errors.ProgrammingError) 1045 (28000): Access denied for user 'dataanalyzer'@'172.22.0.1' (using password: YES)
 (Background on this error at: https://sqlalche.me/e/20/f405)
 2025-06-29 21:22:00,831 - __main__ - INFO - add_connection Ergebnis: False
+2025-06-30 17:54:11,318 - httpx - INFO - HTTP Request: GET https://api.gradio.app/pkg-version "HTTP/1.1 200 OK"
+2025-06-30 17:54:12,817 - httpx - INFO - HTTP Request: GET http://localhost:7860/gradio_api/startup-events "HTTP/1.1 200 OK"
+2025-06-30 17:54:14,900 - httpx - INFO - HTTP Request: HEAD http://localhost:7860/ "HTTP/1.1 200 OK"
+2025-06-30 17:56:19,733 - __main__ - INFO - Teste Verbindung: emil, mariadb, mysql://datananalyzer:dataanal...
+2025-06-30 17:56:19,734 - etl_agent.database_manager - INFO - Versuche Verbindung '_temp_test_emil' hinzuzufügen mit config: {'connection_string': 'mysql://datananalyzer:dataanalyzer_pwd@localhost:3306/my_testdb', 'type': 'mariadb'}
+2025-06-30 17:56:19,735 - etl_agent.database_manager - INFO - Erkannter Datenbanktyp für '_temp_test_emil': DatabaseType.MYSQL
+2025-06-30 17:56:19,737 - etl_agent.connectors.sql_connector - INFO - Connection String korrigiert: mysql://datananalyzer:dataanalyzer_pwd@localhost:3306/my_testdb -> mysql+mysqlconnector://datananalyzer:dataanalyzer_pwd@localhost:3306/my_testdb
+2025-06-30 17:56:19,737 - etl_agent.connectors.sql_connector - INFO - Verbinde zu mysql-Datenbank: mysql+mysqlconnector://datananalyzer:dataanalyzer_pwd@localhost:3306/my_testdb
+2025-06-30 17:56:20,141 - etl_agent.connectors.sql_connector - ERROR - Fehler bei mysql-Datenbankverbindung: (mysql.connector.errors.ProgrammingError) 1045 (28000): Access denied for user 'datananalyzer'@'172.22.0.1' (using password: YES)
+(Background on this error at: https://sqlalche.me/e/20/f405)
+2025-06-30 17:56:20,143 - etl_agent.database_manager - ERROR - Fehler beim Hinzufügen der Verbindung '_temp_test_emil': (mysql.connector.errors.ProgrammingError) 1045 (28000): Access denied for user 'datananalyzer'@'172.22.0.1' (using password: YES)
+(Background on this error at: https://sqlalche.me/e/20/f405)
+Traceback (most recent call last):
+  File "C:\Users\frank\Documents\py_projects\dev\ETL_Agent\.venv\lib\site-packages\mysql\connector\connection_cext.py", line 354, in _open_connection
+    self._cmysql.connect(**cnx_kwargs)
+_mysql_connector.MySQLInterfaceError: Access denied for user 'datananalyzer'@'172.22.0.1' (using password: YES)
+
+The above exception was the direct cause of the following exception:
+
+Traceback (most recent call last):
+  File "C:\Users\frank\Documents\py_projects\dev\ETL_Agent\.venv\lib\site-packages\sqlalchemy\engine\base.py", line 145, in __init__
+    self._dbapi_connection = engine.raw_connection()
+  File "C:\Users\frank\Documents\py_projects\dev\ETL_Agent\.venv\lib\site-packages\sqlalchemy\engine\base.py", line 3297, in raw_connection
+    return self.pool.connect()
+  File "C:\Users\frank\Documents\py_projects\dev\ETL_Agent\.venv\lib\site-packages\sqlalchemy\pool\base.py", line 449, in connect
+    return _ConnectionFairy._checkout(self)
+  File "C:\Users\frank\Documents\py_projects\dev\ETL_Agent\.venv\lib\site-packages\sqlalchemy\pool\base.py", line 1264, in _checkout
+    fairy = _ConnectionRecord.checkout(pool)
+  File "C:\Users\frank\Documents\py_projects\dev\ETL_Agent\.venv\lib\site-packages\sqlalchemy\pool\base.py", line 713, in checkout
+    rec = pool._do_get()
+  File "C:\Users\frank\Documents\py_projects\dev\ETL_Agent\.venv\lib\site-packages\sqlalchemy\pool\impl.py", line 179, in _do_get
+    with util.safe_reraise():
+  File "C:\Users\frank\Documents\py_projects\dev\ETL_Agent\.venv\lib\site-packages\sqlalchemy\util\langhelpers.py", line 224, in __exit__
+    raise exc_value.with_traceback(exc_tb)
+  File "C:\Users\frank\Documents\py_projects\dev\ETL_Agent\.venv\lib\site-packages\sqlalchemy\pool\impl.py", line 177, in _do_get
+    return self._create_connection()
+  File "C:\Users\frank\Documents\py_projects\dev\ETL_Agent\.venv\lib\site-packages\sqlalchemy\pool\base.py", line 390, in _create_connection
+    return _ConnectionRecord(self)
+  File "C:\Users\frank\Documents\py_projects\dev\ETL_Agent\.venv\lib\site-packages\sqlalchemy\pool\base.py", line 675, in __init__
+    self.__connect()
+  File "C:\Users\frank\Documents\py_projects\dev\ETL_Agent\.venv\lib\site-packages\sqlalchemy\pool\base.py", line 901, in __connect
+    with util.safe_reraise():
+  File "C:\Users\frank\Documents\py_projects\dev\ETL_Agent\.venv\lib\site-packages\sqlalchemy\util\langhelpers.py", line 224, in __exit__
+    raise exc_value.with_traceback(exc_tb)
+  File "C:\Users\frank\Documents\py_projects\dev\ETL_Agent\.venv\lib\site-packages\sqlalchemy\pool\base.py", line 897, in __connect
+    self.dbapi_connection = connection = pool._invoke_creator(self)
+  File "C:\Users\frank\Documents\py_projects\dev\ETL_Agent\.venv\lib\site-packages\sqlalchemy\engine\create.py", line 646, in connect
+    return dialect.connect(*cargs, **cparams)
+  File "C:\Users\frank\Documents\py_projects\dev\ETL_Agent\.venv\lib\site-packages\sqlalchemy\engine\default.py", line 625, in connect
+    return self.loaded_dbapi.connect(*cargs, **cparams)  # type: ignore[no-any-return]  # NOQA: E501
+  File "C:\Users\frank\Documents\py_projects\dev\ETL_Agent\.venv\lib\site-packages\mysql\connector\pooling.py", line 322, in connect
+    return CMySQLConnection(*args, **kwargs)
+  File "C:\Users\frank\Documents\py_projects\dev\ETL_Agent\.venv\lib\site-packages\mysql\connector\connection_cext.py", line 142, in __init__
+    self.connect(**kwargs)
+  File "C:\Users\frank\Documents\py_projects\dev\ETL_Agent\.venv\lib\site-packages\mysql\connector\abstracts.py", line 1605, in connect
+    self._open_connection()
+  File "C:\Users\frank\Documents\py_projects\dev\ETL_Agent\.venv\lib\site-packages\mysql\connector\connection_cext.py", line 360, in _open_connection
+    raise get_mysql_exception(
+mysql.connector.errors.ProgrammingError: 1045 (28000): Access denied for user 'datananalyzer'@'172.22.0.1' (using password: YES)
+
+The above exception was the direct cause of the following exception:
+
+Traceback (most recent call last):
+  File "C:\Users\frank\Documents\py_projects\dev\ETL_Agent\etl_agent\database_manager.py", line 54, in add_connection
+    connector = self._create_connector(db_type, connection_config)
+  File "C:\Users\frank\Documents\py_projects\dev\ETL_Agent\etl_agent\database_manager.py", line 126, in _create_connector
+    return SQLConnector(
+  File "C:\Users\frank\Documents\py_projects\dev\ETL_Agent\etl_agent\connectors\sql_connector.py", line 24, in __init__
+    self._connect()
+  File "C:\Users\frank\Documents\py_projects\dev\ETL_Agent\etl_agent\connectors\sql_connector.py", line 55, in _connect
+    with self.engine.connect() as conn:
+  File "C:\Users\frank\Documents\py_projects\dev\ETL_Agent\.venv\lib\site-packages\sqlalchemy\engine\base.py", line 3273, in connect
+    return self._connection_cls(self)
+  File "C:\Users\frank\Documents\py_projects\dev\ETL_Agent\.venv\lib\site-packages\sqlalchemy\engine\base.py", line 147, in __init__
+    Connection._handle_dbapi_exception_noconnection(
+  File "C:\Users\frank\Documents\py_projects\dev\ETL_Agent\.venv\lib\site-packages\sqlalchemy\engine\base.py", line 2436, in _handle_dbapi_exception_noconnection
+    raise sqlalchemy_exception.with_traceback(exc_info[2]) from e
+  File "C:\Users\frank\Documents\py_projects\dev\ETL_Agent\.venv\lib\site-packages\sqlalchemy\engine\base.py", line 145, in __init__
+    self._dbapi_connection = engine.raw_connection()
+  File "C:\Users\frank\Documents\py_projects\dev\ETL_Agent\.venv\lib\site-packages\sqlalchemy\engine\base.py", line 3297, in raw_connection
+    return self.pool.connect()
+  File "C:\Users\frank\Documents\py_projects\dev\ETL_Agent\.venv\lib\site-packages\sqlalchemy\pool\base.py", line 449, in connect
+    return _ConnectionFairy._checkout(self)
+  File "C:\Users\frank\Documents\py_projects\dev\ETL_Agent\.venv\lib\site-packages\sqlalchemy\pool\base.py", line 1264, in _checkout
+    fairy = _ConnectionRecord.checkout(pool)
+  File "C:\Users\frank\Documents\py_projects\dev\ETL_Agent\.venv\lib\site-packages\sqlalchemy\pool\base.py", line 713, in checkout
+    rec = pool._do_get()
+  File "C:\Users\frank\Documents\py_projects\dev\ETL_Agent\.venv\lib\site-packages\sqlalchemy\pool\impl.py", line 179, in _do_get
+    with util.safe_reraise():
+  File "C:\Users\frank\Documents\py_projects\dev\ETL_Agent\.venv\lib\site-packages\sqlalchemy\util\langhelpers.py", line 224, in __exit__
+    raise exc_value.with_traceback(exc_tb)
+  File "C:\Users\frank\Documents\py_projects\dev\ETL_Agent\.venv\lib\site-packages\sqlalchemy\pool\impl.py", line 177, in _do_get
+    return self._create_connection()
+  File "C:\Users\frank\Documents\py_projects\dev\ETL_Agent\.venv\lib\site-packages\sqlalchemy\pool\base.py", line 390, in _create_connection
+    return _ConnectionRecord(self)
+  File "C:\Users\frank\Documents\py_projects\dev\ETL_Agent\.venv\lib\site-packages\sqlalchemy\pool\base.py", line 675, in __init__
+    self.__connect()
+  File "C:\Users\frank\Documents\py_projects\dev\ETL_Agent\.venv\lib\site-packages\sqlalchemy\pool\base.py", line 901, in __connect
+    with util.safe_reraise():
+  File "C:\Users\frank\Documents\py_projects\dev\ETL_Agent\.venv\lib\site-packages\sqlalchemy\util\langhelpers.py", line 224, in __exit__
+    raise exc_value.with_traceback(exc_tb)
+  File "C:\Users\frank\Documents\py_projects\dev\ETL_Agent\.venv\lib\site-packages\sqlalchemy\pool\base.py", line 897, in __connect
+    self.dbapi_connection = connection = pool._invoke_creator(self)
+  File "C:\Users\frank\Documents\py_projects\dev\ETL_Agent\.venv\lib\site-packages\sqlalchemy\engine\create.py", line 646, in connect
+    return dialect.connect(*cargs, **cparams)
+  File "C:\Users\frank\Documents\py_projects\dev\ETL_Agent\.venv\lib\site-packages\sqlalchemy\engine\default.py", line 625, in connect
+    return self.loaded_dbapi.connect(*cargs, **cparams)  # type: ignore[no-any-return]  # NOQA: E501
+  File "C:\Users\frank\Documents\py_projects\dev\ETL_Agent\.venv\lib\site-packages\mysql\connector\pooling.py", line 322, in connect
+    return CMySQLConnection(*args, **kwargs)
+  File "C:\Users\frank\Documents\py_projects\dev\ETL_Agent\.venv\lib\site-packages\mysql\connector\connection_cext.py", line 142, in __init__
+    self.connect(**kwargs)
+  File "C:\Users\frank\Documents\py_projects\dev\ETL_Agent\.venv\lib\site-packages\mysql\connector\abstracts.py", line 1605, in connect
+    self._open_connection()
+  File "C:\Users\frank\Documents\py_projects\dev\ETL_Agent\.venv\lib\site-packages\mysql\connector\connection_cext.py", line 360, in _open_connection
+    raise get_mysql_exception(
+sqlalchemy.exc.ProgrammingError: (mysql.connector.errors.ProgrammingError) 1045 (28000): Access denied for user 'datananalyzer'@'172.22.0.1' (using password: YES)
+(Background on this error at: https://sqlalche.me/e/20/f405)
+2025-06-30 17:56:20,160 - __main__ - INFO - add_connection Ergebnis: False
+2025-06-30 17:59:32,791 - __main__ - INFO - Teste Verbindung: emil, mariadb, mysql://datananalyzer:dataanal...
+2025-06-30 17:59:32,791 - etl_agent.database_manager - INFO - Versuche Verbindung '_temp_test_emil' hinzuzufügen mit config: {'connection_string': 'mysql://datananalyzer:dataanalyzer_pwd@localhost:3306/testdb', 'type': 'mariadb'}
+2025-06-30 17:59:32,792 - etl_agent.database_manager - INFO - Erkannter Datenbanktyp für '_temp_test_emil': DatabaseType.MYSQL
+2025-06-30 17:59:32,792 - etl_agent.connectors.sql_connector - INFO - Connection String korrigiert: mysql://datananalyzer:dataanalyzer_pwd@localhost:3306/testdb -> mysql+mysqlconnector://datananalyzer:dataanalyzer_pwd@localhost:3306/testdb
+2025-06-30 17:59:32,792 - etl_agent.connectors.sql_connector - INFO - Verbinde zu mysql-Datenbank: mysql+mysqlconnector://datananalyzer:dataanalyzer_pwd@localhost:3306/testdb
+2025-06-30 17:59:32,820 - etl_agent.connectors.sql_connector - ERROR - Fehler bei mysql-Datenbankverbindung: (mysql.connector.errors.ProgrammingError) 1045 (28000): Access denied for user 'datananalyzer'@'172.22.0.1' (using password: YES)
+(Background on this error at: https://sqlalche.me/e/20/f405)
+2025-06-30 17:59:32,820 - etl_agent.database_manager - ERROR - Fehler beim Hinzufügen der Verbindung '_temp_test_emil': (mysql.connector.errors.ProgrammingError) 1045 (28000): Access denied for user 'datananalyzer'@'172.22.0.1' (using password: YES)
+(Background on this error at: https://sqlalche.me/e/20/f405)
+Traceback (most recent call last):
+  File "C:\Users\frank\Documents\py_projects\dev\ETL_Agent\.venv\lib\site-packages\mysql\connector\connection_cext.py", line 354, in _open_connection
+    self._cmysql.connect(**cnx_kwargs)
+_mysql_connector.MySQLInterfaceError: Access denied for user 'datananalyzer'@'172.22.0.1' (using password: YES)
+
+The above exception was the direct cause of the following exception:
+
+Traceback (most recent call last):
+  File "C:\Users\frank\Documents\py_projects\dev\ETL_Agent\.venv\lib\site-packages\sqlalchemy\engine\base.py", line 145, in __init__
+    self._dbapi_connection = engine.raw_connection()
+  File "C:\Users\frank\Documents\py_projects\dev\ETL_Agent\.venv\lib\site-packages\sqlalchemy\engine\base.py", line 3297, in raw_connection
+    return self.pool.connect()
+  File "C:\Users\frank\Documents\py_projects\dev\ETL_Agent\.venv\lib\site-packages\sqlalchemy\pool\base.py", line 449, in connect
+    return _ConnectionFairy._checkout(self)
+  File "C:\Users\frank\Documents\py_projects\dev\ETL_Agent\.venv\lib\site-packages\sqlalchemy\pool\base.py", line 1264, in _checkout
+    fairy = _ConnectionRecord.checkout(pool)
+  File "C:\Users\frank\Documents\py_projects\dev\ETL_Agent\.venv\lib\site-packages\sqlalchemy\pool\base.py", line 713, in checkout
+    rec = pool._do_get()
+  File "C:\Users\frank\Documents\py_projects\dev\ETL_Agent\.venv\lib\site-packages\sqlalchemy\pool\impl.py", line 179, in _do_get
+    with util.safe_reraise():
+  File "C:\Users\frank\Documents\py_projects\dev\ETL_Agent\.venv\lib\site-packages\sqlalchemy\util\langhelpers.py", line 224, in __exit__
+    raise exc_value.with_traceback(exc_tb)
+  File "C:\Users\frank\Documents\py_projects\dev\ETL_Agent\.venv\lib\site-packages\sqlalchemy\pool\impl.py", line 177, in _do_get
+    return self._create_connection()
+  File "C:\Users\frank\Documents\py_projects\dev\ETL_Agent\.venv\lib\site-packages\sqlalchemy\pool\base.py", line 390, in _create_connection
+    return _ConnectionRecord(self)
+  File "C:\Users\frank\Documents\py_projects\dev\ETL_Agent\.venv\lib\site-packages\sqlalchemy\pool\base.py", line 675, in __init__
+    self.__connect()
+  File "C:\Users\frank\Documents\py_projects\dev\ETL_Agent\.venv\lib\site-packages\sqlalchemy\pool\base.py", line 901, in __connect
+    with util.safe_reraise():
+  File "C:\Users\frank\Documents\py_projects\dev\ETL_Agent\.venv\lib\site-packages\sqlalchemy\util\langhelpers.py", line 224, in __exit__
+    raise exc_value.with_traceback(exc_tb)
+  File "C:\Users\frank\Documents\py_projects\dev\ETL_Agent\.venv\lib\site-packages\sqlalchemy\pool\base.py", line 897, in __connect
+    self.dbapi_connection = connection = pool._invoke_creator(self)
+  File "C:\Users\frank\Documents\py_projects\dev\ETL_Agent\.venv\lib\site-packages\sqlalchemy\engine\create.py", line 646, in connect
+    return dialect.connect(*cargs, **cparams)
+  File "C:\Users\frank\Documents\py_projects\dev\ETL_Agent\.venv\lib\site-packages\sqlalchemy\engine\default.py", line 625, in connect
+    return self.loaded_dbapi.connect(*cargs, **cparams)  # type: ignore[no-any-return]  # NOQA: E501
+  File "C:\Users\frank\Documents\py_projects\dev\ETL_Agent\.venv\lib\site-packages\mysql\connector\pooling.py", line 322, in connect
+    return CMySQLConnection(*args, **kwargs)
+  File "C:\Users\frank\Documents\py_projects\dev\ETL_Agent\.venv\lib\site-packages\mysql\connector\connection_cext.py", line 142, in __init__
+    self.connect(**kwargs)
+  File "C:\Users\frank\Documents\py_projects\dev\ETL_Agent\.venv\lib\site-packages\mysql\connector\abstracts.py", line 1605, in connect
+    self._open_connection()
+  File "C:\Users\frank\Documents\py_projects\dev\ETL_Agent\.venv\lib\site-packages\mysql\connector\connection_cext.py", line 360, in _open_connection
+    raise get_mysql_exception(
+mysql.connector.errors.ProgrammingError: 1045 (28000): Access denied for user 'datananalyzer'@'172.22.0.1' (using password: YES)
+
+The above exception was the direct cause of the following exception:
+
+Traceback (most recent call last):
+  File "C:\Users\frank\Documents\py_projects\dev\ETL_Agent\etl_agent\database_manager.py", line 54, in add_connection
+    connector = self._create_connector(db_type, connection_config)
+  File "C:\Users\frank\Documents\py_projects\dev\ETL_Agent\etl_agent\database_manager.py", line 126, in _create_connector
+    return SQLConnector(
+  File "C:\Users\frank\Documents\py_projects\dev\ETL_Agent\etl_agent\connectors\sql_connector.py", line 24, in __init__
+    self._connect()
+  File "C:\Users\frank\Documents\py_projects\dev\ETL_Agent\etl_agent\connectors\sql_connector.py", line 55, in _connect
+    with self.engine.connect() as conn:
+  File "C:\Users\frank\Documents\py_projects\dev\ETL_Agent\.venv\lib\site-packages\sqlalchemy\engine\base.py", line 3273, in connect
+    return self._connection_cls(self)
+  File "C:\Users\frank\Documents\py_projects\dev\ETL_Agent\.venv\lib\site-packages\sqlalchemy\engine\base.py", line 147, in __init__
+    Connection._handle_dbapi_exception_noconnection(
+  File "C:\Users\frank\Documents\py_projects\dev\ETL_Agent\.venv\lib\site-packages\sqlalchemy\engine\base.py", line 2436, in _handle_dbapi_exception_noconnection
+    raise sqlalchemy_exception.with_traceback(exc_info[2]) from e
+  File "C:\Users\frank\Documents\py_projects\dev\ETL_Agent\.venv\lib\site-packages\sqlalchemy\engine\base.py", line 145, in __init__
+    self._dbapi_connection = engine.raw_connection()
+  File "C:\Users\frank\Documents\py_projects\dev\ETL_Agent\.venv\lib\site-packages\sqlalchemy\engine\base.py", line 3297, in raw_connection
+    return self.pool.connect()
+  File "C:\Users\frank\Documents\py_projects\dev\ETL_Agent\.venv\lib\site-packages\sqlalchemy\pool\base.py", line 449, in connect
+    return _ConnectionFairy._checkout(self)
+  File "C:\Users\frank\Documents\py_projects\dev\ETL_Agent\.venv\lib\site-packages\sqlalchemy\pool\base.py", line 1264, in _checkout
+    fairy = _ConnectionRecord.checkout(pool)
+  File "C:\Users\frank\Documents\py_projects\dev\ETL_Agent\.venv\lib\site-packages\sqlalchemy\pool\base.py", line 713, in checkout
+    rec = pool._do_get()
+  File "C:\Users\frank\Documents\py_projects\dev\ETL_Agent\.venv\lib\site-packages\sqlalchemy\pool\impl.py", line 179, in _do_get
+    with util.safe_reraise():
+  File "C:\Users\frank\Documents\py_projects\dev\ETL_Agent\.venv\lib\site-packages\sqlalchemy\util\langhelpers.py", line 224, in __exit__
+    raise exc_value.with_traceback(exc_tb)
+  File "C:\Users\frank\Documents\py_projects\dev\ETL_Agent\.venv\lib\site-packages\sqlalchemy\pool\impl.py", line 177, in _do_get
+    return self._create_connection()
+  File "C:\Users\frank\Documents\py_projects\dev\ETL_Agent\.venv\lib\site-packages\sqlalchemy\pool\base.py", line 390, in _create_connection
+    return _ConnectionRecord(self)
+  File "C:\Users\frank\Documents\py_projects\dev\ETL_Agent\.venv\lib\site-packages\sqlalchemy\pool\base.py", line 675, in __init__
+    self.__connect()
+  File "C:\Users\frank\Documents\py_projects\dev\ETL_Agent\.venv\lib\site-packages\sqlalchemy\pool\base.py", line 901, in __connect
+    with util.safe_reraise():
+  File "C:\Users\frank\Documents\py_projects\dev\ETL_Agent\.venv\lib\site-packages\sqlalchemy\util\langhelpers.py", line 224, in __exit__
+    raise exc_value.with_traceback(exc_tb)
+  File "C:\Users\frank\Documents\py_projects\dev\ETL_Agent\.venv\lib\site-packages\sqlalchemy\pool\base.py", line 897, in __connect
+    self.dbapi_connection = connection = pool._invoke_creator(self)
+  File "C:\Users\frank\Documents\py_projects\dev\ETL_Agent\.venv\lib\site-packages\sqlalchemy\engine\create.py", line 646, in connect
+    return dialect.connect(*cargs, **cparams)
+  File "C:\Users\frank\Documents\py_projects\dev\ETL_Agent\.venv\lib\site-packages\sqlalchemy\engine\default.py", line 625, in connect
+    return self.loaded_dbapi.connect(*cargs, **cparams)  # type: ignore[no-any-return]  # NOQA: E501
+  File "C:\Users\frank\Documents\py_projects\dev\ETL_Agent\.venv\lib\site-packages\mysql\connector\pooling.py", line 322, in connect
+    return CMySQLConnection(*args, **kwargs)
+  File "C:\Users\frank\Documents\py_projects\dev\ETL_Agent\.venv\lib\site-packages\mysql\connector\connection_cext.py", line 142, in __init__
+    self.connect(**kwargs)
+  File "C:\Users\frank\Documents\py_projects\dev\ETL_Agent\.venv\lib\site-packages\mysql\connector\abstracts.py", line 1605, in connect
+    self._open_connection()
+  File "C:\Users\frank\Documents\py_projects\dev\ETL_Agent\.venv\lib\site-packages\mysql\connector\connection_cext.py", line 360, in _open_connection
+    raise get_mysql_exception(
+sqlalchemy.exc.ProgrammingError: (mysql.connector.errors.ProgrammingError) 1045 (28000): Access denied for user 'datananalyzer'@'172.22.0.1' (using password: YES)
+(Background on this error at: https://sqlalche.me/e/20/f405)
+2025-06-30 17:59:32,823 - __main__ - INFO - add_connection Ergebnis: False
+2025-06-30 17:59:53,899 - __main__ - INFO - Teste Verbindung: emil, mariadb, mysql://dataanalyzer:dataanaly...
+2025-06-30 17:59:53,899 - etl_agent.database_manager - INFO - Versuche Verbindung '_temp_test_emil' hinzuzufügen mit config: {'connection_string': 'mysql://dataanalyzer:dataanalyzer_pwd@localhost:3306/testdb', 'type': 'mariadb'}
+2025-06-30 17:59:53,899 - etl_agent.database_manager - INFO - Erkannter Datenbanktyp für '_temp_test_emil': DatabaseType.MYSQL
+2025-06-30 17:59:53,900 - etl_agent.connectors.sql_connector - INFO - Connection String korrigiert: mysql://dataanalyzer:dataanalyzer_pwd@localhost:3306/testdb -> mysql+mysqlconnector://dataanalyzer:dataanalyzer_pwd@localhost:3306/testdb
+2025-06-30 17:59:53,900 - etl_agent.connectors.sql_connector - INFO - Verbinde zu mysql-Datenbank: mysql+mysqlconnector://dataanalyzer:dataanalyzer_pwd@localhost:3306/testdb
+2025-06-30 17:59:53,927 - etl_agent.connectors.sql_connector - ERROR - Fehler bei mysql-Datenbankverbindung: (mysql.connector.errors.ProgrammingError) 1044 (42000): Access denied for user 'dataanalyzer'@'%' to database 'testdb'
+(Background on this error at: https://sqlalche.me/e/20/f405)
+2025-06-30 17:59:53,928 - etl_agent.database_manager - ERROR - Fehler beim Hinzufügen der Verbindung '_temp_test_emil': (mysql.connector.errors.ProgrammingError) 1044 (42000): Access denied for user 'dataanalyzer'@'%' to database 'testdb'
+(Background on this error at: https://sqlalche.me/e/20/f405)
+Traceback (most recent call last):
+  File "C:\Users\frank\Documents\py_projects\dev\ETL_Agent\.venv\lib\site-packages\mysql\connector\connection_cext.py", line 354, in _open_connection
+    self._cmysql.connect(**cnx_kwargs)
+_mysql_connector.MySQLInterfaceError: Access denied for user 'dataanalyzer'@'%' to database 'testdb'
+
+The above exception was the direct cause of the following exception:
+
+Traceback (most recent call last):
+  File "C:\Users\frank\Documents\py_projects\dev\ETL_Agent\.venv\lib\site-packages\sqlalchemy\engine\base.py", line 145, in __init__
+    self._dbapi_connection = engine.raw_connection()
+  File "C:\Users\frank\Documents\py_projects\dev\ETL_Agent\.venv\lib\site-packages\sqlalchemy\engine\base.py", line 3297, in raw_connection
+    return self.pool.connect()
+  File "C:\Users\frank\Documents\py_projects\dev\ETL_Agent\.venv\lib\site-packages\sqlalchemy\pool\base.py", line 449, in connect
+    return _ConnectionFairy._checkout(self)
+  File "C:\Users\frank\Documents\py_projects\dev\ETL_Agent\.venv\lib\site-packages\sqlalchemy\pool\base.py", line 1264, in _checkout
+    fairy = _ConnectionRecord.checkout(pool)
+  File "C:\Users\frank\Documents\py_projects\dev\ETL_Agent\.venv\lib\site-packages\sqlalchemy\pool\base.py", line 713, in checkout
+    rec = pool._do_get()
+  File "C:\Users\frank\Documents\py_projects\dev\ETL_Agent\.venv\lib\site-packages\sqlalchemy\pool\impl.py", line 179, in _do_get
+    with util.safe_reraise():
+  File "C:\Users\frank\Documents\py_projects\dev\ETL_Agent\.venv\lib\site-packages\sqlalchemy\util\langhelpers.py", line 224, in __exit__
+    raise exc_value.with_traceback(exc_tb)
+  File "C:\Users\frank\Documents\py_projects\dev\ETL_Agent\.venv\lib\site-packages\sqlalchemy\pool\impl.py", line 177, in _do_get
+    return self._create_connection()
+  File "C:\Users\frank\Documents\py_projects\dev\ETL_Agent\.venv\lib\site-packages\sqlalchemy\pool\base.py", line 390, in _create_connection
+    return _ConnectionRecord(self)
+  File "C:\Users\frank\Documents\py_projects\dev\ETL_Agent\.venv\lib\site-packages\sqlalchemy\pool\base.py", line 675, in __init__
+    self.__connect()
+  File "C:\Users\frank\Documents\py_projects\dev\ETL_Agent\.venv\lib\site-packages\sqlalchemy\pool\base.py", line 901, in __connect
+    with util.safe_reraise():
+  File "C:\Users\frank\Documents\py_projects\dev\ETL_Agent\.venv\lib\site-packages\sqlalchemy\util\langhelpers.py", line 224, in __exit__
+    raise exc_value.with_traceback(exc_tb)
+  File "C:\Users\frank\Documents\py_projects\dev\ETL_Agent\.venv\lib\site-packages\sqlalchemy\pool\base.py", line 897, in __connect
+    self.dbapi_connection = connection = pool._invoke_creator(self)
+  File "C:\Users\frank\Documents\py_projects\dev\ETL_Agent\.venv\lib\site-packages\sqlalchemy\engine\create.py", line 646, in connect
+    return dialect.connect(*cargs, **cparams)
+  File "C:\Users\frank\Documents\py_projects\dev\ETL_Agent\.venv\lib\site-packages\sqlalchemy\engine\default.py", line 625, in connect
+    return self.loaded_dbapi.connect(*cargs, **cparams)  # type: ignore[no-any-return]  # NOQA: E501
+  File "C:\Users\frank\Documents\py_projects\dev\ETL_Agent\.venv\lib\site-packages\mysql\connector\pooling.py", line 322, in connect
+    return CMySQLConnection(*args, **kwargs)
+  File "C:\Users\frank\Documents\py_projects\dev\ETL_Agent\.venv\lib\site-packages\mysql\connector\connection_cext.py", line 142, in __init__
+    self.connect(**kwargs)
+  File "C:\Users\frank\Documents\py_projects\dev\ETL_Agent\.venv\lib\site-packages\mysql\connector\abstracts.py", line 1605, in connect
+    self._open_connection()
+  File "C:\Users\frank\Documents\py_projects\dev\ETL_Agent\.venv\lib\site-packages\mysql\connector\connection_cext.py", line 360, in _open_connection
+    raise get_mysql_exception(
+mysql.connector.errors.ProgrammingError: 1044 (42000): Access denied for user 'dataanalyzer'@'%' to database 'testdb'
+
+The above exception was the direct cause of the following exception:
+
+Traceback (most recent call last):
+  File "C:\Users\frank\Documents\py_projects\dev\ETL_Agent\etl_agent\database_manager.py", line 54, in add_connection
+    connector = self._create_connector(db_type, connection_config)
+  File "C:\Users\frank\Documents\py_projects\dev\ETL_Agent\etl_agent\database_manager.py", line 126, in _create_connector
+    return SQLConnector(
+  File "C:\Users\frank\Documents\py_projects\dev\ETL_Agent\etl_agent\connectors\sql_connector.py", line 24, in __init__
+    self._connect()
+  File "C:\Users\frank\Documents\py_projects\dev\ETL_Agent\etl_agent\connectors\sql_connector.py", line 55, in _connect
+    with self.engine.connect() as conn:
+  File "C:\Users\frank\Documents\py_projects\dev\ETL_Agent\.venv\lib\site-packages\sqlalchemy\engine\base.py", line 3273, in connect
+    return self._connection_cls(self)
+  File "C:\Users\frank\Documents\py_projects\dev\ETL_Agent\.venv\lib\site-packages\sqlalchemy\engine\base.py", line 147, in __init__
+    Connection._handle_dbapi_exception_noconnection(
+  File "C:\Users\frank\Documents\py_projects\dev\ETL_Agent\.venv\lib\site-packages\sqlalchemy\engine\base.py", line 2436, in _handle_dbapi_exception_noconnection
+    raise sqlalchemy_exception.with_traceback(exc_info[2]) from e
+  File "C:\Users\frank\Documents\py_projects\dev\ETL_Agent\.venv\lib\site-packages\sqlalchemy\engine\base.py", line 145, in __init__
+    self._dbapi_connection = engine.raw_connection()
+  File "C:\Users\frank\Documents\py_projects\dev\ETL_Agent\.venv\lib\site-packages\sqlalchemy\engine\base.py", line 3297, in raw_connection
+    return self.pool.connect()
+  File "C:\Users\frank\Documents\py_projects\dev\ETL_Agent\.venv\lib\site-packages\sqlalchemy\pool\base.py", line 449, in connect
+    return _ConnectionFairy._checkout(self)
+  File "C:\Users\frank\Documents\py_projects\dev\ETL_Agent\.venv\lib\site-packages\sqlalchemy\pool\base.py", line 1264, in _checkout
+    fairy = _ConnectionRecord.checkout(pool)
+  File "C:\Users\frank\Documents\py_projects\dev\ETL_Agent\.venv\lib\site-packages\sqlalchemy\pool\base.py", line 713, in checkout
+    rec = pool._do_get()
+  File "C:\Users\frank\Documents\py_projects\dev\ETL_Agent\.venv\lib\site-packages\sqlalchemy\pool\impl.py", line 179, in _do_get
+    with util.safe_reraise():
+  File "C:\Users\frank\Documents\py_projects\dev\ETL_Agent\.venv\lib\site-packages\sqlalchemy\util\langhelpers.py", line 224, in __exit__
+    raise exc_value.with_traceback(exc_tb)
+  File "C:\Users\frank\Documents\py_projects\dev\ETL_Agent\.venv\lib\site-packages\sqlalchemy\pool\impl.py", line 177, in _do_get
+    return self._create_connection()
+  File "C:\Users\frank\Documents\py_projects\dev\ETL_Agent\.venv\lib\site-packages\sqlalchemy\pool\base.py", line 390, in _create_connection
+    return _ConnectionRecord(self)
+  File "C:\Users\frank\Documents\py_projects\dev\ETL_Agent\.venv\lib\site-packages\sqlalchemy\pool\base.py", line 675, in __init__
+    self.__connect()
+  File "C:\Users\frank\Documents\py_projects\dev\ETL_Agent\.venv\lib\site-packages\sqlalchemy\pool\base.py", line 901, in __connect
+    with util.safe_reraise():
+  File "C:\Users\frank\Documents\py_projects\dev\ETL_Agent\.venv\lib\site-packages\sqlalchemy\util\langhelpers.py", line 224, in __exit__
+    raise exc_value.with_traceback(exc_tb)
+  File "C:\Users\frank\Documents\py_projects\dev\ETL_Agent\.venv\lib\site-packages\sqlalchemy\pool\base.py", line 897, in __connect
+    self.dbapi_connection = connection = pool._invoke_creator(self)
+  File "C:\Users\frank\Documents\py_projects\dev\ETL_Agent\.venv\lib\site-packages\sqlalchemy\engine\create.py", line 646, in connect
+    return dialect.connect(*cargs, **cparams)
+  File "C:\Users\frank\Documents\py_projects\dev\ETL_Agent\.venv\lib\site-packages\sqlalchemy\engine\default.py", line 625, in connect
+    return self.loaded_dbapi.connect(*cargs, **cparams)  # type: ignore[no-any-return]  # NOQA: E501
+  File "C:\Users\frank\Documents\py_projects\dev\ETL_Agent\.venv\lib\site-packages\mysql\connector\pooling.py", line 322, in connect
+    return CMySQLConnection(*args, **kwargs)
+  File "C:\Users\frank\Documents\py_projects\dev\ETL_Agent\.venv\lib\site-packages\mysql\connector\connection_cext.py", line 142, in __init__
+    self.connect(**kwargs)
+  File "C:\Users\frank\Documents\py_projects\dev\ETL_Agent\.venv\lib\site-packages\mysql\connector\abstracts.py", line 1605, in connect
+    self._open_connection()
+  File "C:\Users\frank\Documents\py_projects\dev\ETL_Agent\.venv\lib\site-packages\mysql\connector\connection_cext.py", line 360, in _open_connection
+    raise get_mysql_exception(
+sqlalchemy.exc.ProgrammingError: (mysql.connector.errors.ProgrammingError) 1044 (42000): Access denied for user 'dataanalyzer'@'%' to database 'testdb'
+(Background on this error at: https://sqlalche.me/e/20/f405)
+2025-06-30 17:59:53,934 - __main__ - INFO - add_connection Ergebnis: False
+2025-06-30 18:00:47,443 - __main__ - INFO - Teste Verbindung: emil, mariadb, mysql://dataanalyzer:dataanaly...
+2025-06-30 18:00:47,443 - etl_agent.database_manager - INFO - Versuche Verbindung '_temp_test_emil' hinzuzufügen mit config: {'connection_string': 'mysql://dataanalyzer:dataanalyzer_pwd@localhost:3306/my_test_db', 'type': 'mariadb'}
+2025-06-30 18:00:47,443 - etl_agent.database_manager - INFO - Erkannter Datenbanktyp für '_temp_test_emil': DatabaseType.MYSQL
+2025-06-30 18:00:47,443 - etl_agent.connectors.sql_connector - INFO - Connection String korrigiert: mysql://dataanalyzer:dataanalyzer_pwd@localhost:3306/my_test_db -> mysql+mysqlconnector://dataanalyzer:dataanalyzer_pwd@localhost:3306/my_test_db
+2025-06-30 18:00:47,444 - etl_agent.connectors.sql_connector - INFO - Verbinde zu mysql-Datenbank: mysql+mysqlconnector://dataanalyzer:dataanalyzer_pwd@localhost:3306/my_test_db
+2025-06-30 18:00:47,510 - etl_agent.connectors.sql_connector - INFO - mysql-Verbindung erfolgreich etabliert
+2025-06-30 18:00:47,510 - etl_agent.database_manager - INFO - Connector für '_temp_test_emil' erfolgreich erstellt: <class 'etl_agent.connectors.sql_connector.SQLConnector'>
+2025-06-30 18:00:47,510 - etl_agent.database_manager - INFO - Datenbankverbindung '_temp_test_emil' (mysql) erfolgreich hinzugefügt
+2025-06-30 18:00:47,510 - __main__ - INFO - add_connection Ergebnis: True
+2025-06-30 18:00:52,656 - etl_agent.database_manager - INFO - Versuche Verbindung 'emil' hinzuzufügen mit config: {'connection_string': 'mysql://dataanalyzer:dataanalyzer_pwd@localhost:3306/my_test_db', 'type': 'mariadb'}
+2025-06-30 18:00:52,657 - etl_agent.database_manager - INFO - Erkannter Datenbanktyp für 'emil': DatabaseType.MYSQL
+2025-06-30 18:00:52,657 - etl_agent.connectors.sql_connector - INFO - Connection String korrigiert: mysql://dataanalyzer:dataanalyzer_pwd@localhost:3306/my_test_db -> mysql+mysqlconnector://dataanalyzer:dataanalyzer_pwd@localhost:3306/my_test_db
+2025-06-30 18:00:52,657 - etl_agent.connectors.sql_connector - INFO - Verbinde zu mysql-Datenbank: mysql+mysqlconnector://dataanalyzer:dataanalyzer_pwd@localhost:3306/my_test_db
+2025-06-30 18:00:52,719 - etl_agent.connectors.sql_connector - INFO - mysql-Verbindung erfolgreich etabliert
+2025-06-30 18:00:52,719 - etl_agent.database_manager - INFO - Connector für 'emil' erfolgreich erstellt: <class 'etl_agent.connectors.sql_connector.SQLConnector'>
+2025-06-30 18:00:52,720 - etl_agent.database_manager - INFO - Datenbankverbindung 'emil' (mysql) erfolgreich hinzugefügt
+2025-06-30 18:09:57,583 - httpx - INFO - HTTP Request: GET https://api.gradio.app/pkg-version "HTTP/1.1 200 OK"
+2025-06-30 18:09:59,102 - httpx - INFO - HTTP Request: GET http://localhost:7860/gradio_api/startup-events "HTTP/1.1 200 OK"
+2025-06-30 18:10:01,180 - httpx - INFO - HTTP Request: HEAD http://localhost:7860/ "HTTP/1.1 200 OK"
+2025-06-30 18:10:25,708 - etl_agent.database_manager - INFO - Versuche Verbindung '_temp_test_emil' hinzuzufügen mit config: {'connection_string': 'mysql://dataanalyzer:dataanalyzer_pwd@localhost:3306/my_test_db', 'type': 'mariadb'}
+2025-06-30 18:10:25,709 - etl_agent.database_manager - INFO - Erkannter Datenbanktyp für '_temp_test_emil': DatabaseType.MYSQL
+2025-06-30 18:10:25,709 - etl_agent.connectors.sql_connector - INFO - Connection String korrigiert: mysql://dataanalyzer:dataanalyzer_pwd@localhost:3306/my_test_db -> mysql+mysqlconnector://dataanalyzer:dataanalyzer_pwd@localhost:3306/my_test_db
+2025-06-30 18:10:25,709 - etl_agent.connectors.sql_connector - INFO - Verbinde zu mysql-Datenbank: mysql+mysqlconnector://dataanalyzer:dataanalyzer_pwd@localhost:3306/my_test_db
+2025-06-30 18:10:26,013 - etl_agent.connectors.sql_connector - INFO - mysql-Verbindung erfolgreich etabliert
+2025-06-30 18:10:26,014 - etl_agent.database_manager - INFO - Connector für '_temp_test_emil' erfolgreich erstellt: <class 'etl_agent.connectors.sql_connector.SQLConnector'>
+2025-06-30 18:10:26,014 - etl_agent.database_manager - INFO - Datenbankverbindung '_temp_test_emil' (mysql) erfolgreich hinzugefügt
+2025-06-30 18:10:26,937 - etl_agent.database_manager - INFO - Versuche Verbindung 'emil' hinzuzufügen mit config: {'connection_string': 'mysql://dataanalyzer:dataanalyzer_pwd@localhost:3306/my_test_db', 'type': 'mariadb'}
+2025-06-30 18:10:26,939 - etl_agent.database_manager - INFO - Erkannter Datenbanktyp für 'emil': DatabaseType.MYSQL
+2025-06-30 18:10:26,940 - etl_agent.connectors.sql_connector - INFO - Connection String korrigiert: mysql://dataanalyzer:dataanalyzer_pwd@localhost:3306/my_test_db -> mysql+mysqlconnector://dataanalyzer:dataanalyzer_pwd@localhost:3306/my_test_db
+2025-06-30 18:10:26,940 - etl_agent.connectors.sql_connector - INFO - Verbinde zu mysql-Datenbank: mysql+mysqlconnector://dataanalyzer:dataanalyzer_pwd@localhost:3306/my_test_db
+2025-06-30 18:10:26,997 - etl_agent.connectors.sql_connector - INFO - mysql-Verbindung erfolgreich etabliert
+2025-06-30 18:10:26,997 - etl_agent.database_manager - INFO - Connector für 'emil' erfolgreich erstellt: <class 'etl_agent.connectors.sql_connector.SQLConnector'>
+2025-06-30 18:10:26,998 - etl_agent.database_manager - INFO - Datenbankverbindung 'emil' (mysql) erfolgreich hinzugefügt
+2025-06-30 18:11:11,365 - __main__ - INFO - Generiere ETL-Code für: Lade Daten aus Emildb und speichere das alter in einer csv datei
+2025-06-30 18:11:11,369 - etl_agent.etl_agent_core - INFO - Verarbeite ETL-Anfrage: Lade Daten aus Emildb und speichere das alter in einer csv datei
+2025-06-30 18:11:33,451 - httpx - INFO - HTTP Request: POST http://localhost:11434/v1/chat/completions "HTTP/1.1 200 OK"
+2025-06-30 18:11:50,438 - httpx - INFO - HTTP Request: POST http://localhost:11434/v1/chat/completions "HTTP/1.1 200 OK"
+2025-06-30 18:11:50,441 - etl_agent.etl_agent_core - ERROR - Fehler bei ETL-Verarbeitung: Received empty model response
+2025-06-30 18:11:50,443 - __main__ - ERROR - Code-Generierung Fehler: 
+2025-06-30 18:15:57,970 - httpx - INFO - HTTP Request: GET https://api.gradio.app/pkg-version "HTTP/1.1 200 OK"
+2025-06-30 18:15:59,497 - httpx - INFO - HTTP Request: GET http://localhost:7860/gradio_api/startup-events "HTTP/1.1 200 OK"
+2025-06-30 18:16:01,177 - etl_agent.database_manager - INFO - Versuche Verbindung '_temp_test_emil' hinzuzufügen mit config: {'connection_string': 'mysql://dataanalyzer:dataanalyzer_pwd@localhost:3306/my_test_db', 'type': 'mariadb'}
+2025-06-30 18:16:01,177 - etl_agent.database_manager - INFO - Erkannter Datenbanktyp für '_temp_test_emil': DatabaseType.MYSQL
+2025-06-30 18:16:01,177 - etl_agent.connectors.sql_connector - INFO - Connection String korrigiert: mysql://dataanalyzer:dataanalyzer_pwd@localhost:3306/my_test_db -> mysql+mysqlconnector://dataanalyzer:dataanalyzer_pwd@localhost:3306/my_test_db
+2025-06-30 18:16:01,177 - etl_agent.connectors.sql_connector - INFO - Verbinde zu mysql-Datenbank: mysql+mysqlconnector://dataanalyzer:dataanalyzer_pwd@localhost:3306/my_test_db
+2025-06-30 18:16:01,344 - etl_agent.connectors.sql_connector - INFO - mysql-Verbindung erfolgreich etabliert
+2025-06-30 18:16:01,345 - etl_agent.database_manager - INFO - Connector für '_temp_test_emil' erfolgreich erstellt: <class 'etl_agent.connectors.sql_connector.SQLConnector'>
+2025-06-30 18:16:01,345 - etl_agent.database_manager - INFO - Datenbankverbindung '_temp_test_emil' (mysql) erfolgreich hinzugefügt
+2025-06-30 18:16:01,567 - httpx - INFO - HTTP Request: HEAD http://localhost:7860/ "HTTP/1.1 200 OK"
+2025-06-30 18:16:02,624 - etl_agent.database_manager - INFO - Versuche Verbindung 'emil' hinzuzufügen mit config: {'connection_string': 'mysql://dataanalyzer:dataanalyzer_pwd@localhost:3306/my_test_db', 'type': 'mariadb'}
+2025-06-30 18:16:02,625 - etl_agent.database_manager - INFO - Erkannter Datenbanktyp für 'emil': DatabaseType.MYSQL
+2025-06-30 18:16:02,625 - etl_agent.connectors.sql_connector - INFO - Connection String korrigiert: mysql://dataanalyzer:dataanalyzer_pwd@localhost:3306/my_test_db -> mysql+mysqlconnector://dataanalyzer:dataanalyzer_pwd@localhost:3306/my_test_db
+2025-06-30 18:16:02,625 - etl_agent.connectors.sql_connector - INFO - Verbinde zu mysql-Datenbank: mysql+mysqlconnector://dataanalyzer:dataanalyzer_pwd@localhost:3306/my_test_db
+2025-06-30 18:16:02,676 - etl_agent.connectors.sql_connector - INFO - mysql-Verbindung erfolgreich etabliert
+2025-06-30 18:16:02,677 - etl_agent.database_manager - INFO - Connector für 'emil' erfolgreich erstellt: <class 'etl_agent.connectors.sql_connector.SQLConnector'>
+2025-06-30 18:16:02,677 - etl_agent.database_manager - INFO - Datenbankverbindung 'emil' (mysql) erfolgreich hinzugefügt
+2025-06-30 18:16:06,030 - __main__ - INFO - Generiere ETL-Code für: Lade Daten aus Emildb und speichere das alter in einer csv datei
+2025-06-30 18:16:06,034 - etl_agent.etl_agent_core - INFO - Verarbeite ETL-Anfrage: Lade Daten aus Emildb und speichere das alter in einer csv datei
+2025-06-30 18:16:06,035 - etl_agent.etl_agent_core - INFO - Starte AI-Agent für Code-Generierung...
+2025-06-30 18:16:16,191 - httpx - INFO - HTTP Request: POST http://localhost:11434/v1/chat/completions "HTTP/1.1 200 OK"
+2025-06-30 18:16:16,209 - etl_agent.etl_agent_core - INFO - Konvertiere rohe AI-Antwort zu ETLResponse
+2025-06-30 18:17:51,888 - httpx - INFO - HTTP Request: GET https://api.gradio.app/pkg-version "HTTP/1.1 200 OK"
+2025-06-30 18:17:53,391 - httpx - INFO - HTTP Request: GET http://localhost:7860/gradio_api/startup-events "HTTP/1.1 200 OK"
+2025-06-30 18:17:55,472 - httpx - INFO - HTTP Request: HEAD http://localhost:7860/ "HTTP/1.1 200 OK"
+2025-06-30 18:17:57,846 - etl_agent.database_manager - INFO - Versuche Verbindung '_temp_test_emil' hinzuzufügen mit config: {'connection_string': 'mysql://dataanalyzer:dataanalyzer_pwd@localhost:3306/my_test_db', 'type': 'mariadb'}
+2025-06-30 18:17:57,847 - etl_agent.database_manager - INFO - Erkannter Datenbanktyp für '_temp_test_emil': DatabaseType.MYSQL
+2025-06-30 18:17:57,847 - etl_agent.connectors.sql_connector - INFO - Connection String korrigiert: mysql://dataanalyzer:dataanalyzer_pwd@localhost:3306/my_test_db -> mysql+mysqlconnector://dataanalyzer:dataanalyzer_pwd@localhost:3306/my_test_db
+2025-06-30 18:17:57,847 - etl_agent.connectors.sql_connector - INFO - Verbinde zu mysql-Datenbank: mysql+mysqlconnector://dataanalyzer:dataanalyzer_pwd@localhost:3306/my_test_db
+2025-06-30 18:17:58,009 - etl_agent.connectors.sql_connector - INFO - mysql-Verbindung erfolgreich etabliert
+2025-06-30 18:17:58,009 - etl_agent.database_manager - INFO - Connector für '_temp_test_emil' erfolgreich erstellt: <class 'etl_agent.connectors.sql_connector.SQLConnector'>
+2025-06-30 18:17:58,009 - etl_agent.database_manager - INFO - Datenbankverbindung '_temp_test_emil' (mysql) erfolgreich hinzugefügt
+2025-06-30 18:18:02,051 - etl_agent.database_manager - INFO - Versuche Verbindung 'emil' hinzuzufügen mit config: {'connection_string': 'mysql://dataanalyzer:dataanalyzer_pwd@localhost:3306/my_test_db', 'type': 'mariadb'}
+2025-06-30 18:18:02,051 - etl_agent.database_manager - INFO - Erkannter Datenbanktyp für 'emil': DatabaseType.MYSQL
+2025-06-30 18:18:02,051 - etl_agent.connectors.sql_connector - INFO - Connection String korrigiert: mysql://dataanalyzer:dataanalyzer_pwd@localhost:3306/my_test_db -> mysql+mysqlconnector://dataanalyzer:dataanalyzer_pwd@localhost:3306/my_test_db
+2025-06-30 18:18:02,052 - etl_agent.connectors.sql_connector - INFO - Verbinde zu mysql-Datenbank: mysql+mysqlconnector://dataanalyzer:dataanalyzer_pwd@localhost:3306/my_test_db
+2025-06-30 18:18:02,091 - etl_agent.connectors.sql_connector - INFO - mysql-Verbindung erfolgreich etabliert
+2025-06-30 18:18:02,092 - etl_agent.database_manager - INFO - Connector für 'emil' erfolgreich erstellt: <class 'etl_agent.connectors.sql_connector.SQLConnector'>
+2025-06-30 18:18:02,092 - etl_agent.database_manager - INFO - Datenbankverbindung 'emil' (mysql) erfolgreich hinzugefügt
+2025-06-30 18:18:06,745 - __main__ - INFO - Generiere ETL-Code für: Lade Daten aus Emildb und speichere das alter in einer csv datei
+2025-06-30 18:18:06,748 - etl_agent.etl_agent_core - INFO - Verarbeite ETL-Anfrage: Lade Daten aus Emildb und speichere das alter in einer csv datei
+2025-06-30 18:18:06,749 - etl_agent.etl_agent_core - INFO - Starte AI-Agent für Code-Generierung...
+2025-06-30 18:18:15,566 - httpx - INFO - HTTP Request: POST http://localhost:11434/v1/chat/completions "HTTP/1.1 200 OK"
+2025-06-30 18:18:15,577 - etl_agent.etl_agent_core - INFO - Konvertiere rohe AI-Antwort zu ETLResponse
+2025-06-30 18:22:13,006 - httpx - INFO - HTTP Request: GET https://api.gradio.app/pkg-version "HTTP/1.1 200 OK"
+2025-06-30 18:22:14,538 - httpx - INFO - HTTP Request: GET http://localhost:7860/gradio_api/startup-events "HTTP/1.1 200 OK"
+2025-06-30 18:22:16,618 - httpx - INFO - HTTP Request: HEAD http://localhost:7860/ "HTTP/1.1 200 OK"
+2025-06-30 18:22:26,693 - etl_agent.database_manager - INFO - Versuche Verbindung '_temp_test_emil' hinzuzufügen mit config: {'connection_string': 'mysql://dataanalyzer:dataanalyzer_pwd@localhost:3306/my_test_db', 'type': 'mariadb'}
+2025-06-30 18:22:26,694 - etl_agent.database_manager - INFO - Erkannter Datenbanktyp für '_temp_test_emil': DatabaseType.MYSQL
+2025-06-30 18:22:26,695 - etl_agent.connectors.sql_connector - INFO - Connection String korrigiert: mysql://dataanalyzer:dataanalyzer_pwd@localhost:3306/my_test_db -> mysql+mysqlconnector://dataanalyzer:dataanalyzer_pwd@localhost:3306/my_test_db
+2025-06-30 18:22:26,695 - etl_agent.connectors.sql_connector - INFO - Verbinde zu mysql-Datenbank: mysql+mysqlconnector://dataanalyzer:dataanalyzer_pwd@localhost:3306/my_test_db
+2025-06-30 18:22:27,001 - etl_agent.connectors.sql_connector - INFO - mysql-Verbindung erfolgreich etabliert
+2025-06-30 18:22:27,001 - etl_agent.database_manager - INFO - Connector für '_temp_test_emil' erfolgreich erstellt: <class 'etl_agent.connectors.sql_connector.SQLConnector'>
+2025-06-30 18:22:27,001 - etl_agent.database_manager - INFO - Datenbankverbindung '_temp_test_emil' (mysql) erfolgreich hinzugefügt
+2025-06-30 18:22:28,890 - etl_agent.database_manager - INFO - Versuche Verbindung 'emil' hinzuzufügen mit config: {'connection_string': 'mysql://dataanalyzer:dataanalyzer_pwd@localhost:3306/my_test_db', 'type': 'mariadb'}
+2025-06-30 18:22:28,890 - etl_agent.database_manager - INFO - Erkannter Datenbanktyp für 'emil': DatabaseType.MYSQL
+2025-06-30 18:22:28,890 - etl_agent.connectors.sql_connector - INFO - Connection String korrigiert: mysql://dataanalyzer:dataanalyzer_pwd@localhost:3306/my_test_db -> mysql+mysqlconnector://dataanalyzer:dataanalyzer_pwd@localhost:3306/my_test_db
+2025-06-30 18:22:28,891 - etl_agent.connectors.sql_connector - INFO - Verbinde zu mysql-Datenbank: mysql+mysqlconnector://dataanalyzer:dataanalyzer_pwd@localhost:3306/my_test_db
+2025-06-30 18:22:28,946 - etl_agent.connectors.sql_connector - INFO - mysql-Verbindung erfolgreich etabliert
+2025-06-30 18:22:28,947 - etl_agent.database_manager - INFO - Connector für 'emil' erfolgreich erstellt: <class 'etl_agent.connectors.sql_connector.SQLConnector'>
+2025-06-30 18:22:28,947 - etl_agent.database_manager - INFO - Datenbankverbindung 'emil' (mysql) erfolgreich hinzugefügt
+2025-06-30 18:22:34,007 - __main__ - INFO - Generiere ETL-Code für: Lade Daten aus Emildb und speichere das alter in einer csv datei
+2025-06-30 18:22:34,013 - etl_agent.etl_agent_core - INFO - Verarbeite ETL-Anfrage: Lade Daten aus Emildb und speichere das alter in einer csv datei
+2025-06-30 18:22:34,013 - etl_agent.etl_agent_core - INFO - Starte AI-Agent für Code-Generierung...
+2025-06-30 18:22:42,864 - httpx - INFO - HTTP Request: POST http://localhost:11434/v1/chat/completions "HTTP/1.1 200 OK"
+2025-06-30 18:22:49,751 - httpx - INFO - HTTP Request: POST http://localhost:11434/v1/chat/completions "HTTP/1.1 200 OK"
+2025-06-30 18:22:56,772 - httpx - INFO - HTTP Request: POST http://localhost:11434/v1/chat/completions "HTTP/1.1 200 OK"
+2025-06-30 18:22:56,777 - etl_agent.etl_agent_core - ERROR - AI-Agent Fehler: Exceeded maximum retries (2) for result validation
+2025-06-30 18:53:04,474 - httpx - INFO - HTTP Request: GET https://api.gradio.app/pkg-version "HTTP/1.1 200 OK"
+2025-06-30 18:53:05,967 - httpx - INFO - HTTP Request: GET http://localhost:7860/gradio_api/startup-events "HTTP/1.1 200 OK"
+2025-06-30 18:53:08,045 - httpx - INFO - HTTP Request: HEAD http://localhost:7860/ "HTTP/1.1 200 OK"
+2025-06-30 18:53:52,323 - httpx - INFO - HTTP Request: GET https://api.gradio.app/pkg-version "HTTP/1.1 200 OK"
+2025-06-30 18:53:53,880 - httpx - INFO - HTTP Request: GET http://localhost:7860/gradio_api/startup-events "HTTP/1.1 200 OK"
+2025-06-30 18:53:55,969 - httpx - INFO - HTTP Request: HEAD http://localhost:7860/ "HTTP/1.1 200 OK"
+2025-06-30 18:56:45,650 - etl_agent.database_manager - INFO - Versuche Verbindung '_temp_test_emil' hinzuzufügen mit config: {'connection_string': 'mysql://dataanalyzer:datanalyzer_pwd@localhost:3306/testdb', 'type': 'mariadb'}
+2025-06-30 18:56:45,650 - etl_agent.database_manager - INFO - Erkannter Datenbanktyp für '_temp_test_emil': DatabaseType.MYSQL
+2025-06-30 18:56:45,651 - etl_agent.connectors.sql_connector - INFO - Connection String korrigiert: mysql://dataanalyzer:datanalyzer_pwd@localhost:3306/testdb -> mysql+mysqlconnector://dataanalyzer:datanalyzer_pwd@localhost:3306/testdb
+2025-06-30 18:56:45,651 - etl_agent.connectors.sql_connector - INFO - Verbinde zu mysql-Datenbank: mysql+mysqlconnector://dataanalyzer:datanalyzer_pwd@localhost:3306/testdb
+2025-06-30 18:56:45,950 - etl_agent.connectors.sql_connector - ERROR - Fehler bei mysql-Datenbankverbindung: (mysql.connector.errors.ProgrammingError) 1045 (28000): Access denied for user 'dataanalyzer'@'172.22.0.1' (using password: YES)
+(Background on this error at: https://sqlalche.me/e/20/f405)
+2025-06-30 18:56:45,952 - etl_agent.database_manager - ERROR - Fehler beim Hinzufügen der Verbindung '_temp_test_emil': (mysql.connector.errors.ProgrammingError) 1045 (28000): Access denied for user 'dataanalyzer'@'172.22.0.1' (using password: YES)
+(Background on this error at: https://sqlalche.me/e/20/f405)
+Traceback (most recent call last):
+  File "C:\Users\frank\Documents\py_projects\dev\ETL_Agent\.venv\lib\site-packages\mysql\connector\connection_cext.py", line 354, in _open_connection
+    self._cmysql.connect(**cnx_kwargs)
+_mysql_connector.MySQLInterfaceError: Access denied for user 'dataanalyzer'@'172.22.0.1' (using password: YES)
+
+The above exception was the direct cause of the following exception:
+
+Traceback (most recent call last):
+  File "C:\Users\frank\Documents\py_projects\dev\ETL_Agent\.venv\lib\site-packages\sqlalchemy\engine\base.py", line 145, in __init__
+    self._dbapi_connection = engine.raw_connection()
+  File "C:\Users\frank\Documents\py_projects\dev\ETL_Agent\.venv\lib\site-packages\sqlalchemy\engine\base.py", line 3297, in raw_connection
+    return self.pool.connect()
+  File "C:\Users\frank\Documents\py_projects\dev\ETL_Agent\.venv\lib\site-packages\sqlalchemy\pool\base.py", line 449, in connect
+    return _ConnectionFairy._checkout(self)
+  File "C:\Users\frank\Documents\py_projects\dev\ETL_Agent\.venv\lib\site-packages\sqlalchemy\pool\base.py", line 1264, in _checkout
+    fairy = _ConnectionRecord.checkout(pool)
+  File "C:\Users\frank\Documents\py_projects\dev\ETL_Agent\.venv\lib\site-packages\sqlalchemy\pool\base.py", line 713, in checkout
+    rec = pool._do_get()
+  File "C:\Users\frank\Documents\py_projects\dev\ETL_Agent\.venv\lib\site-packages\sqlalchemy\pool\impl.py", line 179, in _do_get
+    with util.safe_reraise():
+  File "C:\Users\frank\Documents\py_projects\dev\ETL_Agent\.venv\lib\site-packages\sqlalchemy\util\langhelpers.py", line 224, in __exit__
+    raise exc_value.with_traceback(exc_tb)
+  File "C:\Users\frank\Documents\py_projects\dev\ETL_Agent\.venv\lib\site-packages\sqlalchemy\pool\impl.py", line 177, in _do_get
+    return self._create_connection()
+  File "C:\Users\frank\Documents\py_projects\dev\ETL_Agent\.venv\lib\site-packages\sqlalchemy\pool\base.py", line 390, in _create_connection
+    return _ConnectionRecord(self)
+  File "C:\Users\frank\Documents\py_projects\dev\ETL_Agent\.venv\lib\site-packages\sqlalchemy\pool\base.py", line 675, in __init__
+    self.__connect()
+  File "C:\Users\frank\Documents\py_projects\dev\ETL_Agent\.venv\lib\site-packages\sqlalchemy\pool\base.py", line 901, in __connect
+    with util.safe_reraise():
+  File "C:\Users\frank\Documents\py_projects\dev\ETL_Agent\.venv\lib\site-packages\sqlalchemy\util\langhelpers.py", line 224, in __exit__
+    raise exc_value.with_traceback(exc_tb)
+  File "C:\Users\frank\Documents\py_projects\dev\ETL_Agent\.venv\lib\site-packages\sqlalchemy\pool\base.py", line 897, in __connect
+    self.dbapi_connection = connection = pool._invoke_creator(self)
+  File "C:\Users\frank\Documents\py_projects\dev\ETL_Agent\.venv\lib\site-packages\sqlalchemy\engine\create.py", line 646, in connect
+    return dialect.connect(*cargs, **cparams)
+  File "C:\Users\frank\Documents\py_projects\dev\ETL_Agent\.venv\lib\site-packages\sqlalchemy\engine\default.py", line 625, in connect
+    return self.loaded_dbapi.connect(*cargs, **cparams)  # type: ignore[no-any-return]  # NOQA: E501
+  File "C:\Users\frank\Documents\py_projects\dev\ETL_Agent\.venv\lib\site-packages\mysql\connector\pooling.py", line 322, in connect
+    return CMySQLConnection(*args, **kwargs)
+  File "C:\Users\frank\Documents\py_projects\dev\ETL_Agent\.venv\lib\site-packages\mysql\connector\connection_cext.py", line 142, in __init__
+    self.connect(**kwargs)
+  File "C:\Users\frank\Documents\py_projects\dev\ETL_Agent\.venv\lib\site-packages\mysql\connector\abstracts.py", line 1605, in connect
+    self._open_connection()
+  File "C:\Users\frank\Documents\py_projects\dev\ETL_Agent\.venv\lib\site-packages\mysql\connector\connection_cext.py", line 360, in _open_connection
+    raise get_mysql_exception(
+mysql.connector.errors.ProgrammingError: 1045 (28000): Access denied for user 'dataanalyzer'@'172.22.0.1' (using password: YES)
+
+The above exception was the direct cause of the following exception:
+
+Traceback (most recent call last):
+  File "C:\Users\frank\Documents\py_projects\dev\ETL_Agent\etl_agent\database_manager.py", line 54, in add_connection
+    connector = self._create_connector(db_type, connection_config)
+  File "C:\Users\frank\Documents\py_projects\dev\ETL_Agent\etl_agent\database_manager.py", line 126, in _create_connector
+    return SQLConnector(
+  File "C:\Users\frank\Documents\py_projects\dev\ETL_Agent\etl_agent\connectors\sql_connector.py", line 24, in __init__
+    self._connect()
+  File "C:\Users\frank\Documents\py_projects\dev\ETL_Agent\etl_agent\connectors\sql_connector.py", line 55, in _connect
+    with self.engine.connect() as conn:
+  File "C:\Users\frank\Documents\py_projects\dev\ETL_Agent\.venv\lib\site-packages\sqlalchemy\engine\base.py", line 3273, in connect
+    return self._connection_cls(self)
+  File "C:\Users\frank\Documents\py_projects\dev\ETL_Agent\.venv\lib\site-packages\sqlalchemy\engine\base.py", line 147, in __init__
+    Connection._handle_dbapi_exception_noconnection(
+  File "C:\Users\frank\Documents\py_projects\dev\ETL_Agent\.venv\lib\site-packages\sqlalchemy\engine\base.py", line 2436, in _handle_dbapi_exception_noconnection
+    raise sqlalchemy_exception.with_traceback(exc_info[2]) from e
+  File "C:\Users\frank\Documents\py_projects\dev\ETL_Agent\.venv\lib\site-packages\sqlalchemy\engine\base.py", line 145, in __init__
+    self._dbapi_connection = engine.raw_connection()
+  File "C:\Users\frank\Documents\py_projects\dev\ETL_Agent\.venv\lib\site-packages\sqlalchemy\engine\base.py", line 3297, in raw_connection
+    return self.pool.connect()
+  File "C:\Users\frank\Documents\py_projects\dev\ETL_Agent\.venv\lib\site-packages\sqlalchemy\pool\base.py", line 449, in connect
+    return _ConnectionFairy._checkout(self)
+  File "C:\Users\frank\Documents\py_projects\dev\ETL_Agent\.venv\lib\site-packages\sqlalchemy\pool\base.py", line 1264, in _checkout
+    fairy = _ConnectionRecord.checkout(pool)
+  File "C:\Users\frank\Documents\py_projects\dev\ETL_Agent\.venv\lib\site-packages\sqlalchemy\pool\base.py", line 713, in checkout
+    rec = pool._do_get()
+  File "C:\Users\frank\Documents\py_projects\dev\ETL_Agent\.venv\lib\site-packages\sqlalchemy\pool\impl.py", line 179, in _do_get
+    with util.safe_reraise():
+  File "C:\Users\frank\Documents\py_projects\dev\ETL_Agent\.venv\lib\site-packages\sqlalchemy\util\langhelpers.py", line 224, in __exit__
+    raise exc_value.with_traceback(exc_tb)
+  File "C:\Users\frank\Documents\py_projects\dev\ETL_Agent\.venv\lib\site-packages\sqlalchemy\pool\impl.py", line 177, in _do_get
+    return self._create_connection()
+  File "C:\Users\frank\Documents\py_projects\dev\ETL_Agent\.venv\lib\site-packages\sqlalchemy\pool\base.py", line 390, in _create_connection
+    return _ConnectionRecord(self)
+  File "C:\Users\frank\Documents\py_projects\dev\ETL_Agent\.venv\lib\site-packages\sqlalchemy\pool\base.py", line 675, in __init__
+    self.__connect()
+  File "C:\Users\frank\Documents\py_projects\dev\ETL_Agent\.venv\lib\site-packages\sqlalchemy\pool\base.py", line 901, in __connect
+    with util.safe_reraise():
+  File "C:\Users\frank\Documents\py_projects\dev\ETL_Agent\.venv\lib\site-packages\sqlalchemy\util\langhelpers.py", line 224, in __exit__
+    raise exc_value.with_traceback(exc_tb)
+  File "C:\Users\frank\Documents\py_projects\dev\ETL_Agent\.venv\lib\site-packages\sqlalchemy\pool\base.py", line 897, in __connect
+    self.dbapi_connection = connection = pool._invoke_creator(self)
+  File "C:\Users\frank\Documents\py_projects\dev\ETL_Agent\.venv\lib\site-packages\sqlalchemy\engine\create.py", line 646, in connect
+    return dialect.connect(*cargs, **cparams)
+  File "C:\Users\frank\Documents\py_projects\dev\ETL_Agent\.venv\lib\site-packages\sqlalchemy\engine\default.py", line 625, in connect
+    return self.loaded_dbapi.connect(*cargs, **cparams)  # type: ignore[no-any-return]  # NOQA: E501
+  File "C:\Users\frank\Documents\py_projects\dev\ETL_Agent\.venv\lib\site-packages\mysql\connector\pooling.py", line 322, in connect
+    return CMySQLConnection(*args, **kwargs)
+  File "C:\Users\frank\Documents\py_projects\dev\ETL_Agent\.venv\lib\site-packages\mysql\connector\connection_cext.py", line 142, in __init__
+    self.connect(**kwargs)
+  File "C:\Users\frank\Documents\py_projects\dev\ETL_Agent\.venv\lib\site-packages\mysql\connector\abstracts.py", line 1605, in connect
+    self._open_connection()
+  File "C:\Users\frank\Documents\py_projects\dev\ETL_Agent\.venv\lib\site-packages\mysql\connector\connection_cext.py", line 360, in _open_connection
+    raise get_mysql_exception(
+sqlalchemy.exc.ProgrammingError: (mysql.connector.errors.ProgrammingError) 1045 (28000): Access denied for user 'dataanalyzer'@'172.22.0.1' (using password: YES)
+(Background on this error at: https://sqlalche.me/e/20/f405)
+2025-06-30 18:57:03,543 - etl_agent.database_manager - INFO - Versuche Verbindung '_temp_test_emil' hinzuzufügen mit config: {'connection_string': 'mysql://dataanalyzer:datanalyzer_pwd@localhost:3306/testdb', 'type': 'mariadb'}
+2025-06-30 18:57:03,543 - etl_agent.database_manager - INFO - Erkannter Datenbanktyp für '_temp_test_emil': DatabaseType.MYSQL
+2025-06-30 18:57:03,543 - etl_agent.connectors.sql_connector - INFO - Connection String korrigiert: mysql://dataanalyzer:datanalyzer_pwd@localhost:3306/testdb -> mysql+mysqlconnector://dataanalyzer:datanalyzer_pwd@localhost:3306/testdb
+2025-06-30 18:57:03,544 - etl_agent.connectors.sql_connector - INFO - Verbinde zu mysql-Datenbank: mysql+mysqlconnector://dataanalyzer:datanalyzer_pwd@localhost:3306/testdb
+2025-06-30 18:57:03,571 - etl_agent.connectors.sql_connector - ERROR - Fehler bei mysql-Datenbankverbindung: (mysql.connector.errors.ProgrammingError) 1045 (28000): Access denied for user 'dataanalyzer'@'172.22.0.1' (using password: YES)
+(Background on this error at: https://sqlalche.me/e/20/f405)
+2025-06-30 18:57:03,572 - etl_agent.database_manager - ERROR - Fehler beim Hinzufügen der Verbindung '_temp_test_emil': (mysql.connector.errors.ProgrammingError) 1045 (28000): Access denied for user 'dataanalyzer'@'172.22.0.1' (using password: YES)
+(Background on this error at: https://sqlalche.me/e/20/f405)
+Traceback (most recent call last):
+  File "C:\Users\frank\Documents\py_projects\dev\ETL_Agent\.venv\lib\site-packages\mysql\connector\connection_cext.py", line 354, in _open_connection
+    self._cmysql.connect(**cnx_kwargs)
+_mysql_connector.MySQLInterfaceError: Access denied for user 'dataanalyzer'@'172.22.0.1' (using password: YES)
+
+The above exception was the direct cause of the following exception:
+
+Traceback (most recent call last):
+  File "C:\Users\frank\Documents\py_projects\dev\ETL_Agent\.venv\lib\site-packages\sqlalchemy\engine\base.py", line 145, in __init__
+    self._dbapi_connection = engine.raw_connection()
+  File "C:\Users\frank\Documents\py_projects\dev\ETL_Agent\.venv\lib\site-packages\sqlalchemy\engine\base.py", line 3297, in raw_connection
+    return self.pool.connect()
+  File "C:\Users\frank\Documents\py_projects\dev\ETL_Agent\.venv\lib\site-packages\sqlalchemy\pool\base.py", line 449, in connect
+    return _ConnectionFairy._checkout(self)
+  File "C:\Users\frank\Documents\py_projects\dev\ETL_Agent\.venv\lib\site-packages\sqlalchemy\pool\base.py", line 1264, in _checkout
+    fairy = _ConnectionRecord.checkout(pool)
+  File "C:\Users\frank\Documents\py_projects\dev\ETL_Agent\.venv\lib\site-packages\sqlalchemy\pool\base.py", line 713, in checkout
+    rec = pool._do_get()
+  File "C:\Users\frank\Documents\py_projects\dev\ETL_Agent\.venv\lib\site-packages\sqlalchemy\pool\impl.py", line 179, in _do_get
+    with util.safe_reraise():
+  File "C:\Users\frank\Documents\py_projects\dev\ETL_Agent\.venv\lib\site-packages\sqlalchemy\util\langhelpers.py", line 224, in __exit__
+    raise exc_value.with_traceback(exc_tb)
+  File "C:\Users\frank\Documents\py_projects\dev\ETL_Agent\.venv\lib\site-packages\sqlalchemy\pool\impl.py", line 177, in _do_get
+    return self._create_connection()
+  File "C:\Users\frank\Documents\py_projects\dev\ETL_Agent\.venv\lib\site-packages\sqlalchemy\pool\base.py", line 390, in _create_connection
+    return _ConnectionRecord(self)
+  File "C:\Users\frank\Documents\py_projects\dev\ETL_Agent\.venv\lib\site-packages\sqlalchemy\pool\base.py", line 675, in __init__
+    self.__connect()
+  File "C:\Users\frank\Documents\py_projects\dev\ETL_Agent\.venv\lib\site-packages\sqlalchemy\pool\base.py", line 901, in __connect
+    with util.safe_reraise():
+  File "C:\Users\frank\Documents\py_projects\dev\ETL_Agent\.venv\lib\site-packages\sqlalchemy\util\langhelpers.py", line 224, in __exit__
+    raise exc_value.with_traceback(exc_tb)
+  File "C:\Users\frank\Documents\py_projects\dev\ETL_Agent\.venv\lib\site-packages\sqlalchemy\pool\base.py", line 897, in __connect
+    self.dbapi_connection = connection = pool._invoke_creator(self)
+  File "C:\Users\frank\Documents\py_projects\dev\ETL_Agent\.venv\lib\site-packages\sqlalchemy\engine\create.py", line 646, in connect
+    return dialect.connect(*cargs, **cparams)
+  File "C:\Users\frank\Documents\py_projects\dev\ETL_Agent\.venv\lib\site-packages\sqlalchemy\engine\default.py", line 625, in connect
+    return self.loaded_dbapi.connect(*cargs, **cparams)  # type: ignore[no-any-return]  # NOQA: E501
+  File "C:\Users\frank\Documents\py_projects\dev\ETL_Agent\.venv\lib\site-packages\mysql\connector\pooling.py", line 322, in connect
+    return CMySQLConnection(*args, **kwargs)
+  File "C:\Users\frank\Documents\py_projects\dev\ETL_Agent\.venv\lib\site-packages\mysql\connector\connection_cext.py", line 142, in __init__
+    self.connect(**kwargs)
+  File "C:\Users\frank\Documents\py_projects\dev\ETL_Agent\.venv\lib\site-packages\mysql\connector\abstracts.py", line 1605, in connect
+    self._open_connection()
+  File "C:\Users\frank\Documents\py_projects\dev\ETL_Agent\.venv\lib\site-packages\mysql\connector\connection_cext.py", line 360, in _open_connection
+    raise get_mysql_exception(
+mysql.connector.errors.ProgrammingError: 1045 (28000): Access denied for user 'dataanalyzer'@'172.22.0.1' (using password: YES)
+
+The above exception was the direct cause of the following exception:
+
+Traceback (most recent call last):
+  File "C:\Users\frank\Documents\py_projects\dev\ETL_Agent\etl_agent\database_manager.py", line 54, in add_connection
+    connector = self._create_connector(db_type, connection_config)
+  File "C:\Users\frank\Documents\py_projects\dev\ETL_Agent\etl_agent\database_manager.py", line 126, in _create_connector
+    return SQLConnector(
+  File "C:\Users\frank\Documents\py_projects\dev\ETL_Agent\etl_agent\connectors\sql_connector.py", line 24, in __init__
+    self._connect()
+  File "C:\Users\frank\Documents\py_projects\dev\ETL_Agent\etl_agent\connectors\sql_connector.py", line 55, in _connect
+    with self.engine.connect() as conn:
+  File "C:\Users\frank\Documents\py_projects\dev\ETL_Agent\.venv\lib\site-packages\sqlalchemy\engine\base.py", line 3273, in connect
+    return self._connection_cls(self)
+  File "C:\Users\frank\Documents\py_projects\dev\ETL_Agent\.venv\lib\site-packages\sqlalchemy\engine\base.py", line 147, in __init__
+    Connection._handle_dbapi_exception_noconnection(
+  File "C:\Users\frank\Documents\py_projects\dev\ETL_Agent\.venv\lib\site-packages\sqlalchemy\engine\base.py", line 2436, in _handle_dbapi_exception_noconnection
+    raise sqlalchemy_exception.with_traceback(exc_info[2]) from e
+  File "C:\Users\frank\Documents\py_projects\dev\ETL_Agent\.venv\lib\site-packages\sqlalchemy\engine\base.py", line 145, in __init__
+    self._dbapi_connection = engine.raw_connection()
+  File "C:\Users\frank\Documents\py_projects\dev\ETL_Agent\.venv\lib\site-packages\sqlalchemy\engine\base.py", line 3297, in raw_connection
+    return self.pool.connect()
+  File "C:\Users\frank\Documents\py_projects\dev\ETL_Agent\.venv\lib\site-packages\sqlalchemy\pool\base.py", line 449, in connect
+    return _ConnectionFairy._checkout(self)
+  File "C:\Users\frank\Documents\py_projects\dev\ETL_Agent\.venv\lib\site-packages\sqlalchemy\pool\base.py", line 1264, in _checkout
+    fairy = _ConnectionRecord.checkout(pool)
+  File "C:\Users\frank\Documents\py_projects\dev\ETL_Agent\.venv\lib\site-packages\sqlalchemy\pool\base.py", line 713, in checkout
+    rec = pool._do_get()
+  File "C:\Users\frank\Documents\py_projects\dev\ETL_Agent\.venv\lib\site-packages\sqlalchemy\pool\impl.py", line 179, in _do_get
+    with util.safe_reraise():
+  File "C:\Users\frank\Documents\py_projects\dev\ETL_Agent\.venv\lib\site-packages\sqlalchemy\util\langhelpers.py", line 224, in __exit__
+    raise exc_value.with_traceback(exc_tb)
+  File "C:\Users\frank\Documents\py_projects\dev\ETL_Agent\.venv\lib\site-packages\sqlalchemy\pool\impl.py", line 177, in _do_get
+    return self._create_connection()
+  File "C:\Users\frank\Documents\py_projects\dev\ETL_Agent\.venv\lib\site-packages\sqlalchemy\pool\base.py", line 390, in _create_connection
+    return _ConnectionRecord(self)
+  File "C:\Users\frank\Documents\py_projects\dev\ETL_Agent\.venv\lib\site-packages\sqlalchemy\pool\base.py", line 675, in __init__
+    self.__connect()
+  File "C:\Users\frank\Documents\py_projects\dev\ETL_Agent\.venv\lib\site-packages\sqlalchemy\pool\base.py", line 901, in __connect
+    with util.safe_reraise():
+  File "C:\Users\frank\Documents\py_projects\dev\ETL_Agent\.venv\lib\site-packages\sqlalchemy\util\langhelpers.py", line 224, in __exit__
+    raise exc_value.with_traceback(exc_tb)
+  File "C:\Users\frank\Documents\py_projects\dev\ETL_Agent\.venv\lib\site-packages\sqlalchemy\pool\base.py", line 897, in __connect
+    self.dbapi_connection = connection = pool._invoke_creator(self)
+  File "C:\Users\frank\Documents\py_projects\dev\ETL_Agent\.venv\lib\site-packages\sqlalchemy\engine\create.py", line 646, in connect
+    return dialect.connect(*cargs, **cparams)
+  File "C:\Users\frank\Documents\py_projects\dev\ETL_Agent\.venv\lib\site-packages\sqlalchemy\engine\default.py", line 625, in connect
+    return self.loaded_dbapi.connect(*cargs, **cparams)  # type: ignore[no-any-return]  # NOQA: E501
+  File "C:\Users\frank\Documents\py_projects\dev\ETL_Agent\.venv\lib\site-packages\mysql\connector\pooling.py", line 322, in connect
+    return CMySQLConnection(*args, **kwargs)
+  File "C:\Users\frank\Documents\py_projects\dev\ETL_Agent\.venv\lib\site-packages\mysql\connector\connection_cext.py", line 142, in __init__
+    self.connect(**kwargs)
+  File "C:\Users\frank\Documents\py_projects\dev\ETL_Agent\.venv\lib\site-packages\mysql\connector\abstracts.py", line 1605, in connect
+    self._open_connection()
+  File "C:\Users\frank\Documents\py_projects\dev\ETL_Agent\.venv\lib\site-packages\mysql\connector\connection_cext.py", line 360, in _open_connection
+    raise get_mysql_exception(
+sqlalchemy.exc.ProgrammingError: (mysql.connector.errors.ProgrammingError) 1045 (28000): Access denied for user 'dataanalyzer'@'172.22.0.1' (using password: YES)
+(Background on this error at: https://sqlalche.me/e/20/f405)
+2025-06-30 18:57:04,961 - etl_agent.database_manager - INFO - Versuche Verbindung '_temp_test_emil' hinzuzufügen mit config: {'connection_string': 'mysql://dataanalyzer:datanalyzer_pwd@localhost:3306/testdb', 'type': 'mariadb'}
+2025-06-30 18:57:04,961 - etl_agent.database_manager - INFO - Erkannter Datenbanktyp für '_temp_test_emil': DatabaseType.MYSQL
+2025-06-30 18:57:04,961 - etl_agent.connectors.sql_connector - INFO - Connection String korrigiert: mysql://dataanalyzer:datanalyzer_pwd@localhost:3306/testdb -> mysql+mysqlconnector://dataanalyzer:datanalyzer_pwd@localhost:3306/testdb
+2025-06-30 18:57:04,961 - etl_agent.connectors.sql_connector - INFO - Verbinde zu mysql-Datenbank: mysql+mysqlconnector://dataanalyzer:datanalyzer_pwd@localhost:3306/testdb
+2025-06-30 18:57:04,990 - etl_agent.connectors.sql_connector - ERROR - Fehler bei mysql-Datenbankverbindung: (mysql.connector.errors.ProgrammingError) 1045 (28000): Access denied for user 'dataanalyzer'@'172.22.0.1' (using password: YES)
+(Background on this error at: https://sqlalche.me/e/20/f405)
+2025-06-30 18:57:04,991 - etl_agent.database_manager - ERROR - Fehler beim Hinzufügen der Verbindung '_temp_test_emil': (mysql.connector.errors.ProgrammingError) 1045 (28000): Access denied for user 'dataanalyzer'@'172.22.0.1' (using password: YES)
+(Background on this error at: https://sqlalche.me/e/20/f405)
+Traceback (most recent call last):
+  File "C:\Users\frank\Documents\py_projects\dev\ETL_Agent\.venv\lib\site-packages\mysql\connector\connection_cext.py", line 354, in _open_connection
+    self._cmysql.connect(**cnx_kwargs)
+_mysql_connector.MySQLInterfaceError: Access denied for user 'dataanalyzer'@'172.22.0.1' (using password: YES)
+
+The above exception was the direct cause of the following exception:
+
+Traceback (most recent call last):
+  File "C:\Users\frank\Documents\py_projects\dev\ETL_Agent\.venv\lib\site-packages\sqlalchemy\engine\base.py", line 145, in __init__
+    self._dbapi_connection = engine.raw_connection()
+  File "C:\Users\frank\Documents\py_projects\dev\ETL_Agent\.venv\lib\site-packages\sqlalchemy\engine\base.py", line 3297, in raw_connection
+    return self.pool.connect()
+  File "C:\Users\frank\Documents\py_projects\dev\ETL_Agent\.venv\lib\site-packages\sqlalchemy\pool\base.py", line 449, in connect
+    return _ConnectionFairy._checkout(self)
+  File "C:\Users\frank\Documents\py_projects\dev\ETL_Agent\.venv\lib\site-packages\sqlalchemy\pool\base.py", line 1264, in _checkout
+    fairy = _ConnectionRecord.checkout(pool)
+  File "C:\Users\frank\Documents\py_projects\dev\ETL_Agent\.venv\lib\site-packages\sqlalchemy\pool\base.py", line 713, in checkout
+    rec = pool._do_get()
+  File "C:\Users\frank\Documents\py_projects\dev\ETL_Agent\.venv\lib\site-packages\sqlalchemy\pool\impl.py", line 179, in _do_get
+    with util.safe_reraise():
+  File "C:\Users\frank\Documents\py_projects\dev\ETL_Agent\.venv\lib\site-packages\sqlalchemy\util\langhelpers.py", line 224, in __exit__
+    raise exc_value.with_traceback(exc_tb)
+  File "C:\Users\frank\Documents\py_projects\dev\ETL_Agent\.venv\lib\site-packages\sqlalchemy\pool\impl.py", line 177, in _do_get
+    return self._create_connection()
+  File "C:\Users\frank\Documents\py_projects\dev\ETL_Agent\.venv\lib\site-packages\sqlalchemy\pool\base.py", line 390, in _create_connection
+    return _ConnectionRecord(self)
+  File "C:\Users\frank\Documents\py_projects\dev\ETL_Agent\.venv\lib\site-packages\sqlalchemy\pool\base.py", line 675, in __init__
+    self.__connect()
+  File "C:\Users\frank\Documents\py_projects\dev\ETL_Agent\.venv\lib\site-packages\sqlalchemy\pool\base.py", line 901, in __connect
+    with util.safe_reraise():
+  File "C:\Users\frank\Documents\py_projects\dev\ETL_Agent\.venv\lib\site-packages\sqlalchemy\util\langhelpers.py", line 224, in __exit__
+    raise exc_value.with_traceback(exc_tb)
+  File "C:\Users\frank\Documents\py_projects\dev\ETL_Agent\.venv\lib\site-packages\sqlalchemy\pool\base.py", line 897, in __connect
+    self.dbapi_connection = connection = pool._invoke_creator(self)
+  File "C:\Users\frank\Documents\py_projects\dev\ETL_Agent\.venv\lib\site-packages\sqlalchemy\engine\create.py", line 646, in connect
+    return dialect.connect(*cargs, **cparams)
+  File "C:\Users\frank\Documents\py_projects\dev\ETL_Agent\.venv\lib\site-packages\sqlalchemy\engine\default.py", line 625, in connect
+    return self.loaded_dbapi.connect(*cargs, **cparams)  # type: ignore[no-any-return]  # NOQA: E501
+  File "C:\Users\frank\Documents\py_projects\dev\ETL_Agent\.venv\lib\site-packages\mysql\connector\pooling.py", line 322, in connect
+    return CMySQLConnection(*args, **kwargs)
+  File "C:\Users\frank\Documents\py_projects\dev\ETL_Agent\.venv\lib\site-packages\mysql\connector\connection_cext.py", line 142, in __init__
+    self.connect(**kwargs)
+  File "C:\Users\frank\Documents\py_projects\dev\ETL_Agent\.venv\lib\site-packages\mysql\connector\abstracts.py", line 1605, in connect
+    self._open_connection()
+  File "C:\Users\frank\Documents\py_projects\dev\ETL_Agent\.venv\lib\site-packages\mysql\connector\connection_cext.py", line 360, in _open_connection
+    raise get_mysql_exception(
+mysql.connector.errors.ProgrammingError: 1045 (28000): Access denied for user 'dataanalyzer'@'172.22.0.1' (using password: YES)
+
+The above exception was the direct cause of the following exception:
+
+Traceback (most recent call last):
+  File "C:\Users\frank\Documents\py_projects\dev\ETL_Agent\etl_agent\database_manager.py", line 54, in add_connection
+    connector = self._create_connector(db_type, connection_config)
+  File "C:\Users\frank\Documents\py_projects\dev\ETL_Agent\etl_agent\database_manager.py", line 126, in _create_connector
+    return SQLConnector(
+  File "C:\Users\frank\Documents\py_projects\dev\ETL_Agent\etl_agent\connectors\sql_connector.py", line 24, in __init__
+    self._connect()
+  File "C:\Users\frank\Documents\py_projects\dev\ETL_Agent\etl_agent\connectors\sql_connector.py", line 55, in _connect
+    with self.engine.connect() as conn:
+  File "C:\Users\frank\Documents\py_projects\dev\ETL_Agent\.venv\lib\site-packages\sqlalchemy\engine\base.py", line 3273, in connect
+    return self._connection_cls(self)
+  File "C:\Users\frank\Documents\py_projects\dev\ETL_Agent\.venv\lib\site-packages\sqlalchemy\engine\base.py", line 147, in __init__
+    Connection._handle_dbapi_exception_noconnection(
+  File "C:\Users\frank\Documents\py_projects\dev\ETL_Agent\.venv\lib\site-packages\sqlalchemy\engine\base.py", line 2436, in _handle_dbapi_exception_noconnection
+    raise sqlalchemy_exception.with_traceback(exc_info[2]) from e
+  File "C:\Users\frank\Documents\py_projects\dev\ETL_Agent\.venv\lib\site-packages\sqlalchemy\engine\base.py", line 145, in __init__
+    self._dbapi_connection = engine.raw_connection()
+  File "C:\Users\frank\Documents\py_projects\dev\ETL_Agent\.venv\lib\site-packages\sqlalchemy\engine\base.py", line 3297, in raw_connection
+    return self.pool.connect()
+  File "C:\Users\frank\Documents\py_projects\dev\ETL_Agent\.venv\lib\site-packages\sqlalchemy\pool\base.py", line 449, in connect
+    return _ConnectionFairy._checkout(self)
+  File "C:\Users\frank\Documents\py_projects\dev\ETL_Agent\.venv\lib\site-packages\sqlalchemy\pool\base.py", line 1264, in _checkout
+    fairy = _ConnectionRecord.checkout(pool)
+  File "C:\Users\frank\Documents\py_projects\dev\ETL_Agent\.venv\lib\site-packages\sqlalchemy\pool\base.py", line 713, in checkout
+    rec = pool._do_get()
+  File "C:\Users\frank\Documents\py_projects\dev\ETL_Agent\.venv\lib\site-packages\sqlalchemy\pool\impl.py", line 179, in _do_get
+    with util.safe_reraise():
+  File "C:\Users\frank\Documents\py_projects\dev\ETL_Agent\.venv\lib\site-packages\sqlalchemy\util\langhelpers.py", line 224, in __exit__
+    raise exc_value.with_traceback(exc_tb)
+  File "C:\Users\frank\Documents\py_projects\dev\ETL_Agent\.venv\lib\site-packages\sqlalchemy\pool\impl.py", line 177, in _do_get
+    return self._create_connection()
+  File "C:\Users\frank\Documents\py_projects\dev\ETL_Agent\.venv\lib\site-packages\sqlalchemy\pool\base.py", line 390, in _create_connection
+    return _ConnectionRecord(self)
+  File "C:\Users\frank\Documents\py_projects\dev\ETL_Agent\.venv\lib\site-packages\sqlalchemy\pool\base.py", line 675, in __init__
+    self.__connect()
+  File "C:\Users\frank\Documents\py_projects\dev\ETL_Agent\.venv\lib\site-packages\sqlalchemy\pool\base.py", line 901, in __connect
+    with util.safe_reraise():
+  File "C:\Users\frank\Documents\py_projects\dev\ETL_Agent\.venv\lib\site-packages\sqlalchemy\util\langhelpers.py", line 224, in __exit__
+    raise exc_value.with_traceback(exc_tb)
+  File "C:\Users\frank\Documents\py_projects\dev\ETL_Agent\.venv\lib\site-packages\sqlalchemy\pool\base.py", line 897, in __connect
+    self.dbapi_connection = connection = pool._invoke_creator(self)
+  File "C:\Users\frank\Documents\py_projects\dev\ETL_Agent\.venv\lib\site-packages\sqlalchemy\engine\create.py", line 646, in connect
+    return dialect.connect(*cargs, **cparams)
+  File "C:\Users\frank\Documents\py_projects\dev\ETL_Agent\.venv\lib\site-packages\sqlalchemy\engine\default.py", line 625, in connect
+    return self.loaded_dbapi.connect(*cargs, **cparams)  # type: ignore[no-any-return]  # NOQA: E501
+  File "C:\Users\frank\Documents\py_projects\dev\ETL_Agent\.venv\lib\site-packages\mysql\connector\pooling.py", line 322, in connect
+    return CMySQLConnection(*args, **kwargs)
+  File "C:\Users\frank\Documents\py_projects\dev\ETL_Agent\.venv\lib\site-packages\mysql\connector\connection_cext.py", line 142, in __init__
+    self.connect(**kwargs)
+  File "C:\Users\frank\Documents\py_projects\dev\ETL_Agent\.venv\lib\site-packages\mysql\connector\abstracts.py", line 1605, in connect
+    self._open_connection()
+  File "C:\Users\frank\Documents\py_projects\dev\ETL_Agent\.venv\lib\site-packages\mysql\connector\connection_cext.py", line 360, in _open_connection
+    raise get_mysql_exception(
+sqlalchemy.exc.ProgrammingError: (mysql.connector.errors.ProgrammingError) 1045 (28000): Access denied for user 'dataanalyzer'@'172.22.0.1' (using password: YES)
+(Background on this error at: https://sqlalche.me/e/20/f405)
+2025-06-30 18:58:52,831 - etl_agent.database_manager - INFO - Versuche Verbindung '_temp_test_emil' hinzuzufügen mit config: {'connection_string': 'mysql://dataanalyzer:datanalyzer_pwd@localhost:3306/my_test_db', 'type': 'mariadb'}
+2025-06-30 18:58:52,831 - etl_agent.database_manager - INFO - Erkannter Datenbanktyp für '_temp_test_emil': DatabaseType.MYSQL
+2025-06-30 18:58:52,832 - etl_agent.connectors.sql_connector - INFO - Connection String korrigiert: mysql://dataanalyzer:datanalyzer_pwd@localhost:3306/my_test_db -> mysql+mysqlconnector://dataanalyzer:datanalyzer_pwd@localhost:3306/my_test_db
+2025-06-30 18:58:52,832 - etl_agent.connectors.sql_connector - INFO - Verbinde zu mysql-Datenbank: mysql+mysqlconnector://dataanalyzer:datanalyzer_pwd@localhost:3306/my_test_db
+2025-06-30 18:58:52,858 - etl_agent.connectors.sql_connector - ERROR - Fehler bei mysql-Datenbankverbindung: (mysql.connector.errors.ProgrammingError) 1045 (28000): Access denied for user 'dataanalyzer'@'172.22.0.1' (using password: YES)
+(Background on this error at: https://sqlalche.me/e/20/f405)
+2025-06-30 18:58:52,860 - etl_agent.database_manager - ERROR - Fehler beim Hinzufügen der Verbindung '_temp_test_emil': (mysql.connector.errors.ProgrammingError) 1045 (28000): Access denied for user 'dataanalyzer'@'172.22.0.1' (using password: YES)
+(Background on this error at: https://sqlalche.me/e/20/f405)
+Traceback (most recent call last):
+  File "C:\Users\frank\Documents\py_projects\dev\ETL_Agent\.venv\lib\site-packages\mysql\connector\connection_cext.py", line 354, in _open_connection
+    self._cmysql.connect(**cnx_kwargs)
+_mysql_connector.MySQLInterfaceError: Access denied for user 'dataanalyzer'@'172.22.0.1' (using password: YES)
+
+The above exception was the direct cause of the following exception:
+
+Traceback (most recent call last):
+  File "C:\Users\frank\Documents\py_projects\dev\ETL_Agent\.venv\lib\site-packages\sqlalchemy\engine\base.py", line 145, in __init__
+    self._dbapi_connection = engine.raw_connection()
+  File "C:\Users\frank\Documents\py_projects\dev\ETL_Agent\.venv\lib\site-packages\sqlalchemy\engine\base.py", line 3297, in raw_connection
+    return self.pool.connect()
+  File "C:\Users\frank\Documents\py_projects\dev\ETL_Agent\.venv\lib\site-packages\sqlalchemy\pool\base.py", line 449, in connect
+    return _ConnectionFairy._checkout(self)
+  File "C:\Users\frank\Documents\py_projects\dev\ETL_Agent\.venv\lib\site-packages\sqlalchemy\pool\base.py", line 1264, in _checkout
+    fairy = _ConnectionRecord.checkout(pool)
+  File "C:\Users\frank\Documents\py_projects\dev\ETL_Agent\.venv\lib\site-packages\sqlalchemy\pool\base.py", line 713, in checkout
+    rec = pool._do_get()
+  File "C:\Users\frank\Documents\py_projects\dev\ETL_Agent\.venv\lib\site-packages\sqlalchemy\pool\impl.py", line 179, in _do_get
+    with util.safe_reraise():
+  File "C:\Users\frank\Documents\py_projects\dev\ETL_Agent\.venv\lib\site-packages\sqlalchemy\util\langhelpers.py", line 224, in __exit__
+    raise exc_value.with_traceback(exc_tb)
+  File "C:\Users\frank\Documents\py_projects\dev\ETL_Agent\.venv\lib\site-packages\sqlalchemy\pool\impl.py", line 177, in _do_get
+    return self._create_connection()
+  File "C:\Users\frank\Documents\py_projects\dev\ETL_Agent\.venv\lib\site-packages\sqlalchemy\pool\base.py", line 390, in _create_connection
+    return _ConnectionRecord(self)
+  File "C:\Users\frank\Documents\py_projects\dev\ETL_Agent\.venv\lib\site-packages\sqlalchemy\pool\base.py", line 675, in __init__
+    self.__connect()
+  File "C:\Users\frank\Documents\py_projects\dev\ETL_Agent\.venv\lib\site-packages\sqlalchemy\pool\base.py", line 901, in __connect
+    with util.safe_reraise():
+  File "C:\Users\frank\Documents\py_projects\dev\ETL_Agent\.venv\lib\site-packages\sqlalchemy\util\langhelpers.py", line 224, in __exit__
+    raise exc_value.with_traceback(exc_tb)
+  File "C:\Users\frank\Documents\py_projects\dev\ETL_Agent\.venv\lib\site-packages\sqlalchemy\pool\base.py", line 897, in __connect
+    self.dbapi_connection = connection = pool._invoke_creator(self)
+  File "C:\Users\frank\Documents\py_projects\dev\ETL_Agent\.venv\lib\site-packages\sqlalchemy\engine\create.py", line 646, in connect
+    return dialect.connect(*cargs, **cparams)
+  File "C:\Users\frank\Documents\py_projects\dev\ETL_Agent\.venv\lib\site-packages\sqlalchemy\engine\default.py", line 625, in connect
+    return self.loaded_dbapi.connect(*cargs, **cparams)  # type: ignore[no-any-return]  # NOQA: E501
+  File "C:\Users\frank\Documents\py_projects\dev\ETL_Agent\.venv\lib\site-packages\mysql\connector\pooling.py", line 322, in connect
+    return CMySQLConnection(*args, **kwargs)
+  File "C:\Users\frank\Documents\py_projects\dev\ETL_Agent\.venv\lib\site-packages\mysql\connector\connection_cext.py", line 142, in __init__
+    self.connect(**kwargs)
+  File "C:\Users\frank\Documents\py_projects\dev\ETL_Agent\.venv\lib\site-packages\mysql\connector\abstracts.py", line 1605, in connect
+    self._open_connection()
+  File "C:\Users\frank\Documents\py_projects\dev\ETL_Agent\.venv\lib\site-packages\mysql\connector\connection_cext.py", line 360, in _open_connection
+    raise get_mysql_exception(
+mysql.connector.errors.ProgrammingError: 1045 (28000): Access denied for user 'dataanalyzer'@'172.22.0.1' (using password: YES)
+
+The above exception was the direct cause of the following exception:
+
+Traceback (most recent call last):
+  File "C:\Users\frank\Documents\py_projects\dev\ETL_Agent\etl_agent\database_manager.py", line 54, in add_connection
+    connector = self._create_connector(db_type, connection_config)
+  File "C:\Users\frank\Documents\py_projects\dev\ETL_Agent\etl_agent\database_manager.py", line 126, in _create_connector
+    return SQLConnector(
+  File "C:\Users\frank\Documents\py_projects\dev\ETL_Agent\etl_agent\connectors\sql_connector.py", line 24, in __init__
+    self._connect()
+  File "C:\Users\frank\Documents\py_projects\dev\ETL_Agent\etl_agent\connectors\sql_connector.py", line 55, in _connect
+    with self.engine.connect() as conn:
+  File "C:\Users\frank\Documents\py_projects\dev\ETL_Agent\.venv\lib\site-packages\sqlalchemy\engine\base.py", line 3273, in connect
+    return self._connection_cls(self)
+  File "C:\Users\frank\Documents\py_projects\dev\ETL_Agent\.venv\lib\site-packages\sqlalchemy\engine\base.py", line 147, in __init__
+    Connection._handle_dbapi_exception_noconnection(
+  File "C:\Users\frank\Documents\py_projects\dev\ETL_Agent\.venv\lib\site-packages\sqlalchemy\engine\base.py", line 2436, in _handle_dbapi_exception_noconnection
+    raise sqlalchemy_exception.with_traceback(exc_info[2]) from e
+  File "C:\Users\frank\Documents\py_projects\dev\ETL_Agent\.venv\lib\site-packages\sqlalchemy\engine\base.py", line 145, in __init__
+    self._dbapi_connection = engine.raw_connection()
+  File "C:\Users\frank\Documents\py_projects\dev\ETL_Agent\.venv\lib\site-packages\sqlalchemy\engine\base.py", line 3297, in raw_connection
+    return self.pool.connect()
+  File "C:\Users\frank\Documents\py_projects\dev\ETL_Agent\.venv\lib\site-packages\sqlalchemy\pool\base.py", line 449, in connect
+    return _ConnectionFairy._checkout(self)
+  File "C:\Users\frank\Documents\py_projects\dev\ETL_Agent\.venv\lib\site-packages\sqlalchemy\pool\base.py", line 1264, in _checkout
+    fairy = _ConnectionRecord.checkout(pool)
+  File "C:\Users\frank\Documents\py_projects\dev\ETL_Agent\.venv\lib\site-packages\sqlalchemy\pool\base.py", line 713, in checkout
+    rec = pool._do_get()
+  File "C:\Users\frank\Documents\py_projects\dev\ETL_Agent\.venv\lib\site-packages\sqlalchemy\pool\impl.py", line 179, in _do_get
+    with util.safe_reraise():
+  File "C:\Users\frank\Documents\py_projects\dev\ETL_Agent\.venv\lib\site-packages\sqlalchemy\util\langhelpers.py", line 224, in __exit__
+    raise exc_value.with_traceback(exc_tb)
+  File "C:\Users\frank\Documents\py_projects\dev\ETL_Agent\.venv\lib\site-packages\sqlalchemy\pool\impl.py", line 177, in _do_get
+    return self._create_connection()
+  File "C:\Users\frank\Documents\py_projects\dev\ETL_Agent\.venv\lib\site-packages\sqlalchemy\pool\base.py", line 390, in _create_connection
+    return _ConnectionRecord(self)
+  File "C:\Users\frank\Documents\py_projects\dev\ETL_Agent\.venv\lib\site-packages\sqlalchemy\pool\base.py", line 675, in __init__
+    self.__connect()
+  File "C:\Users\frank\Documents\py_projects\dev\ETL_Agent\.venv\lib\site-packages\sqlalchemy\pool\base.py", line 901, in __connect
+    with util.safe_reraise():
+  File "C:\Users\frank\Documents\py_projects\dev\ETL_Agent\.venv\lib\site-packages\sqlalchemy\util\langhelpers.py", line 224, in __exit__
+    raise exc_value.with_traceback(exc_tb)
+  File "C:\Users\frank\Documents\py_projects\dev\ETL_Agent\.venv\lib\site-packages\sqlalchemy\pool\base.py", line 897, in __connect
+    self.dbapi_connection = connection = pool._invoke_creator(self)
+  File "C:\Users\frank\Documents\py_projects\dev\ETL_Agent\.venv\lib\site-packages\sqlalchemy\engine\create.py", line 646, in connect
+    return dialect.connect(*cargs, **cparams)
+  File "C:\Users\frank\Documents\py_projects\dev\ETL_Agent\.venv\lib\site-packages\sqlalchemy\engine\default.py", line 625, in connect
+    return self.loaded_dbapi.connect(*cargs, **cparams)  # type: ignore[no-any-return]  # NOQA: E501
+  File "C:\Users\frank\Documents\py_projects\dev\ETL_Agent\.venv\lib\site-packages\mysql\connector\pooling.py", line 322, in connect
+    return CMySQLConnection(*args, **kwargs)
+  File "C:\Users\frank\Documents\py_projects\dev\ETL_Agent\.venv\lib\site-packages\mysql\connector\connection_cext.py", line 142, in __init__
+    self.connect(**kwargs)
+  File "C:\Users\frank\Documents\py_projects\dev\ETL_Agent\.venv\lib\site-packages\mysql\connector\abstracts.py", line 1605, in connect
+    self._open_connection()
+  File "C:\Users\frank\Documents\py_projects\dev\ETL_Agent\.venv\lib\site-packages\mysql\connector\connection_cext.py", line 360, in _open_connection
+    raise get_mysql_exception(
+sqlalchemy.exc.ProgrammingError: (mysql.connector.errors.ProgrammingError) 1045 (28000): Access denied for user 'dataanalyzer'@'172.22.0.1' (using password: YES)
+(Background on this error at: https://sqlalche.me/e/20/f405)
+2025-06-30 18:58:54,446 - etl_agent.database_manager - INFO - Versuche Verbindung '_temp_test_emil' hinzuzufügen mit config: {'connection_string': 'mysql://dataanalyzer:datanalyzer_pwd@localhost:3306/my_test_db', 'type': 'mariadb'}
+2025-06-30 18:58:54,448 - etl_agent.database_manager - INFO - Erkannter Datenbanktyp für '_temp_test_emil': DatabaseType.MYSQL
+2025-06-30 18:58:54,448 - etl_agent.connectors.sql_connector - INFO - Connection String korrigiert: mysql://dataanalyzer:datanalyzer_pwd@localhost:3306/my_test_db -> mysql+mysqlconnector://dataanalyzer:datanalyzer_pwd@localhost:3306/my_test_db
+2025-06-30 18:58:54,449 - etl_agent.connectors.sql_connector - INFO - Verbinde zu mysql-Datenbank: mysql+mysqlconnector://dataanalyzer:datanalyzer_pwd@localhost:3306/my_test_db
+2025-06-30 18:58:54,473 - etl_agent.connectors.sql_connector - ERROR - Fehler bei mysql-Datenbankverbindung: (mysql.connector.errors.ProgrammingError) 1045 (28000): Access denied for user 'dataanalyzer'@'172.22.0.1' (using password: YES)
+(Background on this error at: https://sqlalche.me/e/20/f405)
+2025-06-30 18:58:54,474 - etl_agent.database_manager - ERROR - Fehler beim Hinzufügen der Verbindung '_temp_test_emil': (mysql.connector.errors.ProgrammingError) 1045 (28000): Access denied for user 'dataanalyzer'@'172.22.0.1' (using password: YES)
+(Background on this error at: https://sqlalche.me/e/20/f405)
+Traceback (most recent call last):
+  File "C:\Users\frank\Documents\py_projects\dev\ETL_Agent\.venv\lib\site-packages\mysql\connector\connection_cext.py", line 354, in _open_connection
+    self._cmysql.connect(**cnx_kwargs)
+_mysql_connector.MySQLInterfaceError: Access denied for user 'dataanalyzer'@'172.22.0.1' (using password: YES)
+
+The above exception was the direct cause of the following exception:
+
+Traceback (most recent call last):
+  File "C:\Users\frank\Documents\py_projects\dev\ETL_Agent\.venv\lib\site-packages\sqlalchemy\engine\base.py", line 145, in __init__
+    self._dbapi_connection = engine.raw_connection()
+  File "C:\Users\frank\Documents\py_projects\dev\ETL_Agent\.venv\lib\site-packages\sqlalchemy\engine\base.py", line 3297, in raw_connection
+    return self.pool.connect()
+  File "C:\Users\frank\Documents\py_projects\dev\ETL_Agent\.venv\lib\site-packages\sqlalchemy\pool\base.py", line 449, in connect
+    return _ConnectionFairy._checkout(self)
+  File "C:\Users\frank\Documents\py_projects\dev\ETL_Agent\.venv\lib\site-packages\sqlalchemy\pool\base.py", line 1264, in _checkout
+    fairy = _ConnectionRecord.checkout(pool)
+  File "C:\Users\frank\Documents\py_projects\dev\ETL_Agent\.venv\lib\site-packages\sqlalchemy\pool\base.py", line 713, in checkout
+    rec = pool._do_get()
+  File "C:\Users\frank\Documents\py_projects\dev\ETL_Agent\.venv\lib\site-packages\sqlalchemy\pool\impl.py", line 179, in _do_get
+    with util.safe_reraise():
+  File "C:\Users\frank\Documents\py_projects\dev\ETL_Agent\.venv\lib\site-packages\sqlalchemy\util\langhelpers.py", line 224, in __exit__
+    raise exc_value.with_traceback(exc_tb)
+  File "C:\Users\frank\Documents\py_projects\dev\ETL_Agent\.venv\lib\site-packages\sqlalchemy\pool\impl.py", line 177, in _do_get
+    return self._create_connection()
+  File "C:\Users\frank\Documents\py_projects\dev\ETL_Agent\.venv\lib\site-packages\sqlalchemy\pool\base.py", line 390, in _create_connection
+    return _ConnectionRecord(self)
+  File "C:\Users\frank\Documents\py_projects\dev\ETL_Agent\.venv\lib\site-packages\sqlalchemy\pool\base.py", line 675, in __init__
+    self.__connect()
+  File "C:\Users\frank\Documents\py_projects\dev\ETL_Agent\.venv\lib\site-packages\sqlalchemy\pool\base.py", line 901, in __connect
+    with util.safe_reraise():
+  File "C:\Users\frank\Documents\py_projects\dev\ETL_Agent\.venv\lib\site-packages\sqlalchemy\util\langhelpers.py", line 224, in __exit__
+    raise exc_value.with_traceback(exc_tb)
+  File "C:\Users\frank\Documents\py_projects\dev\ETL_Agent\.venv\lib\site-packages\sqlalchemy\pool\base.py", line 897, in __connect
+    self.dbapi_connection = connection = pool._invoke_creator(self)
+  File "C:\Users\frank\Documents\py_projects\dev\ETL_Agent\.venv\lib\site-packages\sqlalchemy\engine\create.py", line 646, in connect
+    return dialect.connect(*cargs, **cparams)
+  File "C:\Users\frank\Documents\py_projects\dev\ETL_Agent\.venv\lib\site-packages\sqlalchemy\engine\default.py", line 625, in connect
+    return self.loaded_dbapi.connect(*cargs, **cparams)  # type: ignore[no-any-return]  # NOQA: E501
+  File "C:\Users\frank\Documents\py_projects\dev\ETL_Agent\.venv\lib\site-packages\mysql\connector\pooling.py", line 322, in connect
+    return CMySQLConnection(*args, **kwargs)
+  File "C:\Users\frank\Documents\py_projects\dev\ETL_Agent\.venv\lib\site-packages\mysql\connector\connection_cext.py", line 142, in __init__
+    self.connect(**kwargs)
+  File "C:\Users\frank\Documents\py_projects\dev\ETL_Agent\.venv\lib\site-packages\mysql\connector\abstracts.py", line 1605, in connect
+    self._open_connection()
+  File "C:\Users\frank\Documents\py_projects\dev\ETL_Agent\.venv\lib\site-packages\mysql\connector\connection_cext.py", line 360, in _open_connection
+    raise get_mysql_exception(
+mysql.connector.errors.ProgrammingError: 1045 (28000): Access denied for user 'dataanalyzer'@'172.22.0.1' (using password: YES)
+
+The above exception was the direct cause of the following exception:
+
+Traceback (most recent call last):
+  File "C:\Users\frank\Documents\py_projects\dev\ETL_Agent\etl_agent\database_manager.py", line 54, in add_connection
+    connector = self._create_connector(db_type, connection_config)
+  File "C:\Users\frank\Documents\py_projects\dev\ETL_Agent\etl_agent\database_manager.py", line 126, in _create_connector
+    return SQLConnector(
+  File "C:\Users\frank\Documents\py_projects\dev\ETL_Agent\etl_agent\connectors\sql_connector.py", line 24, in __init__
+    self._connect()
+  File "C:\Users\frank\Documents\py_projects\dev\ETL_Agent\etl_agent\connectors\sql_connector.py", line 55, in _connect
+    with self.engine.connect() as conn:
+  File "C:\Users\frank\Documents\py_projects\dev\ETL_Agent\.venv\lib\site-packages\sqlalchemy\engine\base.py", line 3273, in connect
+    return self._connection_cls(self)
+  File "C:\Users\frank\Documents\py_projects\dev\ETL_Agent\.venv\lib\site-packages\sqlalchemy\engine\base.py", line 147, in __init__
+    Connection._handle_dbapi_exception_noconnection(
+  File "C:\Users\frank\Documents\py_projects\dev\ETL_Agent\.venv\lib\site-packages\sqlalchemy\engine\base.py", line 2436, in _handle_dbapi_exception_noconnection
+    raise sqlalchemy_exception.with_traceback(exc_info[2]) from e
+  File "C:\Users\frank\Documents\py_projects\dev\ETL_Agent\.venv\lib\site-packages\sqlalchemy\engine\base.py", line 145, in __init__
+    self._dbapi_connection = engine.raw_connection()
+  File "C:\Users\frank\Documents\py_projects\dev\ETL_Agent\.venv\lib\site-packages\sqlalchemy\engine\base.py", line 3297, in raw_connection
+    return self.pool.connect()
+  File "C:\Users\frank\Documents\py_projects\dev\ETL_Agent\.venv\lib\site-packages\sqlalchemy\pool\base.py", line 449, in connect
+    return _ConnectionFairy._checkout(self)
+  File "C:\Users\frank\Documents\py_projects\dev\ETL_Agent\.venv\lib\site-packages\sqlalchemy\pool\base.py", line 1264, in _checkout
+    fairy = _ConnectionRecord.checkout(pool)
+  File "C:\Users\frank\Documents\py_projects\dev\ETL_Agent\.venv\lib\site-packages\sqlalchemy\pool\base.py", line 713, in checkout
+    rec = pool._do_get()
+  File "C:\Users\frank\Documents\py_projects\dev\ETL_Agent\.venv\lib\site-packages\sqlalchemy\pool\impl.py", line 179, in _do_get
+    with util.safe_reraise():
+  File "C:\Users\frank\Documents\py_projects\dev\ETL_Agent\.venv\lib\site-packages\sqlalchemy\util\langhelpers.py", line 224, in __exit__
+    raise exc_value.with_traceback(exc_tb)
+  File "C:\Users\frank\Documents\py_projects\dev\ETL_Agent\.venv\lib\site-packages\sqlalchemy\pool\impl.py", line 177, in _do_get
+    return self._create_connection()
+  File "C:\Users\frank\Documents\py_projects\dev\ETL_Agent\.venv\lib\site-packages\sqlalchemy\pool\base.py", line 390, in _create_connection
+    return _ConnectionRecord(self)
+  File "C:\Users\frank\Documents\py_projects\dev\ETL_Agent\.venv\lib\site-packages\sqlalchemy\pool\base.py", line 675, in __init__
+    self.__connect()
+  File "C:\Users\frank\Documents\py_projects\dev\ETL_Agent\.venv\lib\site-packages\sqlalchemy\pool\base.py", line 901, in __connect
+    with util.safe_reraise():
+  File "C:\Users\frank\Documents\py_projects\dev\ETL_Agent\.venv\lib\site-packages\sqlalchemy\util\langhelpers.py", line 224, in __exit__
+    raise exc_value.with_traceback(exc_tb)
+  File "C:\Users\frank\Documents\py_projects\dev\ETL_Agent\.venv\lib\site-packages\sqlalchemy\pool\base.py", line 897, in __connect
+    self.dbapi_connection = connection = pool._invoke_creator(self)
+  File "C:\Users\frank\Documents\py_projects\dev\ETL_Agent\.venv\lib\site-packages\sqlalchemy\engine\create.py", line 646, in connect
+    return dialect.connect(*cargs, **cparams)
+  File "C:\Users\frank\Documents\py_projects\dev\ETL_Agent\.venv\lib\site-packages\sqlalchemy\engine\default.py", line 625, in connect
+    return self.loaded_dbapi.connect(*cargs, **cparams)  # type: ignore[no-any-return]  # NOQA: E501
+  File "C:\Users\frank\Documents\py_projects\dev\ETL_Agent\.venv\lib\site-packages\mysql\connector\pooling.py", line 322, in connect
+    return CMySQLConnection(*args, **kwargs)
+  File "C:\Users\frank\Documents\py_projects\dev\ETL_Agent\.venv\lib\site-packages\mysql\connector\connection_cext.py", line 142, in __init__
+    self.connect(**kwargs)
+  File "C:\Users\frank\Documents\py_projects\dev\ETL_Agent\.venv\lib\site-packages\mysql\connector\abstracts.py", line 1605, in connect
+    self._open_connection()
+  File "C:\Users\frank\Documents\py_projects\dev\ETL_Agent\.venv\lib\site-packages\mysql\connector\connection_cext.py", line 360, in _open_connection
+    raise get_mysql_exception(
+sqlalchemy.exc.ProgrammingError: (mysql.connector.errors.ProgrammingError) 1045 (28000): Access denied for user 'dataanalyzer'@'172.22.0.1' (using password: YES)
+(Background on this error at: https://sqlalche.me/e/20/f405)
+2025-06-30 18:59:12,499 - etl_agent.database_manager - INFO - Versuche Verbindung '_temp_test_emil' hinzuzufügen mit config: {'connection_string': 'mysql://dataanalyzer:dataanalyzer_pwd@localhost:3306/my_test_db', 'type': 'mariadb'}
+2025-06-30 18:59:12,499 - etl_agent.database_manager - INFO - Erkannter Datenbanktyp für '_temp_test_emil': DatabaseType.MYSQL
+2025-06-30 18:59:12,499 - etl_agent.connectors.sql_connector - INFO - Connection String korrigiert: mysql://dataanalyzer:dataanalyzer_pwd@localhost:3306/my_test_db -> mysql+mysqlconnector://dataanalyzer:dataanalyzer_pwd@localhost:3306/my_test_db
+2025-06-30 18:59:12,499 - etl_agent.connectors.sql_connector - INFO - Verbinde zu mysql-Datenbank: mysql+mysqlconnector://dataanalyzer:dataanalyzer_pwd@localhost:3306/my_test_db
+2025-06-30 18:59:12,551 - etl_agent.connectors.sql_connector - INFO - mysql-Verbindung erfolgreich etabliert
+2025-06-30 18:59:12,551 - etl_agent.database_manager - INFO - Connector für '_temp_test_emil' erfolgreich erstellt: <class 'etl_agent.connectors.sql_connector.SQLConnector'>
+2025-06-30 18:59:12,552 - etl_agent.database_manager - INFO - Datenbankverbindung '_temp_test_emil' (mysql) erfolgreich hinzugefügt
+2025-06-30 18:59:49,126 - etl_agent.database_manager - INFO - Versuche Verbindung 'emil' hinzuzufügen mit config: {'connection_string': 'mysql://dataanalyzer:dataanalyzer_pwd@localhost:3306/my_test_db', 'type': 'mariadb'}
+2025-06-30 18:59:49,127 - etl_agent.database_manager - INFO - Erkannter Datenbanktyp für 'emil': DatabaseType.MYSQL
+2025-06-30 18:59:49,128 - etl_agent.connectors.sql_connector - INFO - Connection String korrigiert: mysql://dataanalyzer:dataanalyzer_pwd@localhost:3306/my_test_db -> mysql+mysqlconnector://dataanalyzer:dataanalyzer_pwd@localhost:3306/my_test_db
+2025-06-30 18:59:49,129 - etl_agent.connectors.sql_connector - INFO - Verbinde zu mysql-Datenbank: mysql+mysqlconnector://dataanalyzer:dataanalyzer_pwd@localhost:3306/my_test_db
+2025-06-30 18:59:49,179 - etl_agent.connectors.sql_connector - INFO - mysql-Verbindung erfolgreich etabliert
+2025-06-30 18:59:49,180 - etl_agent.database_manager - INFO - Connector für 'emil' erfolgreich erstellt: <class 'etl_agent.connectors.sql_connector.SQLConnector'>
+2025-06-30 18:59:49,180 - etl_agent.database_manager - INFO - Datenbankverbindung 'emil' (mysql) erfolgreich hinzugefügt
+2025-06-30 19:00:35,496 - __main__ - INFO - Generiere ETL-Code für: lade die daten aus emil und addiere zum alter 1 dazu und exportiere die daten in csv
+2025-06-30 19:00:35,502 - etl_agent.etl_agent_core - INFO - Verarbeite ETL-Anfrage: lade die daten aus emil und addiere zum alter 1 dazu und exportiere die daten in csv
+2025-06-30 19:00:35,502 - etl_agent.etl_agent_core - INFO - Starte AI-Agent für Code-Generierung...
+2025-06-30 19:00:51,269 - httpx - INFO - HTTP Request: POST http://localhost:11434/v1/chat/completions "HTTP/1.1 200 OK"
+2025-06-30 19:00:51,278 - etl_agent.etl_agent_core - INFO - ETL-Code erfolgreich generiert und bereinigt

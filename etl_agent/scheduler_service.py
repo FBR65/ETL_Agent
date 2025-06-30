@@ -6,6 +6,7 @@ import logging
 from contextlib import asynccontextmanager
 from fastapi import FastAPI
 from .scheduler import ETLScheduler
+import uvicorn
 
 logger = logging.getLogger(__name__)
 
@@ -48,6 +49,5 @@ async def list_jobs():
 
 
 if __name__ == "__main__":
-    import uvicorn
-
+    uvicorn.run(app, host="0.0.0.0", port=8092)
     uvicorn.run(app, host="0.0.0.0", port=8092)

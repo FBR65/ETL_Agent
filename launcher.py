@@ -38,15 +38,24 @@ class ServiceManager:
                     "--host",
                     "0.0.0.0",
                     "--port",
-                    "8090",  # Geändert von 8080 auf 8090
+                    "8090",
                 ],
                 "port": 8090,
                 "description": "Model Context Protocol Server",
             },
             "a2a_server": {
                 "name": "A2A Server",
-                "command": ["uv", "run", "python", "-m", "etl_agent.agent_to_a2a"],
-                "port": 8091,  # Geändert von 8081 auf 8091
+                "command": [
+                    "uv",
+                    "run",
+                    "uvicorn",
+                    "etl_agent.agent_to_a2a:app",
+                    "--host",
+                    "0.0.0.0",
+                    "--port",
+                    "8091",
+                ],
+                "port": 8091,
                 "description": "Agent-to-Agent Communication Server",
             },
             "gradio_interface": {
@@ -96,27 +105,22 @@ class ServiceManager:
 
         try:
             print(f"🚀 Starte {config['name']}...")
+            print(f"🔧 Command: {' '.join(config['command'])}")
 
             process = subprocess.Popen(
                 config["command"],
                 stdout=subprocess.PIPE,
-                stderr=subprocess.STDOUT,  # Stderr zu Stdout umleiten
+                stderr=subprocess.PIPE,
                 text=True,
-                bufsize=1,
-                universal_newlines=True,
+                cwd=os.getcwd(),  # Stelle sicher, dass cwd korrekt ist
             )
 
             self.services[service_name] = process
 
-            # Logs anzeigen
-            if service_name == "gradio_interface":
-                print(f"🔍 Gradio Logs werden in etl_agent_gradio.log geschrieben")
-                print(
-                    f"🔍 Verwenden Sie 'tail -f etl_agent_gradio.log' um Logs zu verfolgen"
-                )
+            # Warte länger und zeige echte Logs
+            print(f"⏳ Warte auf Start von {config['name']}...")
+            time.sleep(5)  # Längere Wartezeit
 
-            # Kurz warten und prüfen ob Service läuft
-            time.sleep(2)
             if process.poll() is None:
                 print(
                     f"✅ {config['name']} gestartet (PID: {process.pid}, Port: {config['port']})"
@@ -124,13 +128,30 @@ class ServiceManager:
                 return True
             else:
                 print(f"❌ {config['name']} konnte nicht gestartet werden")
-                stdout, stderr = process.communicate()
-                if stderr:
-                    print(f"Fehler: {stderr}")
+                print(f"🔍 Return Code: {process.returncode}")
+
+                # Zeige ALLE Logs
+                try:
+                    stdout, stderr = process.communicate(timeout=2)
+                    if stdout:
+                        print(f"📝 STDOUT:\n{stdout}")
+                    if stderr:
+                        print(f"❌ STDERR:\n{stderr}")
+                except subprocess.TimeoutExpired:
+                    print("⏰ Timeout beim Lesen der Logs")
+                    process.kill()
+                    stdout, stderr = process.communicate()
+                    if stdout:
+                        print(f"📝 STDOUT (nach kill):\n{stdout}")
+                    if stderr:
+                        print(f"❌ STDERR (nach kill):\n{stderr}")
                 return False
 
         except Exception as e:
-            print(f"❌ Fehler beim Starten von {config['name']}: {e}")
+            print(f"❌ Exception beim Starten von {config['name']}: {e}")
+            import traceback
+
+            traceback.print_exc()
             return False
 
     def stop_service(self, service_name: str) -> bool:
@@ -178,8 +199,8 @@ class ServiceManager:
         try:
             for proc in psutil.process_iter():
                 try:
-                    # Direkte Verbindungsabfrage ohne attrs Parameter
-                    connections = proc.connections()
+                    # Verwende net_connections() statt connections()
+                    connections = proc.net_connections()
                     for conn in connections:
                         if (
                             hasattr(conn, "laddr")
