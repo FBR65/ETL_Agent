@@ -1,51 +1,5 @@
 """
-ETL Agent Launcher - Startet alle Systemkomponenten
-Vereinfachte Version ohne externe Dependencies
-"""
-
-import os
-import sys
-import subprocess
-import signal
-import time
-import argparse
-from typing import Dict, List, Optional
-import socket
-import psutil  # Für besseres Process-Management
-
-import logging
-
-logging.basicConfig(
-    level=logging.INFO,
-    format="%(asctime)s - %(name)s - %(levelname)s - %(message)s",
-)
-logger = logging.getLogger("etl_agent.launcher")
-
-
-class ServiceManager:
-    """Verwaltet alle ETL-Agent Services"""
-
-    def __init__(self):
-        self.services: Dict[str, subprocess.Popen] = {}
-        self.service_configs = {
-            "mcp_server": {
-                "name": "MCP Server",
-                "command": [
-                    "uv",
-                    "run",
-                    "uvicorn",
-                    "etl_agent.mcp_server:app",
-                    "--host",
-                    "0.0.0.0",
-                    "--port",
-                    "8090",
-                ],
-                "port": 8090,
-                "description": "Model Context Protocol Server",
-            },
-            "a2a_server": {
-                "name": "A2A Server",
-                "command": [
+Launcher für ETL-Agen                "command":                 "command": [
                     "uv",
                     "run",
                     "uvicorn",
@@ -54,387 +8,349 @@ class ServiceManager:
                     "0.0.0.0",
                     "--port",
                     "8091",
+                    "--reload",
+                ],            "uv",
+                    "run",
+                    "uvicorn",
+                    "etl_agent.mcp_server:app",
+                    "--host",
+                    "0.0.0.0",
+                    "--port",
+                    "8090",
+                    "--reload",
+                ],- Windows-kompatible Version
+Startet alle Services mit verbesserter Konfiguration und Windows-Unterstützung
+"""
+
+import subprocess
+import time
+import sys
+import signal
+import logging
+from typing import Dict
+
+logger = logging.getLogger(__name__)
+
+
+class ServiceManager:
+    """
+    Verwaltet alle ETL-Agent Services
+    Windows-kompatible Implementierung ohne Unicode-Probleme
+    """
+
+    def __init__(self):
+        self.services: Dict[str, subprocess.Popen] = {}
+        self.service_configs = {
+            "mcp_server": {
+                "name": "MCP Server (Enhanced)",
+                "command": [
+                    "uv",
+                    "run",
+                    "uvicorn",
+                    "etl_agent.mcp_server:app",  # Originaler Name nach Umbenennung
+                    "--host",
+                    "0.0.0.0",
+                    "--port",
+                    "8090",
+                    "--reload",
+                ],
+                "port": 8090,
+                "description": "Model Context Protocol Server mit erweiterten Tools",
+                "health_endpoint": "/health",
+            },
+            "a2a_server": {
+                "name": "A2A Server (Enhanced)",
+                "command": [
+                    "uv",
+                    "run",
+                    "uvicorn",
+                    "etl_agent.agent_to_a2a:app",  # Originaler Name nach Umbenennung
+                    "--host",
+                    "0.0.0.0",
+                    "--port",
+                    "8091",
+                    "--reload",
                 ],
                 "port": 8091,
-                "description": "Agent-to-Agent Communication Server",
+                "description": "Agent-to-Agent Communication mit PydanticAI Integration",
+                "health_endpoint": "/health",
             },
             "gradio_interface": {
-                "name": "Gradio Web UI",
-                "command": ["uv", "run", "python", "-m", "etl_agent.gradio_interface"],
+                "name": "Gradio Web UI (Enhanced)",
+                "command": [
+                    "uv",
+                    "run",
+                    "python",
+                    "-m",
+                    "etl_agent.gradio_interface",  # Originaler Name nach Umbenennung
+                ],
                 "port": 7860,
-                "description": "Web Interface für ETL-Prozesse",
-            },
-            "scheduler": {
-                "name": "ETL Scheduler",
-                "command": ["uv", "run", "python", "-m", "etl_agent.scheduler_service"],
-                "port": 8092,  # Geändert von 8082 auf 8092
-                "description": "Job Scheduler für ETL-Pipelines",
+                "description": "Verbesserte Web-UI mit erweiterten Features",
+                "health_endpoint": None,
             },
         }
 
-    def is_port_available(self, port: int) -> bool:
-        """Prüft ob Port verfügbar ist"""
-        try:
-            with socket.socket(socket.AF_INET, socket.SOCK_STREAM) as sock:
-                sock.settimeout(1)
-                result = sock.connect_ex(("localhost", port))
-                available = result != 0
-                if not available:
-                    print(f"🔍 Port {port} ist belegt")
-                return available
-        except Exception as e:
-            print(f"⚠️  Port-Check Fehler: {e}")
-            return False
-
     def start_service(self, service_name: str) -> bool:
-        """Startet einen einzelnen Service"""
+        """Startet einen einzelnen Service mit Windows-kompatibler Ausgabe"""
         if service_name not in self.service_configs:
-            print(f"❌ Unbekannter Service: {service_name}")
+            logger.error(f"[ERROR] Unbekannter Service: {service_name}")
             return False
 
         if service_name in self.services:
-            print(f"⚠️  Service {service_name} läuft bereits")
+            logger.warning(f"[WARNING] Service {service_name} läuft bereits")
             return True
 
         config = self.service_configs[service_name]
 
-        # Port-Verfügbarkeit prüfen
-        if not self.is_port_available(config["port"]):
-            print(f"❌ Port {config['port']} für {config['name']} ist bereits belegt")
-            return False
-
         try:
-            print(f"🚀 Starte {config['name']}...")
-            print(f"🔧 Command: {' '.join(config['command'])}")
+            logger.info(f"[START] Starte {config['name']}...")
+
+            # Port-Verfügbarkeit prüfen
+            if self._is_port_in_use(config["port"]):
+                logger.warning(
+                    f"[WARNING] Port {config['port']} bereits belegt für {service_name}"
+                )
+                return False
 
             process = subprocess.Popen(
                 config["command"],
                 stdout=subprocess.PIPE,
                 stderr=subprocess.PIPE,
                 text=True,
-                cwd=os.getcwd(),  # Stelle sicher, dass cwd korrekt ist
+                bufsize=1,
+                universal_newlines=True,
             )
 
             self.services[service_name] = process
 
-            # Warte länger und zeige echte Logs
-            print(f"⏳ Warte auf Start von {config['name']}...")
-            time.sleep(5)  # Längere Wartezeit
+            # Kurz warten und Prozess-Status prüfen
+            time.sleep(2)
 
             if process.poll() is None:
-                print(
-                    f"✅ {config['name']} gestartet (PID: {process.pid}, Port: {config['port']})"
+                logger.info(
+                    f"[SUCCESS] {config['name']} gestartet (PID: {process.pid}, Port: {config['port']})"
                 )
                 return True
             else:
-                print(f"❌ {config['name']} konnte nicht gestartet werden")
-                print(f"🔍 Return Code: {process.returncode}")
-
-                # Zeige ALLE Logs
-                try:
-                    stdout, stderr = process.communicate(timeout=2)
-                    if stdout:
-                        print(f"📝 STDOUT:\n{stdout}")
-                    if stderr:
-                        print(f"❌ STDERR:\n{stderr}")
-                except subprocess.TimeoutExpired:
-                    print("⏰ Timeout beim Lesen der Logs")
-                    process.kill()
-                    stdout, stderr = process.communicate()
-                    if stdout:
-                        print(f"📝 STDOUT (nach kill):\n{stdout}")
-                    if stderr:
-                        print(f"❌ STDERR (nach kill):\n{stderr}")
+                stdout, stderr = process.communicate()
+                logger.error(f"[ERROR] {config['name']} konnte nicht gestartet werden")
+                logger.error(f"STDOUT: {stdout}")
+                logger.error(f"STDERR: {stderr}")
+                del self.services[service_name]
                 return False
 
         except Exception as e:
-            print(f"❌ Exception beim Starten von {config['name']}: {e}")
-            import traceback
-
-            traceback.print_exc()
-            return False
-
-    def stop_service(self, service_name: str) -> bool:
-        """Stoppt einen einzelnen Service"""
-        if service_name not in self.services:
-            print(f"⚠️  Service {service_name} läuft nicht")
-            return True
-
-        config = self.service_configs[service_name]
-        process = self.services[service_name]
-
-        try:
-            print(f"🛑 Stoppe {config['name']}...")
-
-            # Erweiterte Process-Beendigung
-            if process.poll() is None:  # Process läuft noch
-                # 1. Graceful shutdown versuchen
-                process.terminate()
-
-                # 2. Warten bis zu 5 Sekunden
-                try:
-                    process.wait(timeout=5)
-                except subprocess.TimeoutExpired:
-                    # 3. Forceful kill
-                    process.kill()
-                    process.wait()
-
-                # 4. Zusätzlich: Port-basierte Process-Cleanup
-                self._kill_process_on_port(config["port"])
-
-            del self.services[service_name]
-            print(f"✅ {config['name']} gestoppt")
-            return True
-
-        except Exception as e:
-            print(f"❌ Fehler beim Stoppen von {config['name']}: {e}")
-            # Versuche trotzdem Port-Cleanup
-            self._kill_process_on_port(config["port"])
+            logger.error(f"[ERROR] Fehler beim Starten von {service_name}: {e}")
             if service_name in self.services:
                 del self.services[service_name]
             return False
 
-    def _kill_process_on_port(self, port: int):
-        """Tötet alle Prozesse die einen bestimmten Port verwenden"""
+    def stop_service(self, service_name: str) -> bool:
+        """Stoppt einen Service mit Windows-kompatibler Ausgabe"""
+        if service_name not in self.services:
+            logger.warning(f"[WARNING] Service {service_name} läuft nicht")
+            return True
+
         try:
-            for proc in psutil.process_iter():
-                try:
-                    # Verwende net_connections() statt connections()
-                    connections = proc.net_connections()
-                    for conn in connections:
-                        if (
-                            hasattr(conn, "laddr")
-                            and conn.laddr
-                            and conn.laddr.port == port
-                        ):
-                            print(f"🔪 Töte Process PID {proc.pid} auf Port {port}")
-                            proc.terminate()
-                            try:
-                                proc.wait(timeout=3)
-                            except psutil.TimeoutExpired:
-                                proc.kill()
-                            return  # Erfolgreich beendet, raus aus der Funktion
-                except (
-                    psutil.NoSuchProcess,
-                    psutil.AccessDenied,
-                    psutil.ZombieProcess,
-                ):
-                    continue
-                except Exception:
-                    # Alle anderen Fehler ignorieren und weitermachen
-                    continue
+            process = self.services[service_name]
+            config = self.service_configs[service_name]
+
+            logger.info(f"[STOP] Stoppe {config['name']}...")
+
+            # Graceful shutdown versuchen
+            process.terminate()
+
+            # Warten auf graceful shutdown
+            try:
+                process.wait(timeout=10)
+                logger.info(f"[SUCCESS] {config['name']} ordnungsgemäß gestoppt")
+            except subprocess.TimeoutExpired:
+                # Force kill wenn graceful shutdown fehlschlägt
+                logger.warning(f"[WARNING] Force-Kill für {config['name']}")
+                process.kill()
+                process.wait()
+
+            del self.services[service_name]
+            return True
+
         except Exception as e:
-            print(f"⚠️  Port-Cleanup Warnung: {e}")
+            logger.error(f"[ERROR] Fehler beim Stoppen von {service_name}: {e}")
+            return False
 
-    def cleanup_all_ports(self):
-        """Bereinigt alle Service-Ports vor dem Start"""
-        print("🧹 Bereinige alle Service-Ports...")
-        for service_name, config in self.service_configs.items():
-            port = config["port"]
-            if not self.is_port_available(port):
-                print(f"🔧 Port {port} wird bereinigt...")
-                self._kill_process_on_port(port)
-                # Warten damit Port freigegeben wird
-                time.sleep(2)
+    def start_all_services(self) -> bool:
+        """Startet alle Services in der richtigen Reihenfolge"""
+        logger.info("[START] Starte alle ETL-Agent Services...")
 
-                # Erneut prüfen ob Port jetzt frei ist
-                if not self.is_port_available(port):
-                    print(
-                        f"⚠️  Port {port} konnte nicht freigegeben werden - verwende netstat:"
-                    )
-                    self._netstat_kill_port(port)
+        # Reihenfolge für Abhängigkeiten
+        service_order = ["mcp_server", "a2a_server", "gradio_interface"]
 
-    def _netstat_kill_port(self, port: int):
-        """Alternative Port-Cleanup mit netstat (Windows)"""
-        try:
-            import subprocess
+        success_count = 0
+        total_services = len(service_order)
 
-            # Windows netstat command um Prozess auf Port zu finden
-            result = subprocess.run(
-                ["netstat", "-ano"], capture_output=True, text=True, timeout=10
-            )
-
-            for line in result.stdout.split("\n"):
-                if f":{port}" in line and "LISTENING" in line:
-                    parts = line.split()
-                    if len(parts) >= 5:
-                        pid = parts[-1]
-                        try:
-                            pid = int(pid)
-                            print(
-                                f"🔪 Töte Process PID {pid} auf Port {port} (netstat)"
-                            )
-                            subprocess.run(
-                                ["taskkill", "/F", "/PID", str(pid)], timeout=5
-                            )
-                            time.sleep(1)
-                            break
-                        except (ValueError, subprocess.TimeoutExpired):
-                            continue
-        except Exception as e:
-            print(f"⚠️  Netstat-Cleanup Fehler: {e}")
-
-    def get_service_status(self):
-        """Zeigt Status aller Services"""
-        print("\n" + "=" * 60)
-        print("ETL Agent Services Status")
-        print("=" * 60)
-        print(f"{'Service':<15} {'Name':<15} {'Status':<10} {'PID':<8} {'Port':<6}")
-        print("-" * 60)
-
-        for service_id, config in self.service_configs.items():
-            if service_id in self.services:
-                process = self.services[service_id]
-                if process.poll() is None:
-                    status = "🟢 Running"
-                    pid = str(process.pid)
-                else:
-                    status = "🔴 Stopped"
-                    pid = "N/A"
+        for service_name in service_order:
+            if self.start_service(service_name):
+                success_count += 1
+                # Kurze Pause zwischen Services
+                time.sleep(3)
             else:
-                status = "⚪ Not Started"
-                pid = "N/A"
+                logger.error(f"[ERROR] Fehler beim Starten von {service_name}")
 
-            print(
-                f"{service_id:<15} {config['name']:<15} {status:<10} {pid:<8} {config['port']:<6}"
-            )
+        logger.info(f"[STATUS] Services gestartet: {success_count}/{total_services}")
+
+        if success_count == total_services:
+            self._display_service_status()
+            return True
+        else:
+            logger.warning("[WARNING] Nicht alle Services konnten gestartet werden")
+            return False
 
     def stop_all_services(self):
-        """Stoppt alle Services - auch ohne PID-Tracking"""
-        print("🛑 Stoppe alle Services...")
+        """Stoppt alle Services"""
+        logger.info("[STOP] Stoppe alle Services...")
 
-        # 1. Versuche gespeicherte Services zu stoppen
         for service_name in list(self.services.keys()):
             self.stop_service(service_name)
 
-        # 2. Zusätzlich: Alle Service-Ports force-cleanen
-        print("🧹 Force-Cleanup aller Service-Ports...")
+        logger.info("[SUCCESS] Alle Services gestoppt")
+
+    def get_service_status(self) -> Dict[str, Dict]:
+        """Gibt Status aller Services zurück"""
+        status = {}
+
         for service_name, config in self.service_configs.items():
-            port = config["port"]
-            if not self.is_port_available(port):
-                print(f"🔧 Force-Kill auf Port {port}...")
-                self._kill_process_on_port(port)
-                self._netstat_kill_port(port)
-                time.sleep(1)
+            if service_name in self.services:
+                process = self.services[service_name]
+                is_running = process.poll() is None
+                pid = process.pid if is_running else None
 
-    def start_all_services(self):
-        """Startet alle Services in der richtigen Reihenfolge"""
-        print("🚀 Starte alle ETL-Agent Services...")
+                status[service_name] = {
+                    "name": config["name"],
+                    "running": is_running,
+                    "pid": pid,
+                    "port": config["port"],
+                    "description": config["description"],
+                }
+            else:
+                status[service_name] = {
+                    "name": config["name"],
+                    "running": False,
+                    "pid": None,
+                    "port": config["port"],
+                    "description": config["description"],
+                }
 
-        # Cleanup vor dem Start
-        self.cleanup_all_ports()
+        return status
 
-        # Reihenfolge wichtig: MCP Server zuerst, dann A2A, dann UI
-        service_order = ["mcp_server", "a2a_server", "scheduler", "gradio_interface"]
+    def _display_service_status(self):
+        """Zeigt Service-Status in der Konsole (Windows-kompatibel)"""
+        print("\n" + "=" * 80)
+        print("ETL AGENT - SERVICE STATUS")
+        print("=" * 80)
 
-        for service_name in service_order:
-            success = self.start_service(service_name)
-            if not success:
-                print(
-                    f"❌ Fehler beim Starten von {service_name}. Stoppe alle Services."
-                )
-                self.stop_all_services()
-                return False
+        status = self.get_service_status()
 
-            # Kurze Pause zwischen Services
-            time.sleep(1)
+        for service_name, info in status.items():
+            status_icon = "[OK]" if info["running"] else "[ERROR]"
+            pid_info = f"(PID: {info['pid']})" if info["pid"] else ""
 
-        print("\n🎉 Alle Services erfolgreich gestartet!")
-        print("\n📱 Verfügbare Interfaces:")
-        print("• Gradio Web UI: http://localhost:7860")
-        print("• MCP Server: http://localhost:8090")
-        print("• A2A Server: http://localhost:8091")
-        print("• Scheduler API: http://localhost:8092")
+            print(f"{status_icon} {info['name']}")
+            print(f"   Port: {info['port']} {pid_info}")
+            print(f"   Beschreibung: {info['description']}")
 
-        return True
+            if info["running"] and service_name != "gradio_interface":
+                print(f"   URL: http://localhost:{info['port']}")
+            elif info["running"] and service_name == "gradio_interface":
+                print(f"   URL: http://localhost:{info['port']}")
+            print()
 
+        print("ZUGRIFF AUF DIE SERVICES:")
+        print("   Gradio Web UI: http://localhost:7860")
+        print("   MCP Server:    http://localhost:8090")
+        print("   A2A Server:    http://localhost:8091")
+        print("\n   Logs werden in Echtzeit angezeigt...")
+        print("   Drücken Sie Ctrl+C zum Beenden")
+        print("=" * 80 + "\n")
 
-# Global Service Manager
-service_manager = ServiceManager()
+    def _is_port_in_use(self, port: int) -> bool:
+        """Prüft ob ein Port bereits verwendet wird"""
+        try:
+            import socket
 
+            with socket.socket(socket.AF_INET, socket.SOCK_STREAM) as s:
+                return s.connect_ex(("localhost", port)) == 0
+        except Exception:
+            return False
 
-def cleanup_handler(signum, frame):
-    """Signal Handler für sauberes Beenden"""
-    print("\n🛑 Shutdown Signal empfangen...")
-    service_manager.stop_all_services()
-    sys.exit(0)
+    def monitor_services(self):
+        """Überwacht Services und startet sie bei Bedarf neu"""
+        logger.info("[MONITOR] Service-Monitoring gestartet...")
 
+        try:
+            while True:
+                for service_name in list(self.services.keys()):
+                    process = self.services[service_name]
 
-# Signal Handler registrieren
-signal.signal(signal.SIGINT, cleanup_handler)
-signal.signal(signal.SIGTERM, cleanup_handler)
+                    if process.poll() is not None:
+                        # Service ist gestoppt
+                        logger.warning(
+                            f"[WARNING] Service {service_name} unerwartet gestoppt"
+                        )
+                        del self.services[service_name]
+
+                        # Automatischer Neustart
+                        logger.info(f"[RESTART] Starte {service_name} neu...")
+                        self.start_service(service_name)
+
+                time.sleep(30)  # Alle 30 Sekunden prüfen
+
+        except KeyboardInterrupt:
+            logger.info("[STOP] Service-Monitoring gestoppt")
+
+    def handle_shutdown(self, signum, frame):
+        """Behandelt Shutdown-Signale"""
+        logger.info("[SHUTDOWN] Shutdown-Signal empfangen")
+        self.stop_all_services()
+        sys.exit(0)
 
 
 def main():
-    """Hauptfunktion mit einfachem Argument Parsing"""
-    parser = argparse.ArgumentParser(description="🚀 ETL Agent System Launcher")
-    parser.add_argument(
-        "action",
-        choices=["start", "stop", "status", "restart"],
-        help="Aktion",
-    )
-    parser.add_argument(
-        "service",
-        nargs="?",
-        default="all",
-        help="Service Name oder 'all'",
-    )
-    parser.add_argument(
-        "--watch",
-        "-w",
-        action="store_true",
-        help="Services überwachen",
+    """Hauptfunktion zum Starten aller Services"""
+    # Logging konfigurieren - Windows-kompatibel ohne UTF-8 Emojis
+    logging.basicConfig(
+        level=logging.INFO,
+        format="%(asctime)s - %(name)s - %(levelname)s - %(message)s",
+        handlers=[
+            logging.StreamHandler(),
+            logging.FileHandler("etl_agent_launcher.log", encoding="utf-8"),
+        ],
     )
 
-    args = parser.parse_args()
+    # Service Manager erstellen
+    service_manager = ServiceManager()
 
-    print("🚀 ETL Agent System Launcher")
-    print("Intelligente Datenverarbeitung mit PydanticAI, A2A und MCP")
-    print("-" * 60)
+    # Signal Handler für graceful shutdown
+    signal.signal(signal.SIGINT, service_manager.handle_shutdown)
+    signal.signal(signal.SIGTERM, service_manager.handle_shutdown)
 
-    if args.action == "start":
-        # Cleanup vor jedem Start
-        service_manager.cleanup_all_ports()
+    try:
+        # Alle Services starten
+        if service_manager.start_all_services():
+            logger.info("[SUCCESS] Alle Services erfolgreich gestartet")
 
-        if args.service == "all":
-            success = service_manager.start_all_services()
-            if not success:
-                sys.exit(1)
+            # Service-Monitoring starten
+            service_manager.monitor_services()
         else:
-            success = service_manager.start_service(args.service)
-            if not success:
-                sys.exit(1)
-
-        if args.watch:
-            print("\n📊 Service Monitoring (Ctrl+C zum Beenden)")
-            try:
-                while True:
-                    service_manager.get_service_status()
-                    time.sleep(5)
-                    print("\n" + "=" * 30 + " REFRESH " + "=" * 30)
-            except KeyboardInterrupt:
-                print("\nMonitoring beendet")
-
-    elif args.action == "stop":
-        if args.service == "all":
+            logger.error("[ERROR] Nicht alle Services konnten gestartet werden")
             service_manager.stop_all_services()
-        else:
-            service_manager.stop_service(args.service)
+            sys.exit(1)
 
-    elif args.action == "status":
-        service_manager.get_service_status()
-
-    elif args.action == "restart":
-        if args.service == "all":
-            print("🔄 Starte alle Services neu...")
-            service_manager.stop_all_services()
-            time.sleep(2)
-            service_manager.start_all_services()
-        else:
-            print(f"🔄 Starte {args.service} neu...")
-            service_manager.stop_service(args.service)
-            time.sleep(1)
-            service_manager.start_service(args.service)
+    except KeyboardInterrupt:
+        logger.info("[SHUTDOWN] Beende ETL Agent...")
+        service_manager.stop_all_services()
+    except Exception as e:
+        logger.error(f"[ERROR] Unerwarteter Fehler: {e}")
+        service_manager.stop_all_services()
+        sys.exit(1)
 
 
 if __name__ == "__main__":

@@ -1302,3 +1302,509 @@ sqlalchemy.exc.ProgrammingError: (mysql.connector.errors.ProgrammingError) 1045 
 2025-06-30 19:00:35,502 - etl_agent.etl_agent_core - INFO - Starte AI-Agent für Code-Generierung...
 2025-06-30 19:00:51,269 - httpx - INFO - HTTP Request: POST http://localhost:11434/v1/chat/completions "HTTP/1.1 200 OK"
 2025-06-30 19:00:51,278 - etl_agent.etl_agent_core - INFO - ETL-Code erfolgreich generiert und bereinigt
+2025-07-01 19:56:48,337 - etl_agent.etl_agent_core - INFO - Initialisiere LLM: qwen2.5:latest @ http://localhost:11434/v1
+2025-07-01 19:56:48,354 - __main__ - INFO - ETL Gradio Interface initialisiert
+2025-07-01 19:56:49,278 - httpx - INFO - HTTP Request: GET https://api.gradio.app/pkg-version "HTTP/1.1 200 OK"
+2025-07-01 19:57:25,419 - etl_agent.etl_agent_core - INFO - Initialisiere LLM: qwen2.5:latest @ http://localhost:11434/v1
+2025-07-01 19:57:25,433 - __main__ - INFO - ETL Gradio Interface initialisiert
+2025-07-01 19:57:26,329 - httpx - INFO - HTTP Request: GET https://api.gradio.app/pkg-version "HTTP/1.1 200 OK"
+2025-07-01 20:00:05,379 - etl_agent.etl_agent_core - INFO - Initialisiere LLM: qwen2.5:latest @ http://localhost:11434/v1
+2025-07-01 20:00:05,391 - __main__ - INFO - ETL Gradio Interface initialisiert
+2025-07-01 20:00:06,273 - httpx - INFO - HTTP Request: GET https://api.gradio.app/pkg-version "HTTP/1.1 200 OK"
+2025-07-01 20:00:12,376 - etl_agent.etl_agent_core - INFO - Initialisiere LLM: qwen2.5:latest @ http://localhost:11434/v1
+2025-07-01 20:00:12,388 - __main__ - INFO - ETL Gradio Interface initialisiert
+2025-07-01 20:00:13,257 - httpx - INFO - HTTP Request: GET https://api.gradio.app/pkg-version "HTTP/1.1 200 OK"
+2025-07-01 20:02:15,578 - etl_agent.etl_agent_core - INFO - Initialisiere LLM: qwen2.5:latest @ http://localhost:11434/v1
+2025-07-01 20:02:15,592 - __main__ - INFO - ETL Gradio Interface initialisiert
+2025-07-01 20:02:16,493 - httpx - INFO - HTTP Request: GET https://api.gradio.app/pkg-version "HTTP/1.1 200 OK"
+2025-07-01 20:02:52,310 - etl_agent.etl_agent_core - INFO - Initialisiere LLM: qwen2.5:latest @ http://localhost:11434/v1
+2025-07-01 20:02:52,327 - __main__ - INFO - ETL Gradio Interface initialisiert
+2025-07-01 20:02:53,233 - httpx - INFO - HTTP Request: GET https://api.gradio.app/pkg-version "HTTP/1.1 200 OK"
+2025-07-01 20:02:54,895 - httpx - INFO - HTTP Request: GET http://localhost:7860/gradio_api/startup-events "HTTP/1.1 200 OK"
+2025-07-01 20:02:56,998 - httpx - INFO - HTTP Request: HEAD http://localhost:7860/ "HTTP/1.1 200 OK"
+2025-07-01 20:05:57,916 - etl_agent.etl_agent_core - INFO - Initialisiere LLM: qwen2.5:latest @ http://localhost:11434/v1
+2025-07-01 20:05:57,928 - __main__ - INFO - ETL Gradio Interface initialisiert
+2025-07-01 20:05:58,837 - httpx - INFO - HTTP Request: GET https://api.gradio.app/pkg-version "HTTP/1.1 200 OK"
+2025-07-01 20:06:00,348 - httpx - INFO - HTTP Request: GET http://localhost:7860/gradio_api/startup-events "HTTP/1.1 200 OK"
+2025-07-01 20:06:02,429 - httpx - INFO - HTTP Request: HEAD http://localhost:7860/ "HTTP/1.1 200 OK"
+2025-07-01 20:06:55,764 - etl_agent.database_manager - INFO - Versuche Verbindung '_temp_test_Emil_200655' hinzuzufügen mit config: {'connection_string': 'mysql://dataanalyzer:dataanalyzer_pwd@localhost:3306/my_test_db', 'type': 'mariadb'}
+2025-07-01 20:06:55,765 - etl_agent.database_manager - INFO - Erkannter Datenbanktyp für '_temp_test_Emil_200655': DatabaseType.MYSQL
+2025-07-01 20:06:55,765 - etl_agent.connectors.sql_connector - INFO - Connection String korrigiert: mysql://dataanalyzer:dataanalyzer_pwd@localhost:3306/my_test_db -> mysql+mysqlconnector://dataanalyzer:dataanalyzer_pwd@localhost:3306/my_test_db
+2025-07-01 20:06:55,765 - etl_agent.connectors.sql_connector - INFO - Verbinde zu mysql-Datenbank: mysql+mysqlconnector://dataanalyzer:dataanalyzer_pwd@localhost:3306/my_test_db
+2025-07-01 20:07:00,059 - etl_agent.connectors.sql_connector - ERROR - Fehler bei mysql-Datenbankverbindung: (mysql.connector.errors.DatabaseError) 2003 (HY000): Can't connect to MySQL server on 'localhost:3306' (10061)
+(Background on this error at: https://sqlalche.me/e/20/4xp6)
+2025-07-01 20:07:00,059 - etl_agent.database_manager - ERROR - Fehler beim Hinzufügen der Verbindung '_temp_test_Emil_200655': (mysql.connector.errors.DatabaseError) 2003 (HY000): Can't connect to MySQL server on 'localhost:3306' (10061)
+(Background on this error at: https://sqlalche.me/e/20/4xp6)
+Traceback (most recent call last):
+  File "C:\Users\frank\Documents\py_projects\dev\ETL_Agent\.venv\lib\site-packages\mysql\connector\connection_cext.py", line 354, in _open_connection
+    self._cmysql.connect(**cnx_kwargs)
+_mysql_connector.MySQLInterfaceError: Can't connect to MySQL server on 'localhost:3306' (10061)
+
+The above exception was the direct cause of the following exception:
+
+Traceback (most recent call last):
+  File "C:\Users\frank\Documents\py_projects\dev\ETL_Agent\.venv\lib\site-packages\sqlalchemy\engine\base.py", line 145, in __init__
+    self._dbapi_connection = engine.raw_connection()
+  File "C:\Users\frank\Documents\py_projects\dev\ETL_Agent\.venv\lib\site-packages\sqlalchemy\engine\base.py", line 3297, in raw_connection
+    return self.pool.connect()
+  File "C:\Users\frank\Documents\py_projects\dev\ETL_Agent\.venv\lib\site-packages\sqlalchemy\pool\base.py", line 449, in connect
+    return _ConnectionFairy._checkout(self)
+  File "C:\Users\frank\Documents\py_projects\dev\ETL_Agent\.venv\lib\site-packages\sqlalchemy\pool\base.py", line 1264, in _checkout
+    fairy = _ConnectionRecord.checkout(pool)
+  File "C:\Users\frank\Documents\py_projects\dev\ETL_Agent\.venv\lib\site-packages\sqlalchemy\pool\base.py", line 713, in checkout
+    rec = pool._do_get()
+  File "C:\Users\frank\Documents\py_projects\dev\ETL_Agent\.venv\lib\site-packages\sqlalchemy\pool\impl.py", line 179, in _do_get
+    with util.safe_reraise():
+  File "C:\Users\frank\Documents\py_projects\dev\ETL_Agent\.venv\lib\site-packages\sqlalchemy\util\langhelpers.py", line 224, in __exit__
+    raise exc_value.with_traceback(exc_tb)
+  File "C:\Users\frank\Documents\py_projects\dev\ETL_Agent\.venv\lib\site-packages\sqlalchemy\pool\impl.py", line 177, in _do_get
+    return self._create_connection()
+  File "C:\Users\frank\Documents\py_projects\dev\ETL_Agent\.venv\lib\site-packages\sqlalchemy\pool\base.py", line 390, in _create_connection
+    return _ConnectionRecord(self)
+  File "C:\Users\frank\Documents\py_projects\dev\ETL_Agent\.venv\lib\site-packages\sqlalchemy\pool\base.py", line 675, in __init__
+    self.__connect()
+  File "C:\Users\frank\Documents\py_projects\dev\ETL_Agent\.venv\lib\site-packages\sqlalchemy\pool\base.py", line 901, in __connect
+    with util.safe_reraise():
+  File "C:\Users\frank\Documents\py_projects\dev\ETL_Agent\.venv\lib\site-packages\sqlalchemy\util\langhelpers.py", line 224, in __exit__
+    raise exc_value.with_traceback(exc_tb)
+  File "C:\Users\frank\Documents\py_projects\dev\ETL_Agent\.venv\lib\site-packages\sqlalchemy\pool\base.py", line 897, in __connect
+    self.dbapi_connection = connection = pool._invoke_creator(self)
+  File "C:\Users\frank\Documents\py_projects\dev\ETL_Agent\.venv\lib\site-packages\sqlalchemy\engine\create.py", line 646, in connect
+    return dialect.connect(*cargs, **cparams)
+  File "C:\Users\frank\Documents\py_projects\dev\ETL_Agent\.venv\lib\site-packages\sqlalchemy\engine\default.py", line 625, in connect
+    return self.loaded_dbapi.connect(*cargs, **cparams)  # type: ignore[no-any-return]  # NOQA: E501
+  File "C:\Users\frank\Documents\py_projects\dev\ETL_Agent\.venv\lib\site-packages\mysql\connector\pooling.py", line 322, in connect
+    return CMySQLConnection(*args, **kwargs)
+  File "C:\Users\frank\Documents\py_projects\dev\ETL_Agent\.venv\lib\site-packages\mysql\connector\connection_cext.py", line 142, in __init__
+    self.connect(**kwargs)
+  File "C:\Users\frank\Documents\py_projects\dev\ETL_Agent\.venv\lib\site-packages\mysql\connector\abstracts.py", line 1605, in connect
+    self._open_connection()
+  File "C:\Users\frank\Documents\py_projects\dev\ETL_Agent\.venv\lib\site-packages\mysql\connector\connection_cext.py", line 360, in _open_connection
+    raise get_mysql_exception(
+mysql.connector.errors.DatabaseError: 2003 (HY000): Can't connect to MySQL server on 'localhost:3306' (10061)
+
+The above exception was the direct cause of the following exception:
+
+Traceback (most recent call last):
+  File "C:\Users\frank\Documents\py_projects\dev\ETL_Agent\etl_agent\database_manager.py", line 54, in add_connection
+    connector = self._create_connector(db_type, connection_config)
+  File "C:\Users\frank\Documents\py_projects\dev\ETL_Agent\etl_agent\database_manager.py", line 126, in _create_connector
+    return SQLConnector(
+  File "C:\Users\frank\Documents\py_projects\dev\ETL_Agent\etl_agent\connectors\sql_connector.py", line 24, in __init__
+    self._connect()
+  File "C:\Users\frank\Documents\py_projects\dev\ETL_Agent\etl_agent\connectors\sql_connector.py", line 55, in _connect
+    with self.engine.connect() as conn:
+  File "C:\Users\frank\Documents\py_projects\dev\ETL_Agent\.venv\lib\site-packages\sqlalchemy\engine\base.py", line 3273, in connect
+    return self._connection_cls(self)
+  File "C:\Users\frank\Documents\py_projects\dev\ETL_Agent\.venv\lib\site-packages\sqlalchemy\engine\base.py", line 147, in __init__
+    Connection._handle_dbapi_exception_noconnection(
+  File "C:\Users\frank\Documents\py_projects\dev\ETL_Agent\.venv\lib\site-packages\sqlalchemy\engine\base.py", line 2436, in _handle_dbapi_exception_noconnection
+    raise sqlalchemy_exception.with_traceback(exc_info[2]) from e
+  File "C:\Users\frank\Documents\py_projects\dev\ETL_Agent\.venv\lib\site-packages\sqlalchemy\engine\base.py", line 145, in __init__
+    self._dbapi_connection = engine.raw_connection()
+  File "C:\Users\frank\Documents\py_projects\dev\ETL_Agent\.venv\lib\site-packages\sqlalchemy\engine\base.py", line 3297, in raw_connection
+    return self.pool.connect()
+  File "C:\Users\frank\Documents\py_projects\dev\ETL_Agent\.venv\lib\site-packages\sqlalchemy\pool\base.py", line 449, in connect
+    return _ConnectionFairy._checkout(self)
+  File "C:\Users\frank\Documents\py_projects\dev\ETL_Agent\.venv\lib\site-packages\sqlalchemy\pool\base.py", line 1264, in _checkout
+    fairy = _ConnectionRecord.checkout(pool)
+  File "C:\Users\frank\Documents\py_projects\dev\ETL_Agent\.venv\lib\site-packages\sqlalchemy\pool\base.py", line 713, in checkout
+    rec = pool._do_get()
+  File "C:\Users\frank\Documents\py_projects\dev\ETL_Agent\.venv\lib\site-packages\sqlalchemy\pool\impl.py", line 179, in _do_get
+    with util.safe_reraise():
+  File "C:\Users\frank\Documents\py_projects\dev\ETL_Agent\.venv\lib\site-packages\sqlalchemy\util\langhelpers.py", line 224, in __exit__
+    raise exc_value.with_traceback(exc_tb)
+  File "C:\Users\frank\Documents\py_projects\dev\ETL_Agent\.venv\lib\site-packages\sqlalchemy\pool\impl.py", line 177, in _do_get
+    return self._create_connection()
+  File "C:\Users\frank\Documents\py_projects\dev\ETL_Agent\.venv\lib\site-packages\sqlalchemy\pool\base.py", line 390, in _create_connection
+    return _ConnectionRecord(self)
+  File "C:\Users\frank\Documents\py_projects\dev\ETL_Agent\.venv\lib\site-packages\sqlalchemy\pool\base.py", line 675, in __init__
+    self.__connect()
+  File "C:\Users\frank\Documents\py_projects\dev\ETL_Agent\.venv\lib\site-packages\sqlalchemy\pool\base.py", line 901, in __connect
+    with util.safe_reraise():
+  File "C:\Users\frank\Documents\py_projects\dev\ETL_Agent\.venv\lib\site-packages\sqlalchemy\util\langhelpers.py", line 224, in __exit__
+    raise exc_value.with_traceback(exc_tb)
+  File "C:\Users\frank\Documents\py_projects\dev\ETL_Agent\.venv\lib\site-packages\sqlalchemy\pool\base.py", line 897, in __connect
+    self.dbapi_connection = connection = pool._invoke_creator(self)
+  File "C:\Users\frank\Documents\py_projects\dev\ETL_Agent\.venv\lib\site-packages\sqlalchemy\engine\create.py", line 646, in connect
+    return dialect.connect(*cargs, **cparams)
+  File "C:\Users\frank\Documents\py_projects\dev\ETL_Agent\.venv\lib\site-packages\sqlalchemy\engine\default.py", line 625, in connect
+    return self.loaded_dbapi.connect(*cargs, **cparams)  # type: ignore[no-any-return]  # NOQA: E501
+  File "C:\Users\frank\Documents\py_projects\dev\ETL_Agent\.venv\lib\site-packages\mysql\connector\pooling.py", line 322, in connect
+    return CMySQLConnection(*args, **kwargs)
+  File "C:\Users\frank\Documents\py_projects\dev\ETL_Agent\.venv\lib\site-packages\mysql\connector\connection_cext.py", line 142, in __init__
+    self.connect(**kwargs)
+  File "C:\Users\frank\Documents\py_projects\dev\ETL_Agent\.venv\lib\site-packages\mysql\connector\abstracts.py", line 1605, in connect
+    self._open_connection()
+  File "C:\Users\frank\Documents\py_projects\dev\ETL_Agent\.venv\lib\site-packages\mysql\connector\connection_cext.py", line 360, in _open_connection
+    raise get_mysql_exception(
+sqlalchemy.exc.DatabaseError: (mysql.connector.errors.DatabaseError) 2003 (HY000): Can't connect to MySQL server on 'localhost:3306' (10061)
+(Background on this error at: https://sqlalche.me/e/20/4xp6)
+2025-07-01 20:12:19,833 - etl_agent.database_manager - INFO - Versuche Verbindung '_temp_test_Emil_201219' hinzuzufügen mit config: {'connection_string': 'mysql://dataanalyzer:dataanalyzer_pwd@localhost:3306/my_test_db', 'type': 'mariadb'}
+2025-07-01 20:12:19,833 - etl_agent.database_manager - INFO - Erkannter Datenbanktyp für '_temp_test_Emil_201219': DatabaseType.MYSQL
+2025-07-01 20:12:19,833 - etl_agent.connectors.sql_connector - INFO - Connection String korrigiert: mysql://dataanalyzer:dataanalyzer_pwd@localhost:3306/my_test_db -> mysql+mysqlconnector://dataanalyzer:dataanalyzer_pwd@localhost:3306/my_test_db
+2025-07-01 20:12:19,833 - etl_agent.connectors.sql_connector - INFO - Verbinde zu mysql-Datenbank: mysql+mysqlconnector://dataanalyzer:dataanalyzer_pwd@localhost:3306/my_test_db
+2025-07-01 20:12:19,929 - etl_agent.connectors.sql_connector - INFO - mysql-Verbindung erfolgreich etabliert
+2025-07-01 20:12:19,930 - etl_agent.database_manager - INFO - Connector für '_temp_test_Emil_201219' erfolgreich erstellt: <class 'etl_agent.connectors.sql_connector.SQLConnector'>
+2025-07-01 20:12:19,930 - etl_agent.database_manager - INFO - Datenbankverbindung '_temp_test_Emil_201219' (mysql) erfolgreich hinzugefügt
+2025-07-01 20:15:27,291 - etl_agent.etl_agent_core - INFO - Initialisiere LLM: qwen2.5:latest @ http://localhost:11434/v1
+2025-07-01 20:15:27,307 - __main__ - INFO - ETL Gradio Interface initialisiert
+2025-07-01 20:15:28,273 - httpx - INFO - HTTP Request: GET https://api.gradio.app/pkg-version "HTTP/1.1 200 OK"
+2025-07-01 20:15:29,819 - httpx - INFO - HTTP Request: GET http://localhost:7860/gradio_api/startup-events "HTTP/1.1 200 OK"
+2025-07-01 20:15:31,895 - httpx - INFO - HTTP Request: HEAD http://localhost:7860/ "HTTP/1.1 200 OK"
+2025-07-01 20:16:12,719 - etl_agent.database_manager - INFO - Versuche Verbindung '_temp_test_emil_201612' hinzuzufügen mit config: {'connection_string': 'mysql://dataanalyzer:dataanalyzer_pwd@localhost:3306/my_test_db', 'type': 'mariadb'}
+2025-07-01 20:16:12,720 - etl_agent.database_manager - INFO - Erkannter Datenbanktyp für '_temp_test_emil_201612': DatabaseType.MYSQL
+2025-07-01 20:16:12,720 - etl_agent.connectors.sql_connector - INFO - Connection String korrigiert: mysql://dataanalyzer:dataanalyzer_pwd@localhost:3306/my_test_db -> mysql+mysqlconnector://dataanalyzer:dataanalyzer_pwd@localhost:3306/my_test_db
+2025-07-01 20:16:12,720 - etl_agent.connectors.sql_connector - INFO - Verbinde zu mysql-Datenbank: mysql+mysqlconnector://dataanalyzer:dataanalyzer_pwd@localhost:3306/my_test_db
+2025-07-01 20:16:13,016 - etl_agent.connectors.sql_connector - INFO - mysql-Verbindung erfolgreich etabliert
+2025-07-01 20:16:13,016 - etl_agent.database_manager - INFO - Connector für '_temp_test_emil_201612' erfolgreich erstellt: <class 'etl_agent.connectors.sql_connector.SQLConnector'>
+2025-07-01 20:16:13,016 - etl_agent.database_manager - INFO - Datenbankverbindung '_temp_test_emil_201612' (mysql) erfolgreich hinzugefügt
+2025-07-01 20:16:41,179 - etl_agent.database_manager - INFO - Versuche Verbindung 'emil' hinzuzufügen mit config: {'connection_string': 'mysql://dataanalyzer:dataanalyzer_pwd@localhost:3306/my_test_db', 'type': 'mariadb'}
+2025-07-01 20:16:41,179 - etl_agent.database_manager - INFO - Erkannter Datenbanktyp für 'emil': DatabaseType.MYSQL
+2025-07-01 20:16:41,180 - etl_agent.connectors.sql_connector - INFO - Connection String korrigiert: mysql://dataanalyzer:dataanalyzer_pwd@localhost:3306/my_test_db -> mysql+mysqlconnector://dataanalyzer:dataanalyzer_pwd@localhost:3306/my_test_db
+2025-07-01 20:16:41,181 - etl_agent.connectors.sql_connector - INFO - Verbinde zu mysql-Datenbank: mysql+mysqlconnector://dataanalyzer:dataanalyzer_pwd@localhost:3306/my_test_db
+2025-07-01 20:16:41,239 - etl_agent.connectors.sql_connector - INFO - mysql-Verbindung erfolgreich etabliert
+2025-07-01 20:16:41,240 - etl_agent.database_manager - INFO - Connector für 'emil' erfolgreich erstellt: <class 'etl_agent.connectors.sql_connector.SQLConnector'>
+2025-07-01 20:16:41,240 - etl_agent.database_manager - INFO - Datenbankverbindung 'emil' (mysql) erfolgreich hinzugefügt
+2025-07-01 20:21:34,803 - etl_agent.etl_agent_core - INFO - Initialisiere LLM: qwen2.5:latest @ http://localhost:11434/v1
+2025-07-01 20:21:34,817 - __main__ - INFO - ETL Gradio Interface initialisiert
+2025-07-01 20:21:35,715 - httpx - INFO - HTTP Request: GET https://api.gradio.app/pkg-version "HTTP/1.1 200 OK"
+2025-07-01 20:21:37,273 - httpx - INFO - HTTP Request: GET http://localhost:7860/gradio_api/startup-events "HTTP/1.1 200 OK"
+2025-07-01 20:21:39,333 - httpx - INFO - HTTP Request: HEAD http://localhost:7860/ "HTTP/1.1 200 OK"
+2025-07-01 20:22:19,732 - etl_agent.database_manager - INFO - Versuche Verbindung '_temp_test_Emil_202219' hinzuzufügen mit config: {'connection_string': 'mysql://dataanalyzer:dataanalyzer_pwd@localhost:3306/my_test_db', 'type': 'mariadb'}
+2025-07-01 20:22:19,733 - etl_agent.database_manager - INFO - Erkannter Datenbanktyp für '_temp_test_Emil_202219': DatabaseType.MYSQL
+2025-07-01 20:22:19,733 - etl_agent.connectors.sql_connector - INFO - Connection String korrigiert: mysql://dataanalyzer:dataanalyzer_pwd@localhost:3306/my_test_db -> mysql+mysqlconnector://dataanalyzer:dataanalyzer_pwd@localhost:3306/my_test_db
+2025-07-01 20:22:19,733 - etl_agent.connectors.sql_connector - INFO - Verbinde zu mysql-Datenbank: mysql+mysqlconnector://dataanalyzer:dataanalyzer_pwd@localhost:3306/my_test_db
+2025-07-01 20:22:19,889 - etl_agent.connectors.sql_connector - INFO - mysql-Verbindung erfolgreich etabliert
+2025-07-01 20:22:19,889 - etl_agent.database_manager - INFO - Connector für '_temp_test_Emil_202219' erfolgreich erstellt: <class 'etl_agent.connectors.sql_connector.SQLConnector'>
+2025-07-01 20:22:19,889 - etl_agent.database_manager - INFO - Datenbankverbindung '_temp_test_Emil_202219' (mysql) erfolgreich hinzugefügt
+2025-07-01 20:22:21,799 - etl_agent.database_manager - INFO - Versuche Verbindung 'Emil' hinzuzufügen mit config: {'connection_string': 'mysql://dataanalyzer:dataanalyzer_pwd@localhost:3306/my_test_db', 'type': 'mariadb'}
+2025-07-01 20:22:21,799 - etl_agent.database_manager - INFO - Erkannter Datenbanktyp für 'Emil': DatabaseType.MYSQL
+2025-07-01 20:22:21,800 - etl_agent.connectors.sql_connector - INFO - Connection String korrigiert: mysql://dataanalyzer:dataanalyzer_pwd@localhost:3306/my_test_db -> mysql+mysqlconnector://dataanalyzer:dataanalyzer_pwd@localhost:3306/my_test_db
+2025-07-01 20:22:21,800 - etl_agent.connectors.sql_connector - INFO - Verbinde zu mysql-Datenbank: mysql+mysqlconnector://dataanalyzer:dataanalyzer_pwd@localhost:3306/my_test_db
+2025-07-01 20:22:21,839 - etl_agent.connectors.sql_connector - INFO - mysql-Verbindung erfolgreich etabliert
+2025-07-01 20:22:21,839 - etl_agent.database_manager - INFO - Connector für 'Emil' erfolgreich erstellt: <class 'etl_agent.connectors.sql_connector.SQLConnector'>
+2025-07-01 20:22:21,839 - etl_agent.database_manager - INFO - Datenbankverbindung 'Emil' (mysql) erfolgreich hinzugefügt
+2025-07-01 20:24:03,829 - __main__ - INFO - Generiere ETL-Code für: Lade die Kundendaten aus Emil und addiere dem Alter 1 hinzu. Erzeuge eine neue Tablee mit dem Namen changes und für die Daten hinzu
+2025-07-01 20:24:03,832 - etl_agent.etl_agent_core - INFO - Verarbeite ETL-Anfrage: Lade die Kundendaten aus Emil und addiere dem Alter 1 hinzu. Erzeuge eine neue Tablee mit dem Namen changes und für die Daten hinzu
+2025-07-01 20:24:03,836 - etl_agent.etl_agent_core - INFO - Kontext erstellt: 0 Verbindungen verfügbar
+2025-07-01 20:24:03,836 - etl_agent.etl_agent_core - INFO - Starte AI-Agent für Code-Generierung...
+2025-07-01 20:24:23,923 - httpx - INFO - HTTP Request: POST http://localhost:11434/v1/chat/completions "HTTP/1.1 200 OK"
+2025-07-01 20:24:23,931 - etl_agent.etl_agent_core - INFO - ETL-Code erfolgreich generiert und bereinigt
+2025-07-01 20:26:12,743 - etl_agent.etl_agent_core - INFO - Initialisiere LLM: qwen2.5:latest @ http://localhost:11434/v1
+2025-07-01 20:26:12,759 - __main__ - INFO - ETL Gradio Interface initialisiert
+2025-07-01 20:26:13,666 - httpx - INFO - HTTP Request: GET https://api.gradio.app/pkg-version "HTTP/1.1 200 OK"
+2025-07-01 20:26:15,213 - httpx - INFO - HTTP Request: GET http://localhost:7860/gradio_api/startup-events "HTTP/1.1 200 OK"
+2025-07-01 20:26:17,278 - httpx - INFO - HTTP Request: HEAD http://localhost:7860/ "HTTP/1.1 200 OK"
+2025-07-01 20:26:43,599 - etl_agent.database_manager - INFO - Versuche Verbindung '_temp_test_Emil_202643' hinzuzufügen mit config: {'connection_string': 'mysql://dataanalyzer:dataanalyzer_pwd@localhost:3306/my_test_db', 'type': 'mariadb'}
+2025-07-01 20:26:43,599 - etl_agent.database_manager - INFO - Erkannter Datenbanktyp für '_temp_test_Emil_202643': DatabaseType.MYSQL
+2025-07-01 20:26:43,599 - etl_agent.connectors.sql_connector - INFO - Connection String korrigiert: mysql://dataanalyzer:dataanalyzer_pwd@localhost:3306/my_test_db -> mysql+mysqlconnector://dataanalyzer:dataanalyzer_pwd@localhost:3306/my_test_db
+2025-07-01 20:26:43,600 - etl_agent.connectors.sql_connector - INFO - Verbinde zu mysql-Datenbank: mysql+mysqlconnector://dataanalyzer:dataanalyzer_pwd@localhost:3306/my_test_db
+2025-07-01 20:26:43,875 - etl_agent.connectors.sql_connector - INFO - mysql-Verbindung erfolgreich etabliert
+2025-07-01 20:26:43,876 - etl_agent.database_manager - INFO - Connector für '_temp_test_Emil_202643' erfolgreich erstellt: <class 'etl_agent.connectors.sql_connector.SQLConnector'>
+2025-07-01 20:26:43,876 - etl_agent.database_manager - INFO - Datenbankverbindung '_temp_test_Emil_202643' (mysql) erfolgreich hinzugefügt
+2025-07-01 20:26:47,101 - etl_agent.database_manager - INFO - Versuche Verbindung 'Emil' hinzuzufügen mit config: {'connection_string': 'mysql://dataanalyzer:dataanalyzer_pwd@localhost:3306/my_test_db', 'type': 'mariadb'}
+2025-07-01 20:26:47,101 - etl_agent.database_manager - INFO - Erkannter Datenbanktyp für 'Emil': DatabaseType.MYSQL
+2025-07-01 20:26:47,101 - etl_agent.connectors.sql_connector - INFO - Connection String korrigiert: mysql://dataanalyzer:dataanalyzer_pwd@localhost:3306/my_test_db -> mysql+mysqlconnector://dataanalyzer:dataanalyzer_pwd@localhost:3306/my_test_db
+2025-07-01 20:26:47,102 - etl_agent.connectors.sql_connector - INFO - Verbinde zu mysql-Datenbank: mysql+mysqlconnector://dataanalyzer:dataanalyzer_pwd@localhost:3306/my_test_db
+2025-07-01 20:26:47,153 - etl_agent.connectors.sql_connector - INFO - mysql-Verbindung erfolgreich etabliert
+2025-07-01 20:26:47,154 - etl_agent.database_manager - INFO - Connector für 'Emil' erfolgreich erstellt: <class 'etl_agent.connectors.sql_connector.SQLConnector'>
+2025-07-01 20:26:47,154 - etl_agent.database_manager - INFO - Datenbankverbindung 'Emil' (mysql) erfolgreich hinzugefügt
+2025-07-01 20:28:11,838 - __main__ - INFO - Generiere ETL-Code für: Lade alle Daten aus der Tabelle in Emil. Füge dem Alter ein Jahr hinzu. Erzeuge eine neue Tabelle Changes  und füge die Daten in diese Tabelle
+2025-07-01 20:28:11,841 - etl_agent.etl_agent_core - INFO - Verarbeite ETL-Anfrage: Lade alle Daten aus der Tabelle in Emil. Füge dem Alter ein Jahr hinzu. Erzeuge eine neue Tabelle Changes  und füge die Daten in diese Tabelle
+2025-07-01 20:28:11,842 - etl_agent.etl_agent_core - INFO - Kontext erstellt: 0 Verbindungen verfügbar
+2025-07-01 20:28:11,842 - etl_agent.etl_agent_core - INFO - Starte AI-Agent für Code-Generierung...
+2025-07-01 20:28:21,522 - httpx - INFO - HTTP Request: POST http://localhost:11434/v1/chat/completions "HTTP/1.1 200 OK"
+2025-07-01 20:28:21,529 - etl_agent.etl_agent_core - INFO - ETL-Code erfolgreich generiert und bereinigt
+2025-07-01 20:44:59,241 - etl_agent.etl_agent_core - INFO - Initialisiere LLM: qwen2.5:latest @ http://localhost:11434/v1
+2025-07-01 20:44:59,250 - __main__ - INFO - ETL Gradio Interface initialisiert
+2025-07-01 20:45:00,091 - httpx - INFO - HTTP Request: GET https://api.gradio.app/pkg-version "HTTP/1.1 200 OK"
+2025-07-01 20:45:01,600 - httpx - INFO - HTTP Request: GET http://localhost:7860/gradio_api/startup-events "HTTP/1.1 200 OK"
+2025-07-01 20:45:03,664 - httpx - INFO - HTTP Request: HEAD http://localhost:7860/ "HTTP/1.1 200 OK"
+2025-07-01 20:45:38,439 - etl_agent.database_manager - INFO - Versuche Verbindung '_temp_test_Emil_204538' hinzuzufügen mit config: {'connection_string': 'mysql://dataanalyzer:dataanalyzer_pwd@localhost:3306/my_test_db', 'type': 'mariadb'}
+2025-07-01 20:45:38,439 - etl_agent.database_manager - INFO - Erkannter Datenbanktyp für '_temp_test_Emil_204538': DatabaseType.MYSQL
+2025-07-01 20:45:38,439 - etl_agent.connectors.sql_connector - INFO - Connection String korrigiert: mysql://dataanalyzer:dataanalyzer_pwd@localhost:3306/my_test_db -> mysql+mysqlconnector://dataanalyzer:dataanalyzer_pwd@localhost:3306/my_test_db
+2025-07-01 20:45:38,439 - etl_agent.connectors.sql_connector - INFO - Verbinde zu mysql-Datenbank: mysql+mysqlconnector://dataanalyzer:dataanalyzer_pwd@localhost:3306/my_test_db
+2025-07-01 20:45:38,533 - etl_agent.connectors.sql_connector - INFO - mysql-Verbindung erfolgreich etabliert
+2025-07-01 20:45:38,533 - etl_agent.database_manager - INFO - Connector für '_temp_test_Emil_204538' erfolgreich erstellt: <class 'etl_agent.connectors.sql_connector.SQLConnector'>
+2025-07-01 20:45:38,534 - etl_agent.database_manager - INFO - Datenbankverbindung '_temp_test_Emil_204538' (mysql) erfolgreich hinzugefügt
+2025-07-01 20:45:40,927 - etl_agent.database_manager - INFO - Versuche Verbindung 'Emil' hinzuzufügen mit config: {'connection_string': 'mysql://dataanalyzer:dataanalyzer_pwd@localhost:3306/my_test_db', 'type': 'mariadb'}
+2025-07-01 20:45:40,927 - etl_agent.database_manager - INFO - Erkannter Datenbanktyp für 'Emil': DatabaseType.MYSQL
+2025-07-01 20:45:40,927 - etl_agent.connectors.sql_connector - INFO - Connection String korrigiert: mysql://dataanalyzer:dataanalyzer_pwd@localhost:3306/my_test_db -> mysql+mysqlconnector://dataanalyzer:dataanalyzer_pwd@localhost:3306/my_test_db
+2025-07-01 20:45:40,927 - etl_agent.connectors.sql_connector - INFO - Verbinde zu mysql-Datenbank: mysql+mysqlconnector://dataanalyzer:dataanalyzer_pwd@localhost:3306/my_test_db
+2025-07-01 20:45:40,943 - etl_agent.connectors.sql_connector - INFO - mysql-Verbindung erfolgreich etabliert
+2025-07-01 20:45:40,943 - etl_agent.database_manager - INFO - Connector für 'Emil' erfolgreich erstellt: <class 'etl_agent.connectors.sql_connector.SQLConnector'>
+2025-07-01 20:45:40,943 - etl_agent.database_manager - INFO - Datenbankverbindung 'Emil' (mysql) erfolgreich hinzugefügt
+2025-07-01 20:46:48,162 - __main__ - INFO - Generiere ETL-Code für: Lade die Daten aus der Tabelle in Emil. Addiere dem Alter 1 hinzu. Erzeuge eine neue Tabelle und füge die Daten ein.
+2025-07-01 20:46:48,164 - etl_agent.etl_agent_core - INFO - Verarbeite ETL-Anfrage: Lade die Daten aus der Tabelle in Emil. Addiere dem Alter 1 hinzu. Erzeuge eine neue Tabelle und füge die Daten ein.
+2025-07-01 20:46:48,164 - etl_agent.etl_agent_core - INFO - Kontext erstellt: 0 Verbindungen verfügbar
+2025-07-01 20:46:48,164 - etl_agent.etl_agent_core - INFO - Starte AI-Agent für Code-Generierung...
+2025-07-01 20:47:03,990 - httpx - INFO - HTTP Request: POST http://localhost:11434/v1/chat/completions "HTTP/1.1 200 OK"
+2025-07-01 20:47:03,998 - etl_agent.etl_agent_core - INFO - ETL-Code erfolgreich generiert und bereinigt
+2025-07-01 20:54:36,366 - etl_agent.etl_agent_core - INFO - Initialisiere LLM: qwen2.5:latest @ http://localhost:11434/v1
+2025-07-01 20:54:36,376 - __main__ - INFO - ETL Gradio Interface initialisiert
+2025-07-01 20:54:37,219 - httpx - INFO - HTTP Request: GET https://api.gradio.app/pkg-version "HTTP/1.1 200 OK"
+2025-07-01 20:54:38,714 - httpx - INFO - HTTP Request: GET http://localhost:7860/gradio_api/startup-events "HTTP/1.1 200 OK"
+2025-07-01 20:54:40,795 - httpx - INFO - HTTP Request: HEAD http://localhost:7860/ "HTTP/1.1 200 OK"
+2025-07-01 20:55:50,485 - etl_agent.database_manager - INFO - Versuche Verbindung '_temp_test_Emil_205550' hinzuzufügen mit config: {'connection_string': 'mysql://dataanalyzer:dataanalyzer_pwd@localhost:3306/my_test_db', 'type': 'mariadb'}
+2025-07-01 20:55:50,485 - etl_agent.database_manager - INFO - Erkannter Datenbanktyp für '_temp_test_Emil_205550': DatabaseType.MYSQL
+2025-07-01 20:55:50,485 - etl_agent.connectors.sql_connector - INFO - Connection String korrigiert: mysql://dataanalyzer:dataanalyzer_pwd@localhost:3306/my_test_db -> mysql+mysqlconnector://dataanalyzer:dataanalyzer_pwd@localhost:3306/my_test_db
+2025-07-01 20:55:50,485 - etl_agent.connectors.sql_connector - INFO - Verbinde zu mysql-Datenbank: mysql+mysqlconnector://dataanalyzer:dataanalyzer_pwd@localhost:3306/my_test_db
+2025-07-01 20:55:50,563 - etl_agent.connectors.sql_connector - INFO - mysql-Verbindung erfolgreich etabliert
+2025-07-01 20:55:50,564 - etl_agent.database_manager - INFO - Connector für '_temp_test_Emil_205550' erfolgreich erstellt: <class 'etl_agent.connectors.sql_connector.SQLConnector'>
+2025-07-01 20:55:50,564 - etl_agent.database_manager - INFO - Datenbankverbindung '_temp_test_Emil_205550' (mysql) erfolgreich hinzugefügt
+2025-07-01 20:55:54,897 - etl_agent.database_manager - INFO - Versuche Verbindung 'Emil' hinzuzufügen mit config: {'connection_string': 'mysql://dataanalyzer:dataanalyzer_pwd@localhost:3306/my_test_db', 'type': 'mariadb'}
+2025-07-01 20:55:54,897 - etl_agent.database_manager - INFO - Erkannter Datenbanktyp für 'Emil': DatabaseType.MYSQL
+2025-07-01 20:55:54,897 - etl_agent.connectors.sql_connector - INFO - Connection String korrigiert: mysql://dataanalyzer:dataanalyzer_pwd@localhost:3306/my_test_db -> mysql+mysqlconnector://dataanalyzer:dataanalyzer_pwd@localhost:3306/my_test_db
+2025-07-01 20:55:54,897 - etl_agent.connectors.sql_connector - INFO - Verbinde zu mysql-Datenbank: mysql+mysqlconnector://dataanalyzer:dataanalyzer_pwd@localhost:3306/my_test_db
+2025-07-01 20:55:54,912 - etl_agent.connectors.sql_connector - INFO - mysql-Verbindung erfolgreich etabliert
+2025-07-01 20:55:54,912 - etl_agent.database_manager - INFO - Connector für 'Emil' erfolgreich erstellt: <class 'etl_agent.connectors.sql_connector.SQLConnector'>
+2025-07-01 20:55:54,912 - etl_agent.database_manager - INFO - Datenbankverbindung 'Emil' (mysql) erfolgreich hinzugefügt
+2025-07-01 20:56:02,138 - __main__ - INFO - Generiere ETL-Code für: Lade die Daten aus der Tabelle in Emil. Addiere dem Alter 1 hinzu. Erzeuge eine neue Tabelle und füge die Daten ein.
+2025-07-01 20:56:02,139 - __main__ - INFO - Führe Schema-Introspection durch...
+2025-07-01 20:56:02,139 - etl_agent.connectors.sql_connector - INFO - Führe Abfrage aus: 
+                    SELECT 
+                        table_name,
+                        column_name...
+2025-07-01 20:56:02,154 - etl_agent.connectors.sql_connector - INFO - Abfrage erfolgreich: 4 Zeilen zurückgegeben
+2025-07-01 20:56:02,158 - __main__ - INFO - Schema für Emil abgerufen: 1 Tabellen/Collections
+2025-07-01 20:56:02,159 - etl_agent.etl_agent_core - INFO - Verarbeite ETL-Anfrage: Lade die Daten aus der Tabelle in Emil. Addiere dem Alter 1 hinzu. Erzeuge eine neue Tabelle und füge die Daten ein.
+2025-07-01 20:56:02,159 - etl_agent.etl_agent_core - INFO - Kontext erstellt: 0 Verbindungen verfügbar
+2025-07-01 20:56:02,159 - etl_agent.etl_agent_core - INFO - Starte AI-Agent für Code-Generierung...
+2025-07-01 20:56:20,456 - httpx - INFO - HTTP Request: POST http://localhost:11434/v1/chat/completions "HTTP/1.1 200 OK"
+2025-07-01 21:08:01,995 - etl_agent.etl_agent_core - INFO - ETL-Code erfolgreich generiert und bereinigt
+2025-07-01 21:08:01,997 - __main__ - ERROR - Code-Generierung Fehler: 
+2025-07-01 21:16:00,120 - etl_agent.etl_agent_core - INFO - Initialisiere LLM: qwen2.5:latest @ http://localhost:11434/v1
+2025-07-01 21:16:00,131 - __main__ - INFO - ETL Gradio Interface initialisiert - DatabaseManager nachträglich geteilt
+2025-07-01 21:16:01,013 - httpx - INFO - HTTP Request: GET https://api.gradio.app/pkg-version "HTTP/1.1 200 OK"
+2025-07-01 21:16:02,557 - httpx - INFO - HTTP Request: GET http://localhost:7860/gradio_api/startup-events "HTTP/1.1 200 OK"
+2025-07-01 21:16:04,623 - httpx - INFO - HTTP Request: HEAD http://localhost:7860/ "HTTP/1.1 200 OK"
+2025-07-01 21:17:16,969 - etl_agent.database_manager - INFO - Versuche Verbindung '_temp_test_Emil_211716' hinzuzufügen mit config: {'connection_string': 'mysql://dataanalyzer:dataanalyzer_pwd@localhost:3306/my_test_db', 'type': 'mariadb'}
+2025-07-01 21:17:16,969 - etl_agent.database_manager - INFO - Erkannter Datenbanktyp für '_temp_test_Emil_211716': DatabaseType.MYSQL
+2025-07-01 21:17:16,970 - etl_agent.connectors.sql_connector - INFO - Connection String korrigiert: mysql://dataanalyzer:dataanalyzer_pwd@localhost:3306/my_test_db -> mysql+mysqlconnector://dataanalyzer:dataanalyzer_pwd@localhost:3306/my_test_db
+2025-07-01 21:17:16,970 - etl_agent.connectors.sql_connector - INFO - Verbinde zu mysql-Datenbank: mysql+mysqlconnector://dataanalyzer:dataanalyzer_pwd@localhost:3306/my_test_db
+2025-07-01 21:17:17,062 - etl_agent.connectors.sql_connector - INFO - mysql-Verbindung erfolgreich etabliert
+2025-07-01 21:17:17,062 - etl_agent.database_manager - INFO - Connector für '_temp_test_Emil_211716' erfolgreich erstellt: <class 'etl_agent.connectors.sql_connector.SQLConnector'>
+2025-07-01 21:17:17,062 - etl_agent.database_manager - INFO - Datenbankverbindung '_temp_test_Emil_211716' (mysql) erfolgreich hinzugefügt
+2025-07-01 21:17:18,889 - etl_agent.database_manager - INFO - Versuche Verbindung 'Emil' hinzuzufügen mit config: {'connection_string': 'mysql://dataanalyzer:dataanalyzer_pwd@localhost:3306/my_test_db', 'type': 'mariadb'}
+2025-07-01 21:17:18,889 - etl_agent.database_manager - INFO - Erkannter Datenbanktyp für 'Emil': DatabaseType.MYSQL
+2025-07-01 21:17:18,890 - etl_agent.connectors.sql_connector - INFO - Connection String korrigiert: mysql://dataanalyzer:dataanalyzer_pwd@localhost:3306/my_test_db -> mysql+mysqlconnector://dataanalyzer:dataanalyzer_pwd@localhost:3306/my_test_db
+2025-07-01 21:17:18,890 - etl_agent.connectors.sql_connector - INFO - Verbinde zu mysql-Datenbank: mysql+mysqlconnector://dataanalyzer:dataanalyzer_pwd@localhost:3306/my_test_db
+2025-07-01 21:17:18,906 - etl_agent.connectors.sql_connector - INFO - mysql-Verbindung erfolgreich etabliert
+2025-07-01 21:17:18,906 - etl_agent.database_manager - INFO - Connector für 'Emil' erfolgreich erstellt: <class 'etl_agent.connectors.sql_connector.SQLConnector'>
+2025-07-01 21:17:18,906 - etl_agent.database_manager - INFO - Datenbankverbindung 'Emil' (mysql) erfolgreich hinzugefügt
+2025-07-01 21:17:58,823 - __main__ - INFO - Generiere ETL-Code für: Lade die Daten aus der Tabelle in Emil. Addiere dem Alter 1 hinzu. Erzeuge eine neue Tabelle und füge die Daten ein.
+2025-07-01 21:17:58,824 - __main__ - INFO - Führe Schema-Introspection durch...
+2025-07-01 21:17:58,824 - etl_agent.connectors.sql_connector - INFO - Führe Abfrage aus: 
+                    SELECT 
+                        table_name,
+                        column_name...
+2025-07-01 21:17:58,828 - etl_agent.connectors.sql_connector - INFO - Abfrage erfolgreich: 4 Zeilen zurückgegeben
+2025-07-01 21:17:58,829 - __main__ - INFO - Schema für Emil abgerufen: 1 Tabellen/Collections
+2025-07-01 21:17:58,831 - etl_agent.etl_agent_core - INFO - Verarbeite ETL-Anfrage: Lade die Daten aus der Tabelle in Emil. Addiere dem Alter 1 hinzu. Erzeuge eine neue Tabelle und füge die Daten ein.
+2025-07-01 21:17:58,833 - etl_agent.etl_agent_core - ERROR - Fehler beim Erstellen des Kontexts: 1 validation error for ETLCodeGenerationContext
+available_connections.0
+  Input should be a valid string [type=string_type, input_value={'name': 'Emil', 'type': ..., 'status': 'connected'}, input_type=dict]
+    For further information visit https://errors.pydantic.dev/2.11/v/string_type
+2025-07-01 21:25:05,060 - etl_agent.etl_agent_core - INFO - Starte AI-Agent für Code-Generierung...
+2025-07-01 21:25:13,799 - httpx - INFO - HTTP Request: POST http://localhost:11434/v1/chat/completions "HTTP/1.1 200 OK"
+2025-07-01 21:25:13,802 - etl_agent.etl_agent_core - INFO - ETL-Code erfolgreich generiert und bereinigt
+2025-07-01 21:25:13,803 - __main__ - ERROR - Code-Generierung Fehler: 
+2025-07-01 21:29:23,586 - etl_agent.etl_agent_core - INFO - Initialisiere LLM: qwen2.5:latest @ http://localhost:11434/v1
+2025-07-01 21:29:23,596 - __main__ - INFO - ETL Gradio Interface initialisiert - DatabaseManager nachträglich geteilt
+2025-07-01 21:29:24,443 - httpx - INFO - HTTP Request: GET https://api.gradio.app/pkg-version "HTTP/1.1 200 OK"
+2025-07-01 21:29:25,968 - httpx - INFO - HTTP Request: GET http://localhost:7860/gradio_api/startup-events "HTTP/1.1 200 OK"
+2025-07-01 21:29:28,051 - httpx - INFO - HTTP Request: HEAD http://localhost:7860/ "HTTP/1.1 200 OK"
+2025-07-01 21:29:39,058 - etl_agent.database_manager - INFO - Versuche Verbindung '_temp_test_Emil_212939' hinzuzufügen mit config: {'connection_string': 'mysql://dataanalyzer:dataanalyzer_pwd@localhost:3306/my_test_db', 'type': 'mariadb'}
+2025-07-01 21:29:39,058 - etl_agent.database_manager - INFO - Erkannter Datenbanktyp für '_temp_test_Emil_212939': DatabaseType.MYSQL
+2025-07-01 21:29:39,059 - etl_agent.connectors.sql_connector - INFO - Connection String korrigiert: mysql://dataanalyzer:dataanalyzer_pwd@localhost:3306/my_test_db -> mysql+mysqlconnector://dataanalyzer:dataanalyzer_pwd@localhost:3306/my_test_db
+2025-07-01 21:29:39,059 - etl_agent.connectors.sql_connector - INFO - Verbinde zu mysql-Datenbank: mysql+mysqlconnector://dataanalyzer:dataanalyzer_pwd@localhost:3306/my_test_db
+2025-07-01 21:29:39,145 - etl_agent.connectors.sql_connector - INFO - mysql-Verbindung erfolgreich etabliert
+2025-07-01 21:29:39,145 - etl_agent.database_manager - INFO - Connector für '_temp_test_Emil_212939' erfolgreich erstellt: <class 'etl_agent.connectors.sql_connector.SQLConnector'>
+2025-07-01 21:29:39,145 - etl_agent.database_manager - INFO - Datenbankverbindung '_temp_test_Emil_212939' (mysql) erfolgreich hinzugefügt
+2025-07-01 21:30:29,754 - __main__ - INFO - Generiere ETL-Code für: Lade die Daten aus der Tabelle in Emil. Addiere dem Alter 1 hinzu. Erzeuge eine neue Tabelle und füge die Daten ein.
+2025-07-01 21:30:29,756 - etl_agent.etl_agent_core - INFO - Verarbeite ETL-Anfrage: Lade die Daten aus der Tabelle in Emil. Addiere dem Alter 1 hinzu. Erzeuge eine neue Tabelle und füge die Daten ein.
+2025-07-01 21:30:29,756 - etl_agent.etl_agent_core - INFO - Verfügbare Verbindungen konvertiert: []
+2025-07-01 21:30:29,756 - etl_agent.etl_agent_core - INFO - Kontext erstellt: 0 Verbindungen verfügbar
+2025-07-01 21:30:29,756 - etl_agent.etl_agent_core - INFO - FULL PROMPT LENGTH: 639 characters
+2025-07-01 21:30:29,756 - etl_agent.etl_agent_core - INFO - FULL PROMPT:
+--------------------------------------------------------------------------------
+AUFGABE: Erstelle ETL-Code für: Lade die Daten aus der Tabelle in Emil. Addiere dem Alter 1 hinzu. Erzeuge eine neue Tabelle und füge die Daten ein.
+
+VERFÜGBARE DATENBANKVERBINDUNGEN:
+
+TRANSFORMATIONS-HINWEISE:
+
+SPEZIFISCHE ANFORDERUNGEN:
+- Quelle: {'connection_name': 'Keine Verbindungen konfiguriert'}
+- Ziel: {'connection_name': 'Keine Verbindungen konfiguriert'}
+
+GENERIERE VOLLSTÄNDIGEN PYTHON ETL-CODE:
+- Verwende DatabaseManager für alle DB-Operationen
+- Implementiere robuste Fehlerbehandlung
+- Füge detailliertes Logging hinzu
+- Optimiere für Performance
+- Code muss sofort ausführbar sein
+
+NUR PYTHON-CODE, KEINE MARKDOWN-BLÖCKE!
+--------------------------------------------------------------------------------
+2025-07-01 21:30:29,756 - etl_agent.etl_agent_core - INFO - === AI-AGENT DEBUG START ===
+2025-07-01 21:30:29,756 - etl_agent.etl_agent_core - INFO - REQUEST: Lade die Daten aus der Tabelle in Emil. Addiere dem Alter 1 hinzu. Erzeuge eine neue Tabelle und füge die Daten ein.
+2025-07-01 21:30:29,756 - etl_agent.etl_agent_core - INFO - VERFÜGBARE VERBINDUNGEN: []
+2025-07-01 21:30:29,756 - etl_agent.etl_agent_core - INFO - TRANSFORMATION HINTS: []
+2025-07-01 21:30:29,756 - etl_agent.etl_agent_core - INFO - SCHEMA INFO: 0 Verbindungen mit Schema
+2025-07-01 21:30:29,756 - etl_agent.etl_agent_core - INFO - PROMPT PREVIEW: AUFGABE: Erstelle ETL-Code für: Lade die Daten aus der Tabelle in Emil. Addiere dem Alter 1 hinzu. Erzeuge eine neue Tabelle und füge die Daten ein.
+
+VERFÜGBARE DATENBANKVERBINDUNGEN:
+
+TRANSFORMATIONS-HINWEISE:
+
+SPEZIFISCHE ANFORDERUNGEN:
+- Quelle: {'connection_name': 'Keine Verbindungen konfiguriert'}
+- Ziel: {'connection_name': 'Keine Verbindungen konfiguriert'}
+
+GENERIERE VOLLSTÄNDIGEN PYTHON ETL-CODE:
+- Verwende DatabaseManager für alle DB-Operationen
+- Implementiere robuste Fehlerbehandlung...
+2025-07-01 21:31:42,958 - etl_agent.etl_agent_core - INFO - Starte AI-Agent für Code-Generierung...
+2025-07-01 21:31:43,135 - etl_agent.etl_agent_core - ERROR - AI-Agent Fehler: cannot schedule new futures after interpreter shutdown
+2025-07-01 21:31:43,137 - __main__ - ERROR - Code-Generierung Fehler: 
+2025-07-01 21:39:06,714 - etl_agent.etl_agent_core - INFO - Initialisiere LLM: qwen2.5:latest @ http://localhost:11434/v1
+2025-07-01 21:39:06,723 - __main__ - INFO - ETL Gradio Interface initialisiert - DatabaseManager nachträglich geteilt
+2025-07-01 21:39:07,560 - httpx - INFO - HTTP Request: GET https://api.gradio.app/pkg-version "HTTP/1.1 200 OK"
+2025-07-01 21:39:09,073 - httpx - INFO - HTTP Request: GET http://localhost:7860/gradio_api/startup-events "HTTP/1.1 200 OK"
+2025-07-01 21:39:11,122 - httpx - INFO - HTTP Request: HEAD http://localhost:7860/ "HTTP/1.1 200 OK"
+2025-07-01 21:40:39,918 - etl_agent.database_manager - INFO - Versuche Verbindung '_temp_test_fritz_214039' hinzuzufügen mit config: {'connection_string': 'mysql://dataanalyzer:dataanalyzer_pwd@localhost:3306/my_test_db', 'type': 'mariadb'}
+2025-07-01 21:40:39,918 - etl_agent.database_manager - INFO - Erkannter Datenbanktyp für '_temp_test_fritz_214039': DatabaseType.MYSQL
+2025-07-01 21:40:39,918 - etl_agent.connectors.sql_connector - INFO - Connection String korrigiert: mysql://dataanalyzer:dataanalyzer_pwd@localhost:3306/my_test_db -> mysql+mysqlconnector://dataanalyzer:dataanalyzer_pwd@localhost:3306/my_test_db
+2025-07-01 21:40:39,918 - etl_agent.connectors.sql_connector - INFO - Verbinde zu mysql-Datenbank: mysql+mysqlconnector://dataanalyzer:dataanalyzer_pwd@localhost:3306/my_test_db
+2025-07-01 21:40:40,015 - etl_agent.connectors.sql_connector - INFO - mysql-Verbindung erfolgreich etabliert
+2025-07-01 21:40:40,015 - etl_agent.database_manager - INFO - Connector für '_temp_test_fritz_214039' erfolgreich erstellt: <class 'etl_agent.connectors.sql_connector.SQLConnector'>
+2025-07-01 21:40:40,015 - etl_agent.database_manager - INFO - Datenbankverbindung '_temp_test_fritz_214039' (mysql) erfolgreich hinzugefügt
+2025-07-01 21:40:40,016 - etl_agent.connectors.sql_connector - INFO - Führe Abfrage aus: SELECT 1...
+2025-07-01 21:40:40,018 - etl_agent.connectors.sql_connector - INFO - Abfrage erfolgreich: 1 Zeilen zurückgegeben
+2025-07-01 21:40:44,225 - etl_agent.database_manager - INFO - Versuche Verbindung 'fritz' hinzuzufügen mit config: {'connection_string': 'mysql://dataanalyzer:dataanalyzer_pwd@localhost:3306/my_test_db', 'type': 'mariadb'}
+2025-07-01 21:40:44,225 - etl_agent.database_manager - INFO - Erkannter Datenbanktyp für 'fritz': DatabaseType.MYSQL
+2025-07-01 21:40:44,225 - etl_agent.connectors.sql_connector - INFO - Connection String korrigiert: mysql://dataanalyzer:dataanalyzer_pwd@localhost:3306/my_test_db -> mysql+mysqlconnector://dataanalyzer:dataanalyzer_pwd@localhost:3306/my_test_db
+2025-07-01 21:40:44,225 - etl_agent.connectors.sql_connector - INFO - Verbinde zu mysql-Datenbank: mysql+mysqlconnector://dataanalyzer:dataanalyzer_pwd@localhost:3306/my_test_db
+2025-07-01 21:40:44,240 - etl_agent.connectors.sql_connector - INFO - mysql-Verbindung erfolgreich etabliert
+2025-07-01 21:40:44,240 - etl_agent.database_manager - INFO - Connector für 'fritz' erfolgreich erstellt: <class 'etl_agent.connectors.sql_connector.SQLConnector'>
+2025-07-01 21:40:44,241 - etl_agent.database_manager - INFO - Datenbankverbindung 'fritz' (mysql) erfolgreich hinzugefügt
+2025-07-01 21:40:44,241 - etl_agent.connectors.sql_connector - INFO - Führe Abfrage aus: SELECT 1...
+2025-07-01 21:40:44,242 - etl_agent.connectors.sql_connector - INFO - Abfrage erfolgreich: 1 Zeilen zurückgegeben
+2025-07-01 21:40:44,244 - etl_agent.connectors.sql_connector - INFO - Führe Abfrage aus: SELECT 1...
+2025-07-01 21:40:44,246 - etl_agent.connectors.sql_connector - INFO - Abfrage erfolgreich: 1 Zeilen zurückgegeben
+2025-07-01 21:47:36,391 - etl_agent.etl_agent_core - INFO - Initialisiere LLM: qwen2.5:latest @ http://localhost:11434/v1
+2025-07-01 21:47:36,401 - __main__ - INFO - ETL Gradio Interface initialisiert - DatabaseManager nachträglich geteilt
+2025-07-01 21:47:37,237 - httpx - INFO - HTTP Request: GET https://api.gradio.app/pkg-version "HTTP/1.1 200 OK"
+2025-07-01 21:47:38,737 - httpx - INFO - HTTP Request: GET http://localhost:7860/gradio_api/startup-events "HTTP/1.1 200 OK"
+2025-07-01 21:47:40,799 - httpx - INFO - HTTP Request: HEAD http://localhost:7860/ "HTTP/1.1 200 OK"
+2025-07-01 21:48:49,985 - etl_agent.database_manager - INFO - Versuche Verbindung '_temp_test_Heini_214849' hinzuzufügen mit config: {'connection_string': 'mysql://dataanalyzer:dataanalyzer_pwd@localhost:3306/my_test_db', 'type': 'mariadb'}
+2025-07-01 21:48:49,985 - etl_agent.database_manager - INFO - Erkannter Datenbanktyp für '_temp_test_Heini_214849': DatabaseType.MYSQL
+2025-07-01 21:48:49,985 - etl_agent.connectors.sql_connector - INFO - Connection String korrigiert: mysql://dataanalyzer:dataanalyzer_pwd@localhost:3306/my_test_db -> mysql+mysqlconnector://dataanalyzer:dataanalyzer_pwd@localhost:3306/my_test_db
+2025-07-01 21:48:49,985 - etl_agent.connectors.sql_connector - INFO - Verbinde zu mysql-Datenbank: mysql+mysqlconnector://dataanalyzer:dataanalyzer_pwd@localhost:3306/my_test_db
+2025-07-01 21:48:50,076 - etl_agent.connectors.sql_connector - INFO - mysql-Verbindung erfolgreich etabliert
+2025-07-01 21:48:50,076 - etl_agent.database_manager - INFO - Connector für '_temp_test_Heini_214849' erfolgreich erstellt: <class 'etl_agent.connectors.sql_connector.SQLConnector'>
+2025-07-01 21:48:50,076 - etl_agent.database_manager - INFO - Datenbankverbindung '_temp_test_Heini_214849' (mysql) erfolgreich hinzugefügt
+2025-07-01 21:48:50,076 - etl_agent.connectors.sql_connector - INFO - Führe Abfrage aus: SELECT 1...
+2025-07-01 21:48:50,078 - etl_agent.connectors.sql_connector - INFO - Abfrage erfolgreich: 1 Zeilen zurückgegeben
+2025-07-01 21:48:51,625 - etl_agent.database_manager - INFO - Versuche Verbindung 'Heini' hinzuzufügen mit config: {'connection_string': 'mysql://dataanalyzer:dataanalyzer_pwd@localhost:3306/my_test_db', 'type': 'mariadb'}
+2025-07-01 21:48:51,626 - etl_agent.database_manager - INFO - Erkannter Datenbanktyp für 'Heini': DatabaseType.MYSQL
+2025-07-01 21:48:51,626 - etl_agent.connectors.sql_connector - INFO - Connection String korrigiert: mysql://dataanalyzer:dataanalyzer_pwd@localhost:3306/my_test_db -> mysql+mysqlconnector://dataanalyzer:dataanalyzer_pwd@localhost:3306/my_test_db
+2025-07-01 21:48:51,626 - etl_agent.connectors.sql_connector - INFO - Verbinde zu mysql-Datenbank: mysql+mysqlconnector://dataanalyzer:dataanalyzer_pwd@localhost:3306/my_test_db
+2025-07-01 21:48:51,642 - etl_agent.connectors.sql_connector - INFO - mysql-Verbindung erfolgreich etabliert
+2025-07-01 21:48:51,642 - etl_agent.database_manager - INFO - Connector für 'Heini' erfolgreich erstellt: <class 'etl_agent.connectors.sql_connector.SQLConnector'>
+2025-07-01 21:48:51,642 - etl_agent.database_manager - INFO - Datenbankverbindung 'Heini' (mysql) erfolgreich hinzugefügt
+2025-07-01 21:48:51,642 - etl_agent.connectors.sql_connector - INFO - Führe Abfrage aus: SELECT 1...
+2025-07-01 21:48:51,644 - etl_agent.connectors.sql_connector - INFO - Abfrage erfolgreich: 1 Zeilen zurückgegeben
+2025-07-01 21:48:51,646 - __main__ - INFO - Neue Verbindung hinzugefügt: Heini (mariadb)
+2025-07-01 21:48:51,646 - etl_agent.connectors.sql_connector - INFO - Führe Abfrage aus: SELECT 1...
+2025-07-01 21:48:51,647 - etl_agent.connectors.sql_connector - INFO - Abfrage erfolgreich: 1 Zeilen zurückgegeben
+2025-07-01 21:49:28,604 - etl_agent.etl_agent_core - INFO - Initialisiere LLM: qwen2.5:latest @ http://localhost:11434/v1
+2025-07-01 21:49:28,614 - etl_agent.gradio_interface - INFO - ETL Gradio Interface initialisiert - DatabaseManager nachträglich geteilt
+2025-07-01 21:50:17,300 - etl_agent.database_manager - INFO - Versuche Verbindung 'test' hinzuzufügen mit config: {'connection_string': 'sqlite:///test.db', 'type': 'sqlite'}
+2025-07-01 21:50:17,301 - etl_agent.database_manager - INFO - Erkannter Datenbanktyp für 'test': DatabaseType.SQLITE
+2025-07-01 21:50:17,301 - etl_agent.connectors.sql_connector - INFO - Verbinde zu sqlite-Datenbank: sqlite:///test.db
+2025-07-01 21:50:17,797 - etl_agent.connectors.sql_connector - ERROR - Fehler bei sqlite-Datenbankverbindung: Invalid argument(s) 'check_same_thread' sent to create_engine(), using configuration SQLiteDialect_pysqlite/QueuePool/Engine.  Please check that the keyword arguments are appropriate for this combination of components.
+2025-07-01 21:50:17,798 - etl_agent.database_manager - ERROR - Fehler beim Hinzufügen der Verbindung 'test': Invalid argument(s) 'check_same_thread' sent to create_engine(), using configuration SQLiteDialect_pysqlite/QueuePool/Engine.  Please check that the keyword arguments are appropriate for this combination of components.
+Traceback (most recent call last):
+  File "C:\Users\frank\Documents\py_projects\dev\ETL_Agent\etl_agent\database_manager.py", line 54, in add_connection
+    connector = self._create_connector(db_type, connection_config)
+  File "C:\Users\frank\Documents\py_projects\dev\ETL_Agent\etl_agent\database_manager.py", line 126, in _create_connector
+    return SQLConnector(
+  File "C:\Users\frank\Documents\py_projects\dev\ETL_Agent\etl_agent\connectors\sql_connector.py", line 24, in __init__
+    self._connect()
+  File "C:\Users\frank\Documents\py_projects\dev\ETL_Agent\etl_agent\connectors\sql_connector.py", line 52, in _connect
+    self.engine = create_engine(self.connection_string, **engine_options)
+  File "<string>", line 2, in create_engine
+  File "C:\Users\frank\Documents\py_projects\dev\ETL_Agent\.venv\lib\site-packages\sqlalchemy\util\deprecations.py", line 281, in warned
+    return fn(*args, **kwargs)  # type: ignore[no-any-return]
+  File "C:\Users\frank\Documents\py_projects\dev\ETL_Agent\.venv\lib\site-packages\sqlalchemy\engine\create.py", line 700, in create_engine
+    raise TypeError(
+TypeError: Invalid argument(s) 'check_same_thread' sent to create_engine(), using configuration SQLiteDialect_pysqlite/QueuePool/Engine.  Please check that the keyword arguments are appropriate for this combination of components.
+2025-07-01 21:50:17,800 - etl_agent.etl_agent_core - INFO - Initialisiere LLM: qwen2.5:latest @ http://localhost:11434/v1
+2025-07-01 21:50:17,809 - etl_agent.gradio_interface - INFO - ETL Gradio Interface initialisiert - DatabaseManager geteilt (Verbindungen: 0)
+2025-07-01 21:52:53,684 - etl_agent.etl_agent_core - INFO - Initialisiere LLM: qwen2.5:latest @ http://localhost:11434/v1
+2025-07-01 21:52:53,694 - __main__ - INFO - ETL Gradio Interface initialisiert - DatabaseManager geteilt (Verbindungen: 0)
+2025-07-01 21:52:53,831 - __main__ - INFO - _get_connection_choices: 0 Verbindungen gefunden
+2025-07-01 21:52:53,831 - __main__ - INFO - DatabaseManager Verbindungs-Configs: []
+2025-07-01 21:52:53,832 - __main__ - INFO - _get_connection_choices: 0 Verbindungen gefunden
+2025-07-01 21:52:53,832 - __main__ - INFO - DatabaseManager Verbindungs-Configs: []
+2025-07-01 21:52:54,591 - httpx - INFO - HTTP Request: GET https://api.gradio.app/pkg-version "HTTP/1.1 200 OK"
+2025-07-01 21:52:56,031 - httpx - INFO - HTTP Request: GET http://localhost:7860/gradio_api/startup-events "HTTP/1.1 200 OK"
+2025-07-01 21:52:58,097 - httpx - INFO - HTTP Request: HEAD http://localhost:7860/ "HTTP/1.1 200 OK"
+2025-07-01 21:53:30,350 - etl_agent.database_manager - INFO - Versuche Verbindung '_temp_test_Heini_215330' hinzuzufügen mit config: {'connection_string': 'mysql://dataanalyzer:dataanalyzer_pwd@localhost:3306/my_test_db', 'type': 'mariadb'}
+2025-07-01 21:53:30,350 - etl_agent.database_manager - INFO - Erkannter Datenbanktyp für '_temp_test_Heini_215330': DatabaseType.MYSQL
+2025-07-01 21:53:30,350 - etl_agent.connectors.sql_connector - INFO - Connection String korrigiert: mysql://dataanalyzer:dataanalyzer_pwd@localhost:3306/my_test_db -> mysql+mysqlconnector://dataanalyzer:dataanalyzer_pwd@localhost:3306/my_test_db
+2025-07-01 21:53:30,350 - etl_agent.connectors.sql_connector - INFO - Verbinde zu mysql-Datenbank: mysql+mysqlconnector://dataanalyzer:dataanalyzer_pwd@localhost:3306/my_test_db
+2025-07-01 21:53:30,442 - etl_agent.connectors.sql_connector - INFO - mysql-Verbindung erfolgreich etabliert
+2025-07-01 21:53:30,442 - etl_agent.database_manager - INFO - Connector für '_temp_test_Heini_215330' erfolgreich erstellt: <class 'etl_agent.connectors.sql_connector.SQLConnector'>
+2025-07-01 21:53:30,442 - etl_agent.database_manager - INFO - Datenbankverbindung '_temp_test_Heini_215330' (mysql) erfolgreich hinzugefügt
+2025-07-01 21:53:30,442 - etl_agent.connectors.sql_connector - INFO - Führe Abfrage aus: SELECT 1...
+2025-07-01 21:53:30,444 - etl_agent.connectors.sql_connector - INFO - Abfrage erfolgreich: 1 Zeilen zurückgegeben
+2025-07-01 21:53:32,014 - etl_agent.database_manager - INFO - Versuche Verbindung 'Heini' hinzuzufügen mit config: {'connection_string': 'mysql://dataanalyzer:dataanalyzer_pwd@localhost:3306/my_test_db', 'type': 'mariadb'}
+2025-07-01 21:53:32,014 - etl_agent.database_manager - INFO - Erkannter Datenbanktyp für 'Heini': DatabaseType.MYSQL
+2025-07-01 21:53:32,014 - etl_agent.connectors.sql_connector - INFO - Connection String korrigiert: mysql://dataanalyzer:dataanalyzer_pwd@localhost:3306/my_test_db -> mysql+mysqlconnector://dataanalyzer:dataanalyzer_pwd@localhost:3306/my_test_db
+2025-07-01 21:53:32,014 - etl_agent.connectors.sql_connector - INFO - Verbinde zu mysql-Datenbank: mysql+mysqlconnector://dataanalyzer:dataanalyzer_pwd@localhost:3306/my_test_db
+2025-07-01 21:53:32,030 - etl_agent.connectors.sql_connector - INFO - mysql-Verbindung erfolgreich etabliert
+2025-07-01 21:53:32,030 - etl_agent.database_manager - INFO - Connector für 'Heini' erfolgreich erstellt: <class 'etl_agent.connectors.sql_connector.SQLConnector'>
+2025-07-01 21:53:32,030 - etl_agent.database_manager - INFO - Datenbankverbindung 'Heini' (mysql) erfolgreich hinzugefügt
+2025-07-01 21:53:32,031 - etl_agent.connectors.sql_connector - INFO - Führe Abfrage aus: SELECT 1...
+2025-07-01 21:53:32,032 - etl_agent.connectors.sql_connector - INFO - Abfrage erfolgreich: 1 Zeilen zurückgegeben
+2025-07-01 21:53:32,036 - __main__ - INFO - Neue Verbindung hinzugefügt: Heini (mariadb)
+2025-07-01 21:55:01,661 - etl_agent.connectors.sql_connector - INFO - Führe Abfrage aus: SELECT 1...
+2025-07-01 21:55:01,665 - etl_agent.connectors.sql_connector - INFO - Abfrage erfolgreich: 1 Zeilen zurückgegeben
+2025-07-01 21:55:23,068 - etl_agent.database_manager - INFO - Keine gespeicherte Konfigurationsdatei gefunden: db_connections.json
+2025-07-01 21:55:23,068 - etl_agent.database_manager - INFO - Keine gespeicherte Konfigurationsdatei gefunden: db_connections.json
+2025-07-01 21:55:23,068 - etl_agent.etl_agent_core - INFO - Initialisiere LLM: qwen2.5:latest @ http://localhost:11434/v1
+2025-07-01 21:55:23,077 - __main__ - INFO - ETL Gradio Interface initialisiert - DatabaseManager geteilt (Verbindungen: 0)
+2025-07-01 21:55:23,211 - __main__ - INFO - _get_connection_choices: 0 Verbindungen gefunden
+2025-07-01 21:55:23,211 - __main__ - INFO - DatabaseManager Verbindungs-Configs: []
+2025-07-01 21:55:23,212 - __main__ - INFO - _get_connection_choices: 0 Verbindungen gefunden
+2025-07-01 21:55:23,212 - __main__ - INFO - DatabaseManager Verbindungs-Configs: []
+2025-07-01 21:55:23,906 - httpx - INFO - HTTP Request: GET https://api.gradio.app/pkg-version "HTTP/1.1 200 OK"
+2025-07-01 21:55:25,448 - httpx - INFO - HTTP Request: GET http://localhost:7860/gradio_api/startup-events "HTTP/1.1 200 OK"
+2025-07-01 21:55:27,505 - httpx - INFO - HTTP Request: HEAD http://localhost:7860/ "HTTP/1.1 200 OK"
+2025-07-01 21:55:52,430 - etl_agent.database_manager - INFO - Versuche Verbindung '_temp_test_Jup_215552' hinzuzufügen mit config: {'connection_string': 'mysql://dataanalyzer:dataanalyzer_pwd@localhost:3306/my_test_db', 'type': 'mariadb'}
+2025-07-01 21:55:52,430 - etl_agent.database_manager - INFO - Erkannter Datenbanktyp für '_temp_test_Jup_215552': DatabaseType.MYSQL
+2025-07-01 21:55:52,430 - etl_agent.connectors.sql_connector - INFO - Connection String korrigiert: mysql://dataanalyzer:dataanalyzer_pwd@localhost:3306/my_test_db -> mysql+mysqlconnector://dataanalyzer:dataanalyzer_pwd@localhost:3306/my_test_db
+2025-07-01 21:55:52,430 - etl_agent.connectors.sql_connector - INFO - Verbinde zu mysql-Datenbank: mysql+mysqlconnector://dataanalyzer:dataanalyzer_pwd@localhost:3306/my_test_db
+2025-07-01 21:55:52,533 - etl_agent.connectors.sql_connector - INFO - mysql-Verbindung erfolgreich etabliert
+2025-07-01 21:55:52,533 - etl_agent.database_manager - INFO - Connector für '_temp_test_Jup_215552' erfolgreich erstellt: <class 'etl_agent.connectors.sql_connector.SQLConnector'>
+2025-07-01 21:55:52,534 - etl_agent.database_manager - INFO - Verbindungen in db_connections.json gespeichert (1 Verbindungen)
+2025-07-01 21:55:52,534 - etl_agent.database_manager - INFO - Datenbankverbindung '_temp_test_Jup_215552' (mysql) erfolgreich hinzugefügt und gespeichert
+2025-07-01 21:55:52,534 - etl_agent.connectors.sql_connector - INFO - Führe Abfrage aus: SELECT 1...
+2025-07-01 21:55:52,536 - etl_agent.connectors.sql_connector - INFO - Abfrage erfolgreich: 1 Zeilen zurückgegeben
+2025-07-01 21:55:54,047 - etl_agent.database_manager - INFO - Versuche Verbindung 'Jup' hinzuzufügen mit config: {'connection_string': 'mysql://dataanalyzer:dataanalyzer_pwd@localhost:3306/my_test_db', 'type': 'mariadb'}
+2025-07-01 21:55:54,047 - etl_agent.database_manager - INFO - Erkannter Datenbanktyp für 'Jup': DatabaseType.MYSQL
+2025-07-01 21:55:54,047 - etl_agent.connectors.sql_connector - INFO - Connection String korrigiert: mysql://dataanalyzer:dataanalyzer_pwd@localhost:3306/my_test_db -> mysql+mysqlconnector://dataanalyzer:dataanalyzer_pwd@localhost:3306/my_test_db
+2025-07-01 21:55:54,047 - etl_agent.connectors.sql_connector - INFO - Verbinde zu mysql-Datenbank: mysql+mysqlconnector://dataanalyzer:dataanalyzer_pwd@localhost:3306/my_test_db
+2025-07-01 21:55:54,063 - etl_agent.connectors.sql_connector - INFO - mysql-Verbindung erfolgreich etabliert
+2025-07-01 21:55:54,063 - etl_agent.database_manager - INFO - Connector für 'Jup' erfolgreich erstellt: <class 'etl_agent.connectors.sql_connector.SQLConnector'>
+2025-07-01 21:55:54,064 - etl_agent.database_manager - INFO - Verbindungen in db_connections.json gespeichert (1 Verbindungen)
+2025-07-01 21:56:42,351 - etl_agent.database_manager - INFO - Datenbankverbindung 'Jup' (mysql) erfolgreich hinzugefügt und gespeichert
+2025-07-01 21:56:42,351 - etl_agent.connectors.sql_connector - INFO - Führe Abfrage aus: SELECT 1...
+2025-07-01 21:56:42,355 - etl_agent.connectors.sql_connector - INFO - Abfrage erfolgreich: 1 Zeilen zurückgegeben
+2025-07-01 21:56:42,358 - __main__ - INFO - Neue Verbindung hinzugefügt: Jup (mariadb)
+2025-07-01 21:56:42,358 - etl_agent.connectors.sql_connector - INFO - Führe Abfrage aus: SELECT 1...
+2025-07-01 21:56:42,360 - etl_agent.connectors.sql_connector - INFO - Abfrage erfolgreich: 1 Zeilen zurückgegeben

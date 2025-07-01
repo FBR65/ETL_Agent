@@ -1,0 +1,6 @@
+{
+  "Jup": {
+    "connection_string": "mysql://dataanalyzer:dataanalyzer_pwd@localhost:3306/my_test_db",
+    "type": "mysql"
+  }
+}

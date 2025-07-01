@@ -136,11 +136,3 @@ Code-Generierung
 Sandbox-Execution für generierten Code
 SQL-Injection-Schutz
 Input-Validierung und -Sanitization
-📈 Roadmap
-Geplante Features
-<input disabled="" type="checkbox"> Grafische ETL-Pipeline Designer
-<input disabled="" type="checkbox"> Integration mit Cloud-Plattformen (AWS, Azure, GCP)
-<input disabled="" type="checkbox"> Advanced Monitoring & Alerting
-<input disabled="" type="checkbox"> Machine Learning Pipeline Integration
-<input disabled="" type="checkbox"> Real-time Stream Processing
-<input disabled="" type="checkb
