@@ -2,5 +2,33 @@
   "Jup": {
     "connection_string": "mysql://dataanalyzer:dataanalyzer_pwd@localhost:3306/my_test_db",
     "type": "mysql"
+  },
+  "_temp_test_heinz_185854": {
+    "connection_string": "mysql://dataanalyzer:dataanalyzer_pwd@localhost:3306/my_test_db",
+    "type": "mysql"
+  },
+  "1903": {
+    "connection_string": "mysql://dataanalyzer:dataanalyzer_pwd@localhost:3306/my_test_db",
+    "type": "mysql"
+  },
+  "_temp_test_1912_191218": {
+    "connection_string": "mysql://dataanalyzer:dataanalyzer_pwd@localhost:3306/my_test_db",
+    "type": "mysql"
+  },
+  "_temp_test_1914_191406": {
+    "connection_string": "mysql://dataanalyzer:dataanalyzer_pwd@localhost:3306/my_test_db",
+    "type": "mysql"
+  },
+  "_temp_test_1921_192145": {
+    "connection_string": "mysql://dataanalyzer:dataanalyzer_pwd@localhost:3306/my_test_db",
+    "type": "mysql"
+  },
+  "1935": {
+    "connection_string": "mysql://dataanalyzer:dataanalyzer_pwd@localhost:3306/my_test_db",
+    "type": "mysql"
+  },
+  "1942": {
+    "connection_string": "mysql://dataanalyzer:dataanalyzer_pwd@localhost:3306/my_test_db",
+    "type": "mariadb"
   }
 }

@@ -191,9 +191,9 @@ ANTWORTE NUR MIT DEM PYTHON-CODE, KEINE MARKDOWN-BLÖCKE!"""
             prompt = self._build_enhanced_generation_prompt(
                 request, context, schema_info
             )
-            
+
             logger.info(f"FULL PROMPT LENGTH: {len(prompt)} characters")
-            logger.info(f"FULL PROMPT:\n{'-'*80}\n{prompt}\n{'-'*80}")
+            logger.info(f"FULL PROMPT:\n{'-' * 80}\n{prompt}\n{'-' * 80}")
 
             # 4. Code mit PydanticAI generieren
             try:
@@ -201,34 +201,84 @@ ANTWORTE NUR MIT DEM PYTHON-CODE, KEINE MARKDOWN-BLÖCKE!"""
                 logger.info(f"REQUEST: {request.description}")
                 logger.info(f"VERFÜGBARE VERBINDUNGEN: {context.available_connections}")
                 logger.info(f"TRANSFORMATION HINTS: {context.transformation_hints}")
-                logger.info(f"SCHEMA INFO: {len(schema_info.get('available_connections_details', {}))} Verbindungen mit Schema")
-                
+                logger.info(
+                    f"SCHEMA INFO: {len(schema_info.get('available_connections_details', {}))} Verbindungen mit Schema"
+                )
+
                 # Prompt loggen (gekürzt)
                 prompt_preview = prompt[:500] + "..." if len(prompt) > 500 else prompt
                 logger.info(f"PROMPT PREVIEW: {prompt_preview}")
-                
+
                 logger.info("Starte AI-Agent für Code-Generierung...")
                 raw_code = await self.agent.run(prompt)
-                
-                logger.info(f"RAW AI RESPONSE LENGTH: {len(str(raw_code))} characters")
+
+                logger.info(f"RAW AI RESPONSE TYPE: {type(raw_code)}")
+                logger.info(f"RAW AI RESPONSE: {raw_code}")
                 logger.info("=== AI-AGENT DEBUG END ===")
-                
-                clean_code = self._clean_and_format_code(str(raw_code))
+
+                # AgentRunResult richtig verarbeiten
+                if hasattr(raw_code, "output"):
+                    # PydanticAI AgentRunResult - extrahiere output
+                    code_content = raw_code.output
+                    logger.info(
+                        f"Extracted code from AgentRunResult.output: {len(str(code_content))} characters"
+                    )
+                else:
+                    # Fallback für String-Response
+                    code_content = str(raw_code)
+
+                clean_code = self._clean_and_format_code(code_content)
 
                 if clean_code.strip():
                     logger.info("ETL-Code erfolgreich generiert und bereinigt")
-                    return ETLResponse(
-                        status="success",
-                        generated_code=clean_code,
-                        execution_plan=self._generate_execution_plan(request, context),
-                        metadata={
-                            "model": self.llm_model_name,
-                            "endpoint": self.llm_endpoint,
-                            "context_connections": context.available_connections,
-                            "generation_timestamp": datetime.now().isoformat(),
-                        },
-                        schema_info=schema_info,
-                    )
+
+                    # Sichere ETLResponse-Erstellung - verhindert 'unhashable type: slice' Fehler
+                    try:
+                        # Schema_info robust konvertieren
+                        safe_schema_info = {}
+                        if schema_info:
+                            for key, value in schema_info.items():
+                                try:
+                                    # Sichere Konvertierung von komplexen Objekten
+                                    if isinstance(value, dict):
+                                        safe_schema_info[key] = dict(value)
+                                    elif isinstance(value, list):
+                                        safe_schema_info[key] = list(value)
+                                    else:
+                                        safe_schema_info[key] = str(value)
+                                except Exception as convert_error:
+                                    logger.warning(
+                                        f"Schema-Info Konvertierung für {key} fehlgeschlagen: {convert_error}"
+                                    )
+                                    safe_schema_info[key] = str(value)
+
+                        return ETLResponse(
+                            status="success",
+                            generated_code=clean_code,
+                            execution_plan=self._generate_execution_plan(
+                                request, context
+                            ),
+                            metadata={
+                                "model": self.llm_model_name,
+                                "endpoint": self.llm_endpoint,
+                                "context_connections": list(
+                                    context.available_connections
+                                ),  # Explizit zu Liste konvertieren
+                                "generation_timestamp": datetime.now().isoformat(),
+                            },
+                            # schema_info sicher hinzufügen wenn ETLResponse das unterstützt
+                        )
+                    except Exception as response_error:
+                        logger.error(
+                            f"ETLResponse-Erstellung fehlgeschlagen: {response_error}"
+                        )
+                        # Minimal-Response ohne problematische Felder
+                        return ETLResponse(
+                            status="success",
+                            generated_code=clean_code,
+                            execution_plan=["Code generiert"],
+                            metadata={"model": self.llm_model_name},
+                        )
                 else:
                     return ETLResponse(
                         status="error", error_message="AI-Agent gab leeren Code zurück"
@@ -299,32 +349,65 @@ ANTWORTE NUR MIT DEM PYTHON-CODE, KEINE MARKDOWN-BLÖCKE!"""
                     # Schema-Informationen für jede Verbindung sammeln - KORRIGIERT
                     conn_config = self.db_manager.connection_configs.get(conn_name, {})
                     conn_type = conn_config.get("type", "unknown")
-                    
+
                     logger.info(f"Verbindungstyp: {conn_type}")
-                    
+
                     # Nutze die neue get_schema_info Methode
                     if conn_type == "mongodb":
                         # Für MongoDB: Extrahiere Datenbank aus Connection String
                         conn_string = conn_config.get("connection_string", "")
-                        db_name = conn_string.split("/")[-1] if "/" in conn_string else "default"
+                        db_name = (
+                            conn_string.split("/")[-1]
+                            if "/" in conn_string
+                            else "default"
+                        )
                         logger.info(f"MongoDB Datenbank: {db_name}")
-                        schema = self.db_manager.get_schema_info(conn_name, database=db_name)
+                        schema = self.db_manager.get_schema_info(
+                            conn_name, database=db_name
+                        )
                     else:
                         # Für SQL-Datenbanken
                         schema = self.db_manager.get_schema_info(conn_name)
-                    
-                    logger.info(f"Schema abgerufen: {len(schema.get('tables', schema.get('collections', {})))} Tabellen/Collections")
-                    
+
+                    logger.info(
+                        f"Schema abgerufen: {len(schema.get('tables', schema.get('collections', {})))} Tabellen/Collections"
+                    )
+
                     # Schema-Details loggen
                     if conn_type == "mongodb":
                         collections = schema.get("collections", {})
                         for coll_name, coll_info in collections.items():
-                            logger.info(f"  Collection {coll_name}: {coll_info.get('sample_fields', [])}")
+                            logger.info(
+                                f"  Collection {coll_name}: {coll_info.get('sample_fields', [])}"
+                            )
                     else:
                         tables = schema.get("tables", {})
                         for table_name, table_info in tables.items():
-                            columns = [col['name'] for col in table_info.get('columns', [])]
-                            logger.info(f"  Tabelle {table_name}: {columns}")
+                            try:
+                                # Robuste Column-Extraktion - verhindert 'unhashable type: slice' Fehler
+                                columns_data = table_info.get("columns", [])
+                                if isinstance(columns_data, list):
+                                    columns = []
+                                    for col in columns_data:
+                                        if isinstance(col, dict) and "name" in col:
+                                            columns.append(str(col["name"]))
+                                        elif isinstance(col, str):
+                                            columns.append(col)
+                                        else:
+                                            columns.append(str(col))
+                                else:
+                                    columns = (
+                                        [str(columns_data)] if columns_data else []
+                                    )
+
+                                logger.info(f"  Tabelle {table_name}: {columns}")
+                            except Exception as col_error:
+                                logger.warning(
+                                    f"  Tabelle {table_name}: Schema-Fehler - {col_error}"
+                                )
+                                logger.info(
+                                    f"  Tabelle {table_name}: [Schema nicht verfügbar]"
+                                )
 
                     schema_info["available_connections_details"][conn_name] = {
                         "type": conn_type,
@@ -411,9 +494,16 @@ ANTWORTE NUR MIT DEM PYTHON-CODE, KEINE MARKDOWN-BLÖCKE!"""
                 if isinstance(schema, dict) and "tables" in schema:
                     tables = schema["tables"]
                     if tables:
-                        prompt_parts.append(
-                            f"  Tabellen: {', '.join(tables[:5])}{'...' if len(tables) > 5 else ''}"
+                        # Sichere Tabellen-Liste - verhindert 'unhashable type: slice' Fehler
+                        table_names = (
+                            list(tables.keys())
+                            if isinstance(tables, dict)
+                            else list(tables)
                         )
+                        table_display = table_names[:5]
+                        table_str = ", ".join(str(t) for t in table_display)
+                        more_indicator = "..." if len(table_names) > 5 else ""
+                        prompt_parts.append(f"  Tabellen: {table_str}{more_indicator}")
 
         prompt_parts.extend(
             [
@@ -483,8 +573,38 @@ ANTWORTE NUR MIT DEM PYTHON-CODE, KEINE MARKDOWN-BLÖCKE!"""
         return plan
 
     def _clean_and_format_code(self, raw_code: str) -> str:
-        """Bereinigt und formatiert den generierten Code"""
-        clean_code = raw_code.strip()
+        """
+        Bereinigt und formatiert den generierten Code
+        ✅ Behandelt AgentRunResult-Output korrekt
+        ✅ Entfernt Markdown-Blöcke
+        ✅ Formatiert für Lesbarkeit
+        """
+        # Sichere String-Konvertierung
+        if raw_code is None:
+            return ""
+
+        clean_code = str(raw_code).strip()
+
+        # AgentRunResult-spezifische Bereinigung
+        if "AgentRunResult(output=" in clean_code:
+            # Extrahiere Code aus AgentRunResult-String
+            import re
+
+            match = re.search(r"AgentRunResult\(output='([^']*)'", clean_code)
+            if match:
+                clean_code = match.group(1)
+            else:
+                # Fallback: versuche anderen Pattern
+                if "output='" in clean_code:
+                    start = clean_code.find("output='") + 8
+                    end = clean_code.rfind("')")
+                    if start < end:
+                        clean_code = clean_code[start:end]
+
+        # Escape-Sequenzen dekodieren
+        clean_code = (
+            clean_code.replace("\\n", "\n").replace("\\t", "\t").replace("\\'", "'")
+        )
 
         # Markdown-Code-Blöcke entfernen
         if clean_code.startswith("```python"):
