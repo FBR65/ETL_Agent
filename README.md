@@ -11,8 +11,10 @@ Ein KI-basierter ETL-Agent mit PydanticAI, A2A (Agent-to-Agent) Communication un
 - **Intelligente Code-Bereinigung**: Automatische Syntaxfehler-Korrektur und Formatierung
 
 **Beispiel:**
-Eingabe: "Lade Daten aus Emil DB und addiere 1 zum Alter, exportiere als CSV" Ausgabe: Vollständiger Python ETL-Code mit DatabaseManager-Integration
-
+```
+Eingabe: "Lade Daten aus Emil DB und addiere 1 zum Alter, exportiere als CSV"
+Ausgabe: Vollständiger Python ETL-Code mit DatabaseManager-Integration
+```
 
 ### 2. **Multi-Database Management**
 - **Flexible Datenbankverbindungen**: Konfiguration verschiedener Datenbank-Typen
@@ -22,9 +24,11 @@ Eingabe: "Lade Daten aus Emil DB und addiere 1 zum Alter, exportiere als CSV" Au
 
 ### 3. **Gradio Web Interface**
 - **ETL-Prozess Designer**: Intuitive Benutzeroberfläche für ETL-Beschreibungen
-- **Datenbankverbindungen verwalten**: GUI für Connection-Management
-- **Job-Scheduler**: Planen und verwalten von ETL-Jobs
-- **Real-time Monitoring**: Live-Status und Logs aller Services
+- **Fresh Connections System**: Dropdowns laden automatisch die neuesten Verbindungen bei jedem Klick
+- **Zero Event-Chain Complexity**: Einfacher, wartbarer Code ohne komplexe Cross-Tab-Updates
+- **Instant Synchronization**: Alle Tabs zeigen immer aktuelle Verbindungen
+- **Non-blocking UI**: Asynchrone Operationen verhindern UI-Hängen
+- **Real-time Feedback**: Sofortige Statusmeldungen bei allen Operationen
 
 ### 4. **Agent-to-Agent (A2A) Communication**
 - **FastAPI-basierter A2A Server**: Port 8091
@@ -46,15 +50,29 @@ Eingabe: "Lade Daten aus Emil DB und addiere 1 zum Alter, exportiere als CSV" Au
 
 ## 🏗️ Systemarchitektur
 
-### Services
-
-┌─────────────────┐ ┌─────────────────┐ ┌─────────────────┐ │ Gradio UI │ │ MCP Server │ │ A2A Server │ │ Port: 7860 │ │ Port: 8090 │ │ Port: 8091 │ └─────────────────┘ └─────────────────┘ └─────────────────┘ │ │ │ └─────────────────────┼─────────────────────┘ │ ┌─────────────────────▼─────────────────────┐ │ ETL Agent Core │ │ (PydanticAI + LLM) │ └─────────────────────┬─────────────────────┘ │ ┌─────────────────────▼─────────────────────┐ │ Database Manager │ │ (Multi-DB Connectors) │ └───────────────────────────────────────────┘
-
+```
+┌─────────────────┐ ┌─────────────────┐ ┌─────────────────┐
+│   Gradio UI     │ │   MCP Server    │ │   A2A Server    │
+│   Port: 7860    │ │   Port: 8090    │ │   Port: 8091    │
+└─────────────────┘ └─────────────────┘ └─────────────────┘
+        │                   │                   │
+        └─────────────────────┼─────────────────────┘
+                              │
+        ┌─────────────────────▼─────────────────────┐
+        │           ETL Agent Core                  │
+        │        (PydanticAI + LLM)                │
+        └─────────────────────┬─────────────────────┘
+                              │
+        ┌─────────────────────▼─────────────────────┐
+        │         Database Manager                  │
+        │      (Multi-DB Connectors)               │
+        └───────────────────────────────────────────┘
+```
 
 ### Komponenten
 - **ETL Agent Core**: Kern-Engine mit PydanticAI-Integration
-- **Database Manager**: Multi-Database Abstraktionsschicht
-- **Gradio Interface**: Web-basierte Benutzeroberfläche
+- **Database Manager**: Multi-Database Abstraktionsschicht mit Fresh Connection Loading
+- **Gradio Interface**: Web-basierte Benutzeroberfläche mit revolutionärem UI-System
 - **MCP Server**: Model Context Protocol Server
 - **A2A Server**: Agent-to-Agent Communication Server
 - **Scheduler Service**: Job-Scheduling und -Management
@@ -65,74 +83,167 @@ Eingabe: "Lade Daten aus Emil DB und addiere 1 zum Alter, exportiere als CSV" Au
 ```bash
 uv sync
 ```
-2. Umgebungsvariablen konfigurieren
-3. Alle Services starten
-4. Services einzeln starten
-📱 Zugriff auf die Services
-Gradio Web UI: http://localhost:7860
-MCP Server: http://localhost:8090
-A2A Server: http://localhost:8091
-Scheduler API: http://localhost:8092
-💾 Datenbankunterstützung
-Unterstützte Datenbanken
-MySQL/MariaDB: mysql://user:pass@host:port/db
-PostgreSQL: postgresql://user:pass@host:port/db
-MongoDB: mongodb://user:pass@host:port/db
-SQLite: sqlite:///path/to/database.db
-Oracle: oracle://user:pass@host:port/db
-SQL Server: mssql+pyodbc://user:pass@host:port/db
-Connection Management
-Verbindung über Gradio UI hinzufügen
-Connection String eingeben
-Verbindung testen
-In ETL-Prozessen verwenden
-🤖 AI-Integration
-LLM-Konfiguration
-Standard: Qwen2.5 über Ollama (localhost:11434)
-Anpassbar: Jeder OpenAI-kompatible Endpoint
-PydanticAI: Strukturierte AI-Responses mit Datenvalidierung
-Retry-Mechanismus: Automatische Wiederholung bei Fehlern
-Prompt Engineering
-Spezialisierte Prompts für ETL-Code-Generierung
-Context-aware Generierung basierend auf verfügbaren Datenbanken
-Automatische Code-Optimierung und -Bereinigung
-📊 Monitoring & Logging
-Service Status
-Log-Dateien
-Gradio Logs: etl_agent_gradio.log
-Service Logs: Über uvicorn/fastapi
-ETL Execution Logs: In generierten Scripten
-🔧 Erweiterte Funktionen
-Code-Generierung Features
-Chunking Support: Automatische Optimierung für große Datasets
-Error Handling: Robuste Fehlerbehandlung in generiertem Code
-Schema-aware: Berücksichtigung von Datenbankstrukturen
-Performance Optimization: Automatische Query-Optimierung
-Multi-Agent Capabilities
-Agent Discovery: Automatische Erkennung verfügbarer Agents
-Task Distribution: Verteilung komplexer ETL-Tasks auf mehrere Agents
-Result Aggregation: Zusammenführung von Multi-Agent-Ergebnissen
-📝 Beispiel-Workflows
-1. Einfacher ETL-Prozess
-2. Komplexer Transformations-Prozess
-3. Multi-Agent Koordination
-🛠️ Technische Details
-Architektur-Prinzipien
-Microservices: Lose gekoppelte Service-Architektur
-API-First: REST-basierte Kommunikation zwischen Services
-Plugin-System: Erweiterbare Connector-Architektur
-Configuration-driven: Flexible Konfiguration über Environment Variables
-Performance-Optimierungen
-Connection Pooling: Effiziente Datenbankverbindungen
-Async Processing: Non-blocking I/O für bessere Performance
-Chunked Processing: Memory-effiziente Verarbeitung großer Datasets
-Caching: Intelligentes Caching von Schema-Informationen
-🔒 Sicherheit & Best Practices
-Datenbankverbindungen
-Sichere Speicherung von Connection Strings
-Verschlüsselung sensibler Daten
-Verbindungsvalidierung vor Verwendung
-Code-Generierung
-Sandbox-Execution für generierten Code
-SQL-Injection-Schutz
-Input-Validierung und -Sanitization
+
+### 2. Alle Services starten
+```bash
+python launcher.py
+```
+
+### 3. Services einzeln starten
+```bash
+# Gradio Web UI
+python -m etl_agent.gradio_interface
+
+# MCP Server
+python -m etl_agent.mcp_server
+
+# A2A Server
+python -m etl_agent.agent_to_a2a
+```
+
+## 📱 Zugriff auf die Services
+
+- **Gradio Web UI**: http://localhost:7860
+- **MCP Server**: http://localhost:8090
+- **A2A Server**: http://localhost:8091
+
+## 💾 Datenbankunterstützung
+
+### Unterstützte Datenbanken
+- **MySQL/MariaDB**: `mysql://user:pass@host:port/db`
+- **PostgreSQL**: `postgresql://user:pass@host:port/db`
+- **MongoDB**: `mongodb://user:pass@host:port/db`
+- **SQLite**: `sqlite:///path/to/database.db`
+- **Oracle**: `oracle://user:pass@host:port/db`
+- **SQL Server**: `mssql+pyodbc://user:pass@host:port/db`
+
+### Connection Management
+- **Instant Save**: Verbindungen werden sofort gespeichert ohne UI-Blockierung
+- **Fresh Dropdown System**: Automatisches Laden aktueller Verbindungen bei Dropdown-Focus
+- **Smart UI Updates**: Keine komplexen Event-Chains - einfacher, robuster Ansatz
+- **Cross-Tab Synchronization**: ETL-Designer und Database-Tabs sind immer synchronisiert
+- **Connection Testing**: Asynchrone Verbindungstests ohne UI-Hängen
+- **Real-time Feedback**: Sofortige Statusmeldungen bei allen Operationen
+
+## 🤖 AI-Integration
+
+### LLM-Konfiguration
+- **Standard**: Qwen2.5 über Ollama (localhost:11434)
+- **Anpassbar**: Jeder OpenAI-kompatible Endpoint
+- **PydanticAI**: Strukturierte AI-Responses mit Datenvalidierung
+- **Retry-Mechanismus**: Automatische Wiederholung bei Fehlern
+
+### Prompt Engineering
+- **Spezialisierte Prompts**: Optimiert für ETL-Code-Generierung
+- **Context-aware Generierung**: Basierend auf verfügbaren Datenbanken
+- **Automatische Code-Optimierung**: Syntaxfehler-Korrektur und Formatierung
+- **Fresh Connection Awareness**: Berücksichtigung aktueller Datenbankverbindungen
+
+## 📊 Monitoring & Logging
+
+### Service Status
+- **Real-time Dashboard**: Live-Übersicht aller Services
+- **Health Checks**: Automatische Service-Überwachung
+- **Performance Metrics**: Response-Zeiten und Durchsatz
+
+### Log-Dateien
+- **Gradio Logs**: `etl_agent_gradio.log` mit UTF-8-Encoding
+- **Service Logs**: Über uvicorn/fastapi
+- **ETL Execution Logs**: In generierten Scripten
+
+## ✨ Revolutionary UI/UX Features (v2.0)
+
+### Fresh Connections System
+- **On-Demand Loading**: Dropdowns laden Verbindungen nur bei Bedarf (Focus-Event)
+- **Zero Event-Chain Complexity**: Einfacher, wartbarer Code ohne komplexe Cross-Tab-Updates
+- **Instant Synchronization**: Alle Tabs zeigen immer aktuelle Daten
+- **Memory Efficient**: Keine unnötigen Speicher-Overhead durch Event-Listener
+
+### Performance Optimierungen
+- **Async UI Operations**: Alle langwierigen Operationen sind asynchron
+- **Direct JSON Access**: Ultra-schnelle Datenabfragen ohne ORM-Overhead
+- **Smart Caching**: Intelligente Zwischenspeicherung für bessere Performance
+- **Non-blocking Interface**: UI bleibt immer responsiv
+
+### User Experience
+- **Instant Feedback**: Sofortige Statusmeldungen bei allen Aktionen
+- **Progressive Enhancement**: Interface funktioniert auch bei langsamen Verbindungen
+- **Error Resilience**: Robuste Fehlerbehandlung mit benutzerfreundlichen Meldungen
+- **Consistent State**: Alle UI-Komponenten sind immer synchronisiert
+
+## 🔧 Erweiterte Funktionen
+
+### Code-Generierung Features
+- **Chunking Support**: Automatische Optimierung für große Datasets
+- **Error Handling**: Robuste Fehlerbehandlung in generiertem Code
+- **Schema-aware**: Berücksichtigung von Datenbankstrukturen
+- **Performance Optimization**: Automatische Query-Optimierung
+
+### Multi-Agent Capabilities
+- **Agent Discovery**: Automatische Erkennung verfügbarer Agents
+- **Task Distribution**: Verteilung komplexer ETL-Tasks auf mehrere Agents
+- **Result Aggregation**: Zusammenführung von Multi-Agent-Ergebnissen
+
+## 📝 Beispiel-Workflows
+
+1. **Einfacher ETL-Prozess**: Datenextraktion, Transformation und Export
+2. **Komplexer Transformations-Prozess**: Multi-Table-Joins mit Aggregationen
+3. **Multi-Agent Koordination**: Verteilte Verarbeitung großer Datasets
+
+## 🛠️ Technische Details
+
+### Architektur-Prinzipien
+- **Microservices**: Lose gekoppelte Service-Architektur
+- **API-First**: REST-basierte Kommunikation zwischen Services
+- **Plugin-System**: Erweiterbare Connector-Architektur
+- **Configuration-driven**: Flexible Konfiguration über Environment Variables
+
+### Performance-Optimierungen
+- **Connection Pooling**: Effiziente Datenbankverbindungen
+- **Async Processing**: Non-blocking I/O für bessere Performance
+- **Chunked Processing**: Memory-effiziente Verarbeitung großer Datasets
+- **Intelligent Caching**: Schema-Informationen und Connection-Status
+- **Fresh Connection Loading**: On-Demand Loading verhindert unnötige Ressourcenverbrauch
+
+## 🔒 Sicherheit & Best Practices
+
+### Datenbankverbindungen
+- **Sichere Speicherung**: Verschlüsselte Connection Strings
+- **Verbindungsvalidierung**: Automatische Tests vor Verwendung
+- **Input-Sanitization**: Schutz vor SQL-Injection
+
+### Code-Generierung
+- **Sandbox-Execution**: Sichere Ausführung generierten Codes
+- **Input-Validierung**: Strikte Eingabevalidierung
+- **Error Handling**: Robuste Fehlerbehandlung
+
+## 🚀 Neue Features (v2.0)
+
+### ✅ Fresh Connections System
+- **Revolutionäres UI-Design**: Keine komplexen Event-Chains mehr
+- **Instant Synchronization**: Alle Dropdowns immer aktuell
+- **Zero Configuration**: Funktioniert out-of-the-box
+- **Performance**: Ultra-schnelle JSON-basierte Updates
+- **Robustheit**: Einfacher, wartbarer Code
+
+### ✅ Async-First Architecture
+- **Non-blocking UI**: Interface hängt nie mehr
+- **Progressive Enhancement**: Bessere User Experience
+- **Error Resilience**: Graceful Degradation bei Fehlern
+- **Real-time Feedback**: Sofortige Statusupdates
+
+### ✅ Production-Ready Features
+- **UTF-8 Logging**: Korrekte Behandlung von Unicode-Zeichen
+- **Instant UI Updates**: Sofortige Dropdown-Aktualisierung nach Änderungen
+- **Robust Error Handling**: Graceful Degradation bei Netzwerkproblemen
+- **Memory Efficient**: Optimierter Ressourcenverbrauch
+
+## 🎉 Fazit
+
+Der ETL Agent v2.0 stellt einen Meilenstein in der Entwicklung von KI-basierten Datenverarbeitungstools dar. Mit dem revolutionären Fresh Connections System, der async-first Architektur und der nahtlosen Multi-Database-Integration bietet er eine beispiellose Kombination aus Benutzerfreundlichkeit, Performance und Robustheit.
+
+**Perfekt für:**
+- Data Engineers, die schnelle ETL-Prototypen benötigen
+- Entwickler, die komplexe Datenverarbeitungspipelines erstellen
+- Teams, die KI-gestützte Automatisierung einsetzen möchten
+- Organisationen, die Multi-Database-Umgebungen verwalten
