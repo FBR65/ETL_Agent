@@ -6,11 +6,11 @@ Basiert auf dem Dataanalyzer-Ansatz mit persistenter Speicherung
 import logging
 import json
 import os
-from typing import Dict, List, Any, Optional, Union
+import time
+from typing import Dict, List, Any
 from enum import Enum
 import pandas as pd
-from urllib.parse import urlparse
-from pathlib import Path
+import threading
 
 # Database Connectors
 from .connectors.mongodb_connector import MongoDBConnector
@@ -44,6 +44,7 @@ class DatabaseManager:
         self.connections: Dict[str, Any] = {}
         self.connection_configs: Dict[str, Dict] = {}
         self.config_file = config_file
+        self._lock = threading.RLock()  # Re-entrant Lock für robuste Thread-Sicherheit
 
         # Lade gespeicherte Verbindungen beim Start
         self._load_connections()
@@ -57,18 +58,18 @@ class DatabaseManager:
                     logger.info(
                         f"Lade {len(saved_configs)} gespeicherte Verbindungen aus {self.config_file}"
                     )
-
-                    for name, config in saved_configs.items():
-                        try:
-                            # Konfiguration laden, aber Verbindung erst bei Bedarf herstellen
-                            self.connection_configs[name] = config
-                            logger.info(
-                                f"Verbindung '{name}' aus Datei geladen ({config.get('type', 'unknown')})"
-                            )
-                        except Exception as e:
-                            logger.error(
-                                f"Fehler beim Laden der Verbindung '{name}': {e}"
-                            )
+                    with self._lock:
+                        for name, config in saved_configs.items():
+                            try:
+                                # Konfiguration laden, aber Verbindung erst bei Bedarf herstellen
+                                self.connection_configs[name] = config
+                                logger.info(
+                                    f"Verbindung '{name}' aus Datei geladen ({config.get('type', 'unknown')})"
+                                )
+                            except Exception as e:
+                                logger.error(
+                                    f"Fehler beim Laden der Konfiguration für '{name}': {e}"
+                                )
             else:
                 logger.info(
                     f"Keine gespeicherte Konfigurationsdatei gefunden: {self.config_file}"
@@ -77,145 +78,59 @@ class DatabaseManager:
             logger.error(f"Fehler beim Laden der Verbindungen: {e}")
 
     def _save_connections(self):
-        """Speichert aktuelle Verbindungen in JSON-Datei mit robuster Fehlerbehandlung"""
-        import threading
+        """
+        Speichert die aktuellen Verbindungskonfigurationen thread-sicher in die JSON-Datei.
+        Die langsame I/O-Operation wird außerhalb des Locks ausgeführt.
+        """
+        with self._lock:
+            # Erstelle eine Kopie der Konfigurationen innerhalb des Locks
+            configs_to_save = {
+                name: {
+                    "connection_string": conf.get("connection_string", ""),
+                    "type": conf.get("type", ""),
+                }
+                for name, conf in self.connection_configs.items()
+            }
 
-        def save_worker():
-            """Worker-Thread für das Speichern mit Timeout"""
-            try:
-                logger.info(
-                    f"Starte Speichervorgang für {len(self.connection_configs)} Verbindungen..."
-                )
-
-                # Nur die Konfigurationen speichern, nicht die aktiven Verbindungen
-                configs_to_save = {}
-
-                for name, config in self.connection_configs.items():
-                    try:
-                        logger.debug(f"Verarbeite Verbindung '{name}'...")
-
-                        # Extrem sichere Konvertierung - nur Grundwerte
-                        safe_config = {
-                            "connection_string": str(
-                                config.get("connection_string", "")
-                            ),
-                            "type": str(config.get("type", "")),
-                        }
-
-                        # Prüfe explizit auf serialisierbare Zusatzwerte
-                        for key, value in config.items():
-                            if key not in ["connection_string", "type"]:
-                                try:
-                                    # Test-Serialisierung
-                                    json.dumps(value)
-                                    safe_config[key] = value
-                                except (TypeError, ValueError):
-                                    logger.debug(
-                                        f"Überspringe nicht-serialisierbaren Wert für '{key}' in '{name}'"
-                                    )
-                                    continue
-
-                        configs_to_save[name] = safe_config
-                        logger.debug(f"Verbindung '{name}' erfolgreich vorbereitet")
-
-                    except Exception as config_error:
-                        logger.warning(
-                            f"Fehler bei Verbindung '{name}': {config_error}"
-                        )
-                        # Ultra-Fallback: Nur Connection String und Typ
-                        try:
-                            configs_to_save[name] = {
-                                "connection_string": str(
-                                    config.get("connection_string", "")
-                                ),
-                                "type": str(config.get("type", "")),
-                            }
-                        except Exception:
-                            logger.error(
-                                f"Kann Verbindung '{name}' nicht speichern - überspringe"
-                            )
-                            continue
-
-                # Schreibe JSON-Datei
-                logger.debug(
-                    f"Schreibe {len(configs_to_save)} Verbindungen in {self.config_file}..."
-                )
-
-                with open(self.config_file, "w", encoding="utf-8") as f:
-                    json.dump(configs_to_save, f, indent=2, ensure_ascii=False)
-
-                logger.info(
-                    f"✅ Verbindungen erfolgreich gespeichert ({len(configs_to_save)} Verbindungen)"
-                )
-                return True
-
-            except Exception as e:
-                logger.error(f"❌ Speichervorgang fehlgeschlagen: {e}")
-                return False
-
-        # Führe Speichervorgang in Thread mit Timeout aus
-        result = [False]
-
-        def target():
-            result[0] = save_worker()
-
-        save_thread = threading.Thread(target=target)
-        save_thread.daemon = True
-        save_thread.start()
-        save_thread.join(timeout=10)  # 10 Sekunden Timeout
-
-        if save_thread.is_alive():
-            logger.error("❌ Speichervorgang nach 10 Sekunden abgebrochen (Timeout)")
-            return
-
-        if not result[0]:
-            logger.warning(
-                "⚠️ Hauptspeicherung fehlgeschlagen, versuche Minimalversion..."
+        # Führe die langsame Datei-I/O außerhalb des Locks aus
+        try:
+            with open(self.config_file, "w", encoding="utf-8") as f:
+                json.dump(configs_to_save, f, indent=2, ensure_ascii=False)
+            logger.info(
+                f"[OK] {len(configs_to_save)} Verbindungen in {self.config_file} gespeichert."
             )
-            # Ultra-Fallback: Nur Connection String und Typ, synchron
-            try:
-                minimal_configs = {}
-                for name, config in self.connection_configs.items():
-                    try:
-                        minimal_configs[name] = {
-                            "connection_string": str(
-                                config.get("connection_string", "")
-                            ),
-                            "type": str(config.get("type", "")),
-                        }
-                    except Exception:
-                        continue
-
-                with open(self.config_file, "w", encoding="utf-8") as f:
-                    json.dump(minimal_configs, f, indent=2, ensure_ascii=False)
-
-                logger.info(
-                    f"✅ Minimal-Speicherung erfolgreich ({len(minimal_configs)} Verbindungen)"
-                )
-            except Exception as fallback_error:
-                logger.error(
-                    f"❌ Auch Minimal-Speicherung fehlgeschlagen: {fallback_error}"
-                )
+        except Exception as e:
+            logger.error(f"❌ Speichervorgang fehlgeschlagen: {e}")
+            # Hier keinen Fehler auslösen, um die Anwendung nicht zum Absturz zu bringen
 
     def add_connection(self, name: str, connection_config: Dict[str, Any]) -> bool:
-        """Fügt eine neue Datenbankverbindung hinzu"""
+        """Fügt eine neue Datenbankverbindung hinzu - optimiert für Race Condition-Vermeidung"""
         try:
             logger.info(
                 f"Versuche Verbindung '{name}' hinzuzufügen mit config: {connection_config}"
             )
 
+            # Schritt 1: Datenbanktyp erkennen (schnell, außerhalb Lock)
             db_type = self._detect_database_type(connection_config)
             logger.info(f"Erkannter Datenbanktyp für '{name}': {db_type}")
 
-            connector = self._create_connector(db_type, connection_config)
-            logger.info(
-                f"Connector für '{name}' erfolgreich erstellt: {type(connector)}"
-            )
+            # Schritt 2: Konfiguration thread-sicher speichern (OHNE Connector-Erstellung)
+            with self._lock:
+                # Doppelte Prüfung innerhalb des Locks
+                if name in self.connection_configs:
+                    logger.warning(
+                        f"Verbindung '{name}' existiert bereits, überspringe Hinzufügen"
+                    )
+                    return False
 
-            self.connections[name] = connector
-            self.connection_configs[name] = {**connection_config, "type": db_type.value}
+                # Nur Konfiguration speichern, Connector wird bei Bedarf erstellt (lazy loading)
+                self.connection_configs[name] = {
+                    **connection_config,
+                    "type": db_type.value,
+                }
+                logger.info(f"Konfiguration für '{name}' gespeichert")
 
-            # Verbindungen persistent speichern
+            # Schritt 3: Datei außerhalb des Locks speichern
             self._save_connections()
 
             logger.info(
@@ -227,6 +142,30 @@ class DatabaseManager:
             logger.error(
                 f"Fehler beim Hinzufügen der Verbindung '{name}': {e}", exc_info=True
             )
+            return False
+
+    def add_connection_simple(
+        self, name: str, db_type: str, connection_string: str
+    ) -> bool:
+        """Ultra-einfaches Speichern einer Verbindung - SOFORT und ohne Umwege"""
+        try:
+            # Direkt in die Konfiguration einfügen
+            with self._lock:
+                if name in self.connection_configs:
+                    return False  # Bereits vorhanden
+
+                self.connection_configs[name] = {
+                    "connection_string": connection_string,
+                    "type": db_type,
+                }
+
+            # Sofort in JSON speichern
+            self._save_connections()
+            logger.info(f"[OK] Verbindung '{name}' ultra-schnell gespeichert")
+            return True
+
+        except Exception as e:
+            logger.error(f"❌ Fehler beim einfachen Speichern: {e}")
             return False
 
     def _detect_database_type(self, config: Dict[str, Any]) -> DatabaseType:
@@ -265,86 +204,123 @@ class DatabaseManager:
         raise ValueError(f"Unbekannter Datenbanktyp: {config}")
 
     def _create_connector(self, db_type: DatabaseType, config: Dict[str, Any]):
-        """Erstellt passenden Connector für Datenbanktyp"""
-        if db_type == DatabaseType.MONGODB:
-            return MongoDBConnector(
-                connection_string=config["connection_string"],
-                **config.get("mongodb_options", {}),
+        """Erstellt passenden Connector für Datenbanktyp - mit produktionsreifer Fehlerbehandlung"""
+        try:
+            if db_type == DatabaseType.MONGODB:
+                return MongoDBConnector(
+                    connection_string=config["connection_string"],
+                    **config.get("mongodb_options", {}),
+                )
+            elif db_type in [
+                DatabaseType.POSTGRESQL,
+                DatabaseType.MYSQL,
+                DatabaseType.MARIADB,
+                DatabaseType.SQLITE,
+                DatabaseType.SQLSERVER,
+            ]:
+                # MariaDB als MySQL an SQLConnector übergeben
+                connector_db_type = (
+                    "mysql" if db_type == DatabaseType.MARIADB else db_type.value
+                )
+                return SQLConnector(
+                    connection_string=config["connection_string"],
+                    db_type=connector_db_type,
+                )
+            elif db_type == DatabaseType.ORACLE:
+                if OracleConnector is None:
+                    raise ImportError("Oracle-Connector nicht verfügbar")
+                return OracleConnector(
+                    connection_string=config["connection_string"],
+                    **config.get("oracle_options", {}),
+                )
+            else:
+                raise ValueError(f"Nicht unterstützter Datenbanktyp: {db_type}")
+
+        except ImportError as e:
+            # Fehlende Abhängigkeiten
+            error_msg = f"Fehlende Abhängigkeit für {db_type.value}: {str(e)}"
+            logger.error(error_msg)
+            raise ImportError(error_msg)
+        except Exception as e:
+            # Connector-Erstellung fehlgeschlagen
+            error_msg = (
+                f"Connector-Erstellung für {db_type.value} fehlgeschlagen: {str(e)}"
             )
-        elif db_type in [
-            DatabaseType.POSTGRESQL,
-            DatabaseType.MYSQL,
-            DatabaseType.MARIADB,
-            DatabaseType.SQLITE,
-            DatabaseType.SQLSERVER,
-        ]:
-            # MariaDB als MySQL an SQLConnector übergeben
-            connector_db_type = (
-                "mysql" if db_type == DatabaseType.MARIADB else db_type.value
-            )
-            return SQLConnector(
-                connection_string=config["connection_string"], db_type=connector_db_type
-            )
-        elif db_type == DatabaseType.ORACLE:
-            if OracleConnector is None:
-                raise ImportError("Oracle-Connector nicht verfügbar")
-            return OracleConnector(
-                connection_string=config["connection_string"],
-                **config.get("oracle_options", {}),
-            )
-        else:
-            raise ValueError(f"Nicht unterstützter Datenbanktyp: {db_type}")
+            logger.error(error_msg)
+            raise Exception(error_msg)
 
     def get_connection(self, name: str):
         """Gibt Datenbankverbindung zurück - mit lazy loading"""
-        if name not in self.connection_configs:
-            raise ValueError(f"Verbindung '{name}' nicht konfiguriert")
+        with self._lock:
+            if name not in self.connection_configs:
+                raise ValueError(f"Verbindung '{name}' nicht konfiguriert")
 
-        # Lazy loading: Verbindung erst bei Bedarf herstellen
-        if name not in self.connections:
-            try:
-                config = self.connection_configs[name]
-                db_type = self._detect_database_type(config)
-                connector = self._create_connector(db_type, config)
-                self.connections[name] = connector
-                logger.info(f"Lazy-loaded Verbindung '{name}' ({db_type.value})")
-            except Exception as e:
-                logger.error(f"Fehler beim Lazy-Loading der Verbindung '{name}': {e}")
-                raise
+            # Lazy loading: Verbindung erst bei Bedarf herstellen
+            if name not in self.connections:
+                try:
+                    config = self.connection_configs[name]
+                    db_type = self._detect_database_type(config)
+                    connector = self._create_connector(db_type, config)
+                    self.connections[name] = connector
+                    logger.info(f"Lazy-loaded Verbindung '{name}' ({db_type.value})")
+                except Exception as e:
+                    logger.error(
+                        f"Fehler beim Lazy-Loading der Verbindung '{name}': {e}"
+                    )
+                    raise
 
         return self.connections[name]
 
     def remove_connection(self, name: str) -> bool:
-        """Entfernt eine Datenbankverbindung"""
+        """Entfernt eine Datenbankverbindung - sicher und ohne Race Conditions"""
         try:
-            if name in self.connections:
-                # Verbindung schließen falls möglich
-                if hasattr(self.connections[name], "close"):
-                    self.connections[name].close()
-                del self.connections[name]
+            with self._lock:
+                # Schritt 1: Verbindung aus dem Speicher schließen und entfernen
+                if name in self.connections:
+                    # Verbindung schließen falls möglich
+                    if hasattr(self.connections[name], "close"):
+                        self.connections[name].close()
+                    del self.connections[name]
+                    logger.info(f"Aktive Verbindung '{name}' geschlossen")
 
-            if name in self.connection_configs:
-                del self.connection_configs[name]
-                self._save_connections()
-                logger.info(f"Verbindung '{name}' entfernt")
-                return True
-            else:
-                logger.warning(f"Verbindung '{name}' nicht gefunden")
-                return False
+                # Schritt 2: Konfiguration aus dem Speicher entfernen
+                if name in self.connection_configs:
+                    del self.connection_configs[name]
+                    logger.info(f"Konfiguration für '{name}' aus dem Speicher entfernt")
+                else:
+                    logger.warning(
+                        f"Verbindung '{name}' nicht in Konfiguration gefunden"
+                    )
+                    return False
+
+            # Schritt 3: Datei außerhalb des Locks aktualisieren
+            self._save_connections()
+            logger.info(
+                f"Verbindung '{name}' vollständig entfernt und Datei gespeichert"
+            )
+            return True
+
         except Exception as e:
             logger.error(f"Fehler beim Entfernen der Verbindung '{name}': {e}")
             return False
 
     def list_connections(self) -> List[Dict[str, Any]]:
-        """Listet alle verfügbaren Verbindungen auf"""
-        return [
-            {
-                "name": name,
-                "type": config.get("type"),
-                "status": "connected" if name in self.connections else "disconnected",
-            }
-            for name, config in self.connection_configs.items()
-        ]
+        """Listet alle verfügbaren Verbindungen auf - sichere Kopie aller Informationen"""
+        with self._lock:
+            # Erstelle eine vollständige und sichere Kopie aller Verbindungsinformationen
+            connections_copy = []
+            for name, config in self.connection_configs.items():
+                connection_info = {
+                    "name": name,
+                    "type": config.get("type", "unknown"),
+                    "connection_string": config.get("connection_string", ""),
+                    "status": "connected"
+                    if name in self.connections
+                    else "disconnected",
+                }
+                connections_copy.append(connection_info)
+
+            return connections_copy
 
     def get_database_schema(self, connection_name: str) -> Dict[str, Any]:
         """Gibt Datenbankschema für Verbindung zurück"""
@@ -429,85 +405,49 @@ class DatabaseManager:
             connector.insert_dataframe(df, table_name, if_exists)
             logger.info(f"DataFrame in SQL-Tabelle {table_name} geladen")
 
-    def test_connection(self, connection_name: str, timeout: int = 5) -> Dict[str, Any]:
-        """Testet Datenbankverbindung mit robustem Thread-Timeout"""
-        import time
-        import threading
+    def test_connection(
+        self, name: str, db_type: str, conn_string: str
+    ) -> Dict[str, Any]:
+        """
+        Testet eine Datenbankverbindung - Produktionsreife Version.
+        Führt nur minimale, schnelle Operationen aus.
+        """
+        start_time = time.time()
+        try:
+            # Temporären Connector erstellen, ohne ihn zu speichern
+            config = {"connection_string": conn_string, "type": db_type}
+            detected_type = self._detect_database_type(config)
+            connector = self._create_connector(detected_type, config)
 
-        def test_worker():
-            """Worker für Connection Test - macht echten DB-Test"""
-            start_time = time.time()
-            try:
-                connector = self.get_connection(connection_name)
-                db_type = self.connection_configs[connection_name]["type"]
+            # Nur minimale Verbindungstests - keine zeitaufwändigen Schema-Abfragen
+            if detected_type == DatabaseType.MONGODB:
+                # MongoDB: Nur Ping - kein list_databases()
+                connector.client.admin.command("ping")
+                message = "✅ MongoDB Verbindung erfolgreich"
+            else:  # SQL-Datenbanken
+                # SQL: Nur SELECT 1 - kein get_table_names()
+                connector.execute_query("SELECT 1")
+                message = f"✅ {db_type.upper()}-Datenbank Verbindung erfolgreich"
 
-                # Echte Verbindung und einfache Abfrage
-                if db_type == "mongodb":
-                    # MongoDB: Ping-Test
-                    connector.client.admin.command("ping")
-                    databases = connector.list_databases()
-                    elapsed = round(time.time() - start_time, 2)
-                    return {
-                        "status": "success",
-                        "message": f"✅ MongoDB verbunden ({elapsed}s). {len(databases)} Datenbanken gefunden.",
-                        "details": {
-                            "databases": databases[:5],
-                            "elapsed_time": elapsed,
-                            "type": db_type,
-                        },
-                    }
-                else:
-                    # SQL: Simple SELECT 1 Test
-                    connector.execute_query("SELECT 1")
-                    tables = connector.get_table_names()
-                    elapsed = round(time.time() - start_time, 2)
-                    return {
-                        "status": "success",
-                        "message": f"✅ {db_type.upper()}-Datenbank verbunden ({elapsed}s). {len(tables)} Tabellen gefunden.",
-                        "details": {
-                            "tables": tables[:10],
-                            "elapsed_time": elapsed,
-                            "type": db_type,
-                        },
-                    }
-
-            except Exception as e:
-                elapsed = round(time.time() - start_time, 2)
-                return {
-                    "status": "error",
-                    "message": f"❌ Verbindungsfehler ({elapsed}s): {str(e)}",
-                    "details": {
-                        "connection_name": connection_name,
-                        "error": str(e),
-                        "elapsed_time": elapsed,
-                    },
-                }
-
-        # Thread-basierter Timeout
-        result = [None]
-
-        def target():
-            result[0] = test_worker()
-
-        thread = threading.Thread(target=target)
-        thread.daemon = True
-        thread.start()
-        thread.join(timeout=timeout)
-
-        if thread.is_alive():
-            # Thread läuft noch - Timeout erreicht
+            elapsed = round(time.time() - start_time, 2)
             return {
-                "status": "error",
-                "message": f"❌ Verbindungstest nach {timeout} Sekunden abgebrochen (Timeout)",
-                "details": {"connection_name": connection_name, "timeout": timeout},
+                "status": "success",
+                "message": f"{message} (Dauer: {elapsed}s)",
             }
 
-        # Thread beendet - Ergebnis zurückgeben
-        return result[0] or {
-            "status": "error",
-            "message": "❌ Unbekannter Fehler beim Verbindungstest",
-            "details": {"connection_name": connection_name},
-        }
+        except Exception as e:
+            elapsed = round(time.time() - start_time, 2)
+            logger.error(
+                f"Verbindungstest für '{name}' fehlgeschlagen: {e}", exc_info=False
+            )
+            return {
+                "status": "error",
+                "message": f"❌ Verbindungsfehler nach {elapsed}s: {str(e)}",
+                "details": {
+                    "connection_name": name,
+                    "error": str(e),
+                },
+            }
 
     def close_all_connections(self):
         """Schließt alle Datenbankverbindungen"""
@@ -653,4 +593,22 @@ class DatabaseManager:
                 "error": str(e),
                 "tables": {} if db_type != "mongodb" else {},
                 "collections": {} if db_type == "mongodb" else {},
+            }
+
+    def connection_exists(self, name: str) -> bool:
+        """Prüft thread-sicher, ob eine Verbindung bereits existiert"""
+        with self._lock:
+            return name in self.connection_configs
+
+    def get_diagnostic_info(self) -> Dict[str, Any]:
+        """Gibt Diagnoseinformationen zurück für Debugging"""
+        with self._lock:
+            return {
+                "config_count": len(self.connection_configs),
+                "active_connections": len(self.connections),
+                "config_names": list(self.connection_configs.keys()),
+                "active_names": list(self.connections.keys()),
+                "config_file": self.config_file,
+                "file_exists": os.path.exists(self.config_file),
+                "lock_acquired": True,  # Wenn wir hier sind, haben wir den Lock
             }
