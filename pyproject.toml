@@ -38,6 +38,7 @@ dependencies = [
     "python-dotenv>=1.0.0",
     "pydantic>=2.5.0",
     "httpx>=0.25.0",
+    "psutil>=5.9.0",  # Für Process-Management im Launcher
     "rich>=13.0.0",  # Für bessere CLI-Ausgaben
     "typer>=0.9.0",  # CLI Interface
     "psutil>=5.9.0",  # Process-Management

@@ -1032,12 +1032,28 @@ def launch():
         print("[ETL DEBUG] Gradio interface created successfully")
 
         print("[ETL DEBUG] Launching Gradio interface on port 7860...")
+
+        # Port aus Umgebungsvariable lesen (vom Launcher gesetzt)
+        gradio_port = int(os.environ.get("ETL_GRADIO_PORT", "7860"))
+        print(f"[ETL DEBUG] Using port: {gradio_port}")
+
+        # Wichtig: queue=True aktiviert den Server persistent
+        interface.queue()
+
+        # KRITISCH: Starte Gradio DIREKT im Hauptthread - das ist der korrekte Weg
+        print(f"[ETL DEBUG] Launching Gradio on port {gradio_port} in main thread...")
+
         interface.launch(
             server_name="0.0.0.0",
-            server_port=7860,
+            server_port=gradio_port,  # Verwende den dynamischen Port
             share=False,
             debug=True,
+            prevent_thread_lock=False,  # WICHTIG: Gradio soll den Thread blockieren
+            inbrowser=False,  # Verhindert automatisches Öffnen des Browsers
+            show_error=True,  # Zeigt Fehler an
+            quiet=False,  # Zeigt Startup-Logs
         )
+
         print("[ETL DEBUG] Gradio interface launched successfully")
 
     except Exception as e:
