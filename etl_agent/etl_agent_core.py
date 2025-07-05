@@ -13,8 +13,10 @@ from pydantic_ai.models.openai import OpenAIModel
 from pydantic_ai.providers.openai import OpenAIProvider
 
 from .database_manager import DatabaseManager
+from .utils.logger import ETLDesignerLogger
 
 logger = logging.getLogger(__name__)
+etl_core_logger = ETLDesignerLogger("etl_core")
 
 
 class ETLRequest(BaseModel):
@@ -179,6 +181,17 @@ ANTWORTE NUR MIT DEM PYTHON-CODE, KEINE MARKDOWN-BLÖCKE!"""
         Verarbeitet eine ETL-Anfrage mit Multi-DB Support und verbesserter Context-Analyse
         """
         try:
+            # Enhanced Logging: Start
+            etl_core_logger.log_user_action(
+                "etl_request_processing_started",
+                {
+                    "description": request.description,
+                    "source_config": request.source_config,
+                    "target_config": request.target_config,
+                    "transformation_rules": request.transformation_rules,
+                },
+            )
+
             logger.info(f"Verarbeite ETL-Anfrage: {request.description}")
 
             # 1. Kontext analysieren und sammeln
@@ -210,7 +223,26 @@ ANTWORTE NUR MIT DEM PYTHON-CODE, KEINE MARKDOWN-BLÖCKE!"""
                 logger.info(f"PROMPT PREVIEW: {prompt_preview}")
 
                 logger.info("Starte AI-Agent für Code-Generierung...")
+
+                # Enhanced Logging: AI Interaction Start
+                etl_core_logger.log_user_action(
+                    "ai_code_generation_started",
+                    {
+                        "prompt_length": len(prompt),
+                        "available_connections": len(context.available_connections),
+                        "schema_connections": len(
+                            schema_info.get("available_connections_details", {})
+                        ),
+                    },
+                )
+
+                import time
+
+                ai_start_time = time.time()
+
                 raw_code = await self.agent.run(prompt)
+
+                ai_duration = time.time() - ai_start_time
 
                 logger.info(f"RAW AI RESPONSE TYPE: {type(raw_code)}")
                 logger.info(f"RAW AI RESPONSE: {raw_code}")
@@ -231,6 +263,14 @@ ANTWORTE NUR MIT DEM PYTHON-CODE, KEINE MARKDOWN-BLÖCKE!"""
 
                 if clean_code.strip():
                     logger.info("ETL-Code erfolgreich generiert und bereinigt")
+
+                    # Enhanced Logging: AI Success
+                    etl_core_logger.log_ai_interaction(
+                        prompt=request.description,
+                        response=clean_code,
+                        tokens_used=0,  # TODO: Extract from raw_code if available
+                        duration=ai_duration,
+                    )
 
                     # Sichere ETLResponse-Erstellung - verhindert 'unhashable type: slice' Fehler
                     try:
@@ -265,10 +305,15 @@ ANTWORTE NUR MIT DEM PYTHON-CODE, KEINE MARKDOWN-BLÖCKE!"""
                                     context.available_connections
                                 ),  # Explizit zu Liste konvertieren
                                 "generation_timestamp": datetime.now().isoformat(),
+                                "tokens_used": 0,  # TODO: Extract from raw_code
+                                "ai_duration": ai_duration,
                             },
                             # schema_info sicher hinzufügen wenn ETLResponse das unterstützt
                         )
                     except Exception as response_error:
+                        etl_core_logger.log_error(
+                            response_error, "ETLResponse creation failed"
+                        )
                         logger.error(
                             f"ETLResponse-Erstellung fehlgeschlagen: {response_error}"
                         )

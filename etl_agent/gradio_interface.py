@@ -13,22 +13,61 @@ import os
 import json
 from typing import List, Tuple
 
-from .etl_agent_core import ETLAgent, ETLRequest
-from .database_manager import DatabaseManager
-from .scheduler import ETLScheduler
+try:
+    from .etl_agent_core import ETLAgent, ETLRequest
+    from .database_manager import DatabaseManager
+    from .scheduler import ETLScheduler
+    from .utils.logger import ETLDesignerLogger, setup_etl_logging
 
-# Logging für Gradio konfigurieren
-import sys
+    # Enhanced Logging Setup
+    etl_logger = setup_etl_logging("INFO", "etl_agent_gradio.log")
+    designer_logger = ETLDesignerLogger("etl_designer")
+    logger = logging.getLogger(__name__)
 
-logging.basicConfig(
-    level=logging.INFO,
-    format="%(asctime)s - %(name)s - %(levelname)s - %(message)s",
-    handlers=[
-        logging.StreamHandler(sys.stdout),
-        logging.FileHandler("etl_agent_gradio.log", encoding="utf-8"),
-    ],
-)
-logger = logging.getLogger(__name__)
+    print("[ETL DEBUG] All imports successful")
+
+except Exception as e:
+    # Fallback logging without enhanced features
+    logging.basicConfig(
+        level=logging.INFO,
+        format="%(asctime)s - %(name)s - %(levelname)s - %(message)s",
+        handlers=[
+            logging.StreamHandler(),
+            logging.FileHandler("etl_agent_gradio_fallback.log", encoding="utf-8"),
+        ],
+    )
+    logger = logging.getLogger(__name__)
+    logger.error(f"Import error in gradio_interface: {e}")
+    print(f"[ETL ERROR] Import failed: {e}")
+
+    # Create dummy classes to prevent further errors
+    class DummyLogger:
+        def log_user_action(self, *args, **kwargs):
+            pass
+
+        def log_ai_interaction(self, *args, **kwargs):
+            pass
+
+        def log_database_operation(self, *args, **kwargs):
+            pass
+
+        def log_connection_event(self, *args, **kwargs):
+            pass
+
+        def log_error(self, *args, **kwargs):
+            pass
+
+        def log_warning(self, *args, **kwargs):
+            pass
+
+        def log_session_metrics(self, *args, **kwargs):
+            pass
+
+    designer_logger = DummyLogger()
+    etl_logger = DummyLogger()
+
+    # Re-raise the exception to fail fast
+    raise
 
 
 class ETLGradioInterface:
@@ -39,50 +78,125 @@ class ETLGradioInterface:
     _shared_db_manager = None
 
     def __init__(self, db_manager=None):
-        if db_manager:
-            self.db_manager = db_manager
-            ETLGradioInterface._shared_db_manager = db_manager
-        elif ETLGradioInterface._shared_db_manager:
-            self.db_manager = ETLGradioInterface._shared_db_manager
-        else:
-            self.db_manager = DatabaseManager()
-            ETLGradioInterface._shared_db_manager = self.db_manager
+        """Initialize ETL Gradio Interface with robust error handling"""
+        print("[ETL DEBUG] Initializing ETL Gradio Interface...")
 
-        self.etl_agent = ETLAgent()
-        self.etl_agent.db_manager = self.db_manager
-        self.scheduler = ETLScheduler()
+        try:
+            # Initialize database manager
+            if db_manager:
+                self.db_manager = db_manager
+                ETLGradioInterface._shared_db_manager = db_manager
+                print("[ETL DEBUG] Using provided database manager")
+            elif ETLGradioInterface._shared_db_manager:
+                self.db_manager = ETLGradioInterface._shared_db_manager
+                print("[ETL DEBUG] Using shared database manager")
+            else:
+                print("[ETL DEBUG] Creating new database manager...")
+                self.db_manager = DatabaseManager()
+                ETLGradioInterface._shared_db_manager = self.db_manager
+                print("[ETL DEBUG] Database manager created successfully")
 
-        logger.info(
-            f"ETL Gradio Interface initialisiert - DB Manager geteilt (Verbindungen: {len(self.db_manager.connection_configs)})"
-        )
+            # Initialize ETL Agent
+            print("[ETL DEBUG] Initializing ETL Agent...")
+            self.etl_agent = ETLAgent()
+            self.etl_agent.db_manager = self.db_manager
+            print("[ETL DEBUG] ETL Agent initialized successfully")
 
-    def create_interface(self) -> gr.Blocks:
-        """Erstellt das vollständige Gradio Interface."""
-        with gr.Blocks(
-            title="ETL Agent - Intelligente Datenverarbeitung",
-            theme=gr.themes.Soft(),
-        ) as interface:
-            gr.Markdown("# 🚀 ETL Agent - Intelligente Datenverarbeitung")
-            gr.Markdown(
-                """
-                **KI-basierte ETL-Code-Generierung mit PydanticAI**  
-                Beschreiben Sie Ihren ETL-Prozess in natürlicher Sprache und lassen Sie den Agenten Python-Code generieren.
-                """
+            # Initialize Scheduler
+            print("[ETL DEBUG] Initializing Scheduler...")
+            self.scheduler = ETLScheduler()
+            print("[ETL DEBUG] Scheduler initialized successfully")
+
+            # Log connection count safely
+            try:
+                connection_count = (
+                    len(self.db_manager.connection_configs)
+                    if hasattr(self.db_manager, "connection_configs")
+                    else 0
+                )
+                logger.info(
+                    f"ETL Gradio Interface initialisiert - DB Manager geteilt (Verbindungen: {connection_count})"
+                )
+                print(f"[ETL DEBUG] Connection count: {connection_count}")
+            except Exception as e:
+                logger.warning(f"Could not get connection count: {e}")
+                print(f"[ETL WARNING] Could not get connection count: {e}")
+
+            # Enhanced Logging: Log startup info (nur einmal)
+            if not hasattr(ETLGradioInterface, "_startup_logged"):
+                try:
+                    self._log_startup_info()
+                    ETLGradioInterface._startup_logged = True
+                    print("[ETL DEBUG] Startup logging completed")
+                except Exception as e:
+                    logger.error(f"Startup logging failed: {e}")
+                    print(f"[ETL ERROR] Startup logging failed: {e}")
+
+            print(
+                "[ETL DEBUG] ETL Gradio Interface initialization completed successfully"
             )
 
-            with gr.Tabs():
-                with gr.Tab("🔗 Datenbankverbindungen", id="db_tab"):
-                    self._create_database_tab()
-                with gr.Tab("⚙️ ETL-Prozess Designer", id="etl_tab"):
-                    self._create_etl_tab()
-                with gr.Tab("⏰ Job-Scheduler", id="scheduler_tab"):
-                    self._create_scheduler_tab()
-                with gr.Tab("📊 Monitoring", id="monitoring_tab"):
-                    self._create_monitoring_tab()
-                with gr.Tab("🤖 Agent-Status", id="agent_tab"):
-                    self._create_agent_status_tab()
+        except Exception as e:
+            logger.error(
+                f"Critical error during ETL Gradio Interface initialization: {e}"
+            )
+            print(f"[ETL CRITICAL] Initialization failed: {e}")
+            raise
 
-        return interface
+    def create_interface(self) -> gr.Blocks:
+        """Erstellt das vollständige Gradio Interface mit robuster Fehlerbehandlung."""
+        try:
+            print("[ETL DEBUG] Creating Gradio interface...")
+
+            with gr.Blocks(
+                title="ETL Agent - Intelligente Datenverarbeitung",
+                theme=gr.themes.Soft(),
+            ) as interface:
+                print("[ETL DEBUG] Adding interface content...")
+
+                gr.Markdown("# 🚀 ETL Agent - Intelligente Datenverarbeitung")
+                gr.Markdown(
+                    """
+                    **KI-basierte ETL-Code-Generierung mit PydanticAI**  
+                    Beschreiben Sie Ihren ETL-Prozess in natürlicher Sprache und lassen Sie den Agenten Python-Code generieren.
+                    """
+                )
+
+                with gr.Tabs():
+                    print("[ETL DEBUG] Creating tabs...")
+
+                    with gr.Tab("🔗 Datenbankverbindungen", id="db_tab"):
+                        print("[ETL DEBUG] Creating database tab...")
+                        self._create_database_tab()
+
+                    with gr.Tab("⚙️ ETL-Prozess Designer", id="etl_tab"):
+                        print("[ETL DEBUG] Creating ETL tab...")
+                        self._create_etl_tab()
+
+                    with gr.Tab("⏰ Job-Scheduler", id="scheduler_tab"):
+                        print("[ETL DEBUG] Creating scheduler tab...")
+                        self._create_scheduler_tab()
+
+                    with gr.Tab("📊 Monitoring", id="monitoring_tab"):
+                        print("[ETL DEBUG] Creating monitoring tab...")
+                        self._create_monitoring_tab()
+
+                    with gr.Tab("🤖 Agent-Status", id="agent_tab"):
+                        print("[ETL DEBUG] Creating agent status tab...")
+                        self._create_agent_status_tab()
+
+                    print("[ETL DEBUG] All tabs created successfully")
+
+            print("[ETL DEBUG] Gradio interface created successfully")
+            return interface
+
+        except Exception as e:
+            print(f"[ETL CRITICAL] Failed to create Gradio interface: {e}")
+            logger.error(f"Critical error during interface creation: {e}")
+            import traceback
+
+            traceback.print_exc()
+            raise
 
     def _create_etl_tab(self):
         """Erstellt den 'ETL-Prozess Designer' Tab."""
@@ -281,6 +395,53 @@ class ETLGradioInterface:
         llm_test_result = gr.Textbox(label="LLM Test Ergebnis", interactive=False)
         test_llm_btn.click(fn=self.test_llm_connection_async, outputs=[llm_test_result])
 
+    def log_session_metrics(self):
+        """Logs session metrics for monitoring and debugging"""
+        try:
+            designer_logger.log_session_metrics()
+            logger.info("Session metrics logged successfully")
+        except Exception as e:
+            logger.error(f"Error logging session metrics: {e}")
+
+    def _log_startup_info(self):
+        """Logs startup information with robust error handling"""
+        try:
+            print("[ETL DEBUG] Logging startup information...")
+
+            # Get connections safely
+            try:
+                connections = self._get_fresh_connections()
+                print(f"[ETL DEBUG] Found {len(connections)} connections")
+            except Exception as e:
+                print(f"[ETL WARNING] Could not get connections: {e}")
+                connections = []
+
+            # Log startup info
+            try:
+                if hasattr(designer_logger, "log_user_action"):
+                    designer_logger.log_user_action(
+                        "gradio_interface_started",
+                        {
+                            "available_connections": len(connections),
+                            "connections_list": connections,
+                            "scheduler_enabled": hasattr(self, "scheduler"),
+                            "etl_agent_available": hasattr(self, "etl_agent"),
+                        },
+                    )
+                    print("[ETL DEBUG] Designer logger startup info logged")
+                else:
+                    print("[ETL WARNING] Designer logger not available")
+            except Exception as e:
+                print(f"[ETL ERROR] Designer logger failed: {e}")
+
+            logger.info("Startup information logged")
+            print("[ETL DEBUG] Startup information logging completed")
+
+        except Exception as e:
+            logger.error(f"Error logging startup info: {e}")
+            print(f"[ETL ERROR] Startup info logging failed: {e}")
+            # Don't re-raise, this is not critical
+
     # --- Asynchrone Event-Handler ---
 
     async def add_connection_async(
@@ -291,8 +452,22 @@ class ETLGradioInterface:
         progress=gr.Progress(track_tqdm=True),
     ) -> Tuple[str, List, gr.Dropdown]:
         """Fügt eine Verbindung asynchron hinzu - OHNE Test für maximale Geschwindigkeit"""
+
+        # Enhanced Logging: User Action
+        designer_logger.log_user_action(
+            "connection_add_started",
+            {
+                "name": name,
+                "db_type": db_type,
+                "conn_string_length": len(conn_string) if conn_string else 0,
+            },
+        )
+
         if not name or not conn_string:
             msg = "❌ Name und Connection String sind erforderlich."
+            designer_logger.log_warning(
+                "Missing connection parameters", "name or connection_string empty"
+            )
             return (
                 msg,
                 self._get_connections_for_display(),
@@ -308,6 +483,7 @@ class ETLGradioInterface:
 
             if connection_exists:
                 msg = f"❌ Verbindung '{name}' existiert bereits."
+                designer_logger.log_warning("Connection already exists", f"name={name}")
                 return (
                     msg,
                     self._get_connections_for_display(),
@@ -329,6 +505,10 @@ class ETLGradioInterface:
 
             if not add_result:
                 msg = f"❌ Speichern der Verbindung '{name}' fehlgeschlagen."
+                designer_logger.log_error(
+                    Exception("Connection save failed"),
+                    f"Failed to save connection {name}",
+                )
                 logger.error(msg)
                 return (
                     msg,
@@ -338,6 +518,12 @@ class ETLGradioInterface:
 
             progress(1.0, desc="Fertig!")
             status_msg = f"✅ Verbindung '{name}' erfolgreich gespeichert. Nutzen Sie 'Nur Testen' um die Verbindung zu prüfen."
+
+            # Enhanced Logging: Success
+            designer_logger.log_database_operation(
+                "connection_added", name, success=True, details={"type": db_type}
+            )
+
             logger.info(status_msg)
 
             return (
@@ -348,6 +534,10 @@ class ETLGradioInterface:
 
         except asyncio.TimeoutError:
             msg = "❌ Timeout beim Speichern der Verbindung."
+            designer_logger.log_error(
+                TimeoutError("Connection save timeout"),
+                f"Timeout saving connection {name}",
+            )
             logger.warning(f"Speichern von '{name}' fehlgeschlagen wegen Timeout.")
             return (
                 msg,
@@ -356,6 +546,7 @@ class ETLGradioInterface:
             )
         except Exception as e:
             msg = f"❌ Unerwarteter Fehler: {e}"
+            designer_logger.log_error(e, f"Unexpected error adding connection {name}")
             logger.error(
                 f"Unerwarteter Fehler beim Hinzufügen von '{name}': {e}", exc_info=True
             )
@@ -373,11 +564,25 @@ class ETLGradioInterface:
         progress=gr.Progress(track_tqdm=True),
     ) -> str:
         """Testet eine Verbindung asynchron, ohne die UI zu blockieren."""
+
+        # Enhanced Logging: User Action
+        designer_logger.log_user_action(
+            "connection_test_started",
+            {
+                "name": name,
+                "db_type": db_type,
+                "conn_string_length": len(conn_string) if conn_string else 0,
+            },
+        )
+
         if not conn_string:
+            designer_logger.log_warning("Empty connection string for test")
             return "❌ Connection String ist erforderlich"
 
         progress(0.1, desc="Starte Verbindungstest...")
         logger.info(f"Starte asynchronen Verbindungstest für '{name}'")
+
+        start_time = time.time()
 
         try:
             test_result = await asyncio.wait_for(
@@ -386,16 +591,50 @@ class ETLGradioInterface:
                 ),
                 timeout=5.0,  # Konsistenter 5-Sekunden-Timeout
             )
+
+            elapsed = time.time() - start_time
+
+            # Enhanced Logging: Connection Test Result
+            designer_logger.log_connection_event(
+                "test", name, success=test_result["status"] == "success"
+            )
+
+            if test_result["status"] == "success":
+                designer_logger.log_database_operation(
+                    "connection_test",
+                    name,
+                    success=True,
+                    details={"duration": elapsed, "type": db_type},
+                )
+            else:
+                designer_logger.log_database_operation(
+                    "connection_test",
+                    name,
+                    success=False,
+                    details={
+                        "duration": elapsed,
+                        "error": test_result.get("message", "Unknown error"),
+                    },
+                )
+
             logger.info(
                 f"Asynchroner Test für '{name}' abgeschlossen: {test_result['status']}"
             )
             return test_result["message"]
+
         except asyncio.TimeoutError:
+            elapsed = time.time() - start_time
+            designer_logger.log_error(
+                TimeoutError("Connection test timeout"),
+                f"Connection test timeout for {name} after {elapsed:.2f}s",
+            )
             logger.warning(
                 f"Verbindungstest für '{name}' hat Timeout (5s) überschritten."
             )
             return "❌ Timeout nach 5 Sekunden. Der Datenbankserver antwortet nicht oder ist sehr langsam."
         except Exception as e:
+            elapsed = time.time() - start_time
+            designer_logger.log_error(e, f"Connection test error for {name}")
             logger.error(
                 f"Fehler beim asynchronen Verbindungstest für '{name}': {e}",
                 exc_info=True,
@@ -445,9 +684,23 @@ class ETLGradioInterface:
         output_format: str,
         progress=gr.Progress(track_tqdm=True),
     ) -> Tuple[str, str]:
-        """Generiert ETL-Code asynchron mit einem robusten Timeout."""
+        """Generiert ETL-Code asynchron mit erweiterten Logging-Funktionen."""
         start_time = time.time()
+
+        # Enhanced Logging: User Action
+        designer_logger.log_user_action(
+            "etl_code_generation_started",
+            {
+                "description": description,
+                "source_conn": source_conn,
+                "target_conn": target_conn,
+                "transformation_hints": transformation_hints,
+                "output_format": output_format,
+            },
+        )
+
         if not description.strip():
+            designer_logger.log_warning("Empty ETL description provided")
             return ("", "❌ Bitte geben Sie eine ETL-Beschreibung ein.")
 
         progress(0.1, desc="Analysiere Anfrage...")
@@ -467,19 +720,41 @@ class ETLGradioInterface:
             )
 
             progress(0.4, desc="Kontaktiere AI-Agent...")
+
+            # Enhanced Logging: AI Interaction Start
+            designer_logger.log_user_action(
+                "ai_processing_started",
+                {
+                    "prompt_length": len(description),
+                    "connections_available": len(available_connections),
+                },
+            )
+
             result = await asyncio.wait_for(
                 self.etl_agent.process_etl_request(etl_request), timeout=45.0
             )
 
             elapsed = time.time() - start_time
-            logger.info(f"ETL-Code-Generierung abgeschlossen in {elapsed:.1f}s")
 
             if result.status == "success":
+                # Enhanced Logging: Success
+                designer_logger.log_ai_interaction(
+                    prompt=description,
+                    response=result.generated_code,
+                    tokens_used=result.metadata.get("tokens_used", 0),
+                    duration=elapsed,
+                )
+
                 log_message = (
                     f"✅ ETL-Code erfolgreich generiert! (Dauer: {elapsed:.1f}s)"
                 )
+                logger.info(f"ETL-Code-Generierung abgeschlossen in {elapsed:.1f}s")
                 return (result.generated_code, log_message)
             else:
+                # Enhanced Logging: AI Error
+                designer_logger.log_error(
+                    Exception(result.error_message), "AI ETL Code Generation Failed"
+                )
                 error_details = f"❌ AI-Agent Fehler: {result.error_message}"
                 logger.error(f"ETL-Agent-Error: {result.error_message}")
                 return ("", error_details)
@@ -487,11 +762,13 @@ class ETLGradioInterface:
         except asyncio.TimeoutError:
             elapsed = time.time() - start_time
             msg = f"❌ Timeout nach {elapsed:.1f}s. Der AI-Agent antwortet nicht. Prüfen Sie den Ollama-Server."
+            designer_logger.log_error(TimeoutError(msg), "AI Agent Timeout")
             logger.error(msg)
             return ("", msg)
         except Exception as e:
             elapsed = time.time() - start_time
             msg = f"❌ Unerwarteter Fehler nach {elapsed:.1f}s: {e}"
+            designer_logger.log_error(e, "ETL Code Generation Unexpected Error")
             logger.error(msg, exc_info=True)
             return ("", msg)
 
@@ -713,35 +990,63 @@ class ETLGradioInterface:
             return ["Fehler beim Laden"]
 
     def _get_fresh_connections(self):
-        """Lädt immer die aktuellsten Verbindungen direkt aus der JSON-Datei."""
+        """Lädt immer die aktuellsten Verbindungen direkt aus der JSON-Datei mit robuster Fehlerbehandlung."""
         try:
             json_file = "db_connections.json"
             if not os.path.exists(json_file):
+                print(f"[ETL DEBUG] Connection file {json_file} not found")
                 return []
 
+            print(f"[ETL DEBUG] Reading connections from {json_file}")
             with open(json_file, "r", encoding="utf-8") as f:
                 connections_data = json.load(f)
 
             fresh_choices = list(connections_data.keys())
+            print(f"[ETL DEBUG] Fresh connections loaded: {fresh_choices}")
             logger.info(f"Fresh connections geladen: {fresh_choices}")
             return fresh_choices if fresh_choices else []
+
+        except json.JSONDecodeError as e:
+            print(f"[ETL ERROR] JSON decode error in connections file: {e}")
+            logger.error(f"JSON decode error beim Laden der frischen Verbindungen: {e}")
+            return []
         except Exception as e:
+            print(f"[ETL ERROR] Error loading fresh connections: {e}")
             logger.error(f"Fehler beim Laden der frischen Verbindungen: {e}")
             return []
 
 
 def launch():
-    """Startet das Gradio Interface."""
-    # Stelle sicher, dass eine Instanz des Managers erstellt wird
-    # und über die Klasse geteilt wird.
-    interface_manager = ETLGradioInterface()
-    interface = interface_manager.create_interface()
-    interface.launch(
-        server_name="0.0.0.0",
-        server_port=7860,
-        share=False,
-        debug=True,
-    )
+    """Startet das Gradio Interface mit robuster Fehlerbehandlung."""
+    try:
+        print("[ETL DEBUG] Starting Gradio Interface launch...")
+
+        # Stelle sicher, dass eine Instanz des Managers erstellt wird
+        # und über die Klasse geteilt wird.
+        print("[ETL DEBUG] Creating ETL Gradio Interface instance...")
+        interface_manager = ETLGradioInterface()
+        print("[ETL DEBUG] ETL Gradio Interface instance created successfully")
+
+        print("[ETL DEBUG] Creating Gradio interface...")
+        interface = interface_manager.create_interface()
+        print("[ETL DEBUG] Gradio interface created successfully")
+
+        print("[ETL DEBUG] Launching Gradio interface on port 7860...")
+        interface.launch(
+            server_name="0.0.0.0",
+            server_port=7860,
+            share=False,
+            debug=True,
+        )
+        print("[ETL DEBUG] Gradio interface launched successfully")
+
+    except Exception as e:
+        print(f"[ETL CRITICAL] Failed to launch Gradio interface: {e}")
+        logger.error(f"Critical error during launch: {e}")
+        import traceback
+
+        traceback.print_exc()
+        raise
 
 
 if __name__ == "__main__":

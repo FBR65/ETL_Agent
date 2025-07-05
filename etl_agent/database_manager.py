@@ -15,6 +15,7 @@ import threading
 # Database Connectors
 from .connectors.mongodb_connector import MongoDBConnector
 from .connectors.sql_connector import SQLConnector
+from .utils.logger import ETLDesignerLogger
 
 # Oracle Connector optional
 try:
@@ -23,6 +24,7 @@ except ImportError:
     OracleConnector = None
 
 logger = logging.getLogger(__name__)
+db_logger = ETLDesignerLogger("database_manager")
 
 
 class DatabaseType(Enum):
@@ -106,6 +108,14 @@ class DatabaseManager:
     def add_connection(self, name: str, connection_config: Dict[str, Any]) -> bool:
         """Fügt eine neue Datenbankverbindung hinzu - optimiert für Race Condition-Vermeidung"""
         try:
+            # Enhanced Logging: Start
+            db_logger.log_database_operation(
+                "add_connection_started",
+                name,
+                success=True,
+                details={"config_keys": list(connection_config.keys())},
+            )
+
             logger.info(
                 f"Versuche Verbindung '{name}' hinzuzufügen mit config: {connection_config}"
             )
@@ -118,6 +128,10 @@ class DatabaseManager:
             with self._lock:
                 # Doppelte Prüfung innerhalb des Locks
                 if name in self.connection_configs:
+                    db_logger.log_warning(
+                        f"Connection '{name}' already exists",
+                        "duplicate_connection_attempt",
+                    )
                     logger.warning(
                         f"Verbindung '{name}' existiert bereits, überspringe Hinzufügen"
                     )
@@ -133,12 +147,22 @@ class DatabaseManager:
             # Schritt 3: Datei außerhalb des Locks speichern
             self._save_connections()
 
+            # Enhanced Logging: Success
+            db_logger.log_database_operation(
+                "add_connection_completed",
+                name,
+                success=True,
+                details={"type": db_type.value},
+            )
+
             logger.info(
                 f"Datenbankverbindung '{name}' ({db_type.value}) erfolgreich hinzugefügt und gespeichert"
             )
             return True
 
         except Exception as e:
+            # Enhanced Logging: Error
+            db_logger.log_error(e, f"Failed to add connection {name}")
             logger.error(
                 f"Fehler beim Hinzufügen der Verbindung '{name}': {e}", exc_info=True
             )
@@ -413,6 +437,15 @@ class DatabaseManager:
         Führt nur minimale, schnelle Operationen aus.
         """
         start_time = time.time()
+
+        # Enhanced Logging: Start
+        db_logger.log_database_operation(
+            "test_connection_started",
+            name,
+            success=True,
+            details={"db_type": db_type, "conn_string_length": len(conn_string)},
+        )
+
         try:
             # Temporären Connector erstellen, ohne ihn zu speichern
             config = {"connection_string": conn_string, "type": db_type}
@@ -430,6 +463,16 @@ class DatabaseManager:
                 message = f"✅ {db_type.upper()}-Datenbank Verbindung erfolgreich"
 
             elapsed = round(time.time() - start_time, 2)
+
+            # Enhanced Logging: Success
+            db_logger.log_connection_event("test", name, success=True)
+            db_logger.log_database_operation(
+                "test_connection_completed",
+                name,
+                success=True,
+                details={"duration": elapsed, "db_type": db_type},
+            )
+
             return {
                 "status": "success",
                 "message": f"{message} (Dauer: {elapsed}s)",
@@ -437,6 +480,11 @@ class DatabaseManager:
 
         except Exception as e:
             elapsed = round(time.time() - start_time, 2)
+
+            # Enhanced Logging: Error
+            db_logger.log_connection_event("test", name, success=False)
+            db_logger.log_error(e, f"Connection test failed for {name}")
+
             logger.error(
                 f"Verbindungstest für '{name}' fehlgeschlagen: {e}", exc_info=False
             )
