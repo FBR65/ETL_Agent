@@ -194,6 +194,52 @@ Connections are stored in `db_connections.json`:
 
 ## 📘 Usage
 
+### Step-by-Step Procedure
+
+Follow these steps to use the ETL Agent:
+
+#### 1. Configure Database Connections
+
+First, set up your database connections in the web interface:
+
+![Database Configuration](images/db_config.png)
+
+#### 2. Start Database Services
+
+Ensure your database services are running:
+
+![Start Database](images/start_db.png)
+
+#### 3. Check Initial Database State
+
+View the initial state of your database before ETL:
+
+![Database Before ETL](images/erg_db_before_etl.png)
+
+#### 4. Natural Language ETL Description
+
+Enter your ETL requirements in natural language:
+
+![ETL Natural Language Processing](images/etl_nlp.png)
+
+#### 5. Processing
+
+The system processes your request:
+
+![Working](images/working.png)
+
+#### 6. Generated Code
+
+Review the generated ETL code:
+
+![Generated Code](images/code.png)
+
+#### 7. Final Result
+
+Check the final database state after ETL execution:
+
+![Database After ETL](images/erg_db.png)
+
 ### Web Interface
 
 The Gradio Web UI provides the following features:
