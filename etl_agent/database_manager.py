@@ -60,9 +60,34 @@ class DatabaseManager:
                     logger.info(
                         f"Lade {len(saved_configs)} gespeicherte Verbindungen aus {self.config_file}"
                     )
+
+                    # Flag um zu prüfen, ob Korrekturen gemacht wurden
+                    corrections_made = False
+
                     with self._lock:
                         for name, config in saved_configs.items():
                             try:
+                                # MySQL/MariaDB Connection String beim Laden korrigieren
+                                if config.get("type", "").lower() in [
+                                    "mysql",
+                                    "mariadb",
+                                ]:
+                                    if "connection_string" in config:
+                                        original_conn_str = config["connection_string"]
+                                        corrected_conn_str = (
+                                            self._fix_mysql_connection_string(
+                                                original_conn_str
+                                            )
+                                        )
+                                        if corrected_conn_str != original_conn_str:
+                                            config["connection_string"] = (
+                                                corrected_conn_str
+                                            )
+                                            corrections_made = True
+                                            logger.info(
+                                                f"Connection String für '{name}' beim Laden korrigiert"
+                                            )
+
                                 # Konfiguration laden, aber Verbindung erst bei Bedarf herstellen
                                 self.connection_configs[name] = config
                                 logger.info(
@@ -72,6 +97,13 @@ class DatabaseManager:
                                 logger.error(
                                     f"Fehler beim Laden der Konfiguration für '{name}': {e}"
                                 )
+
+                    # Wenn Korrekturen gemacht wurden, die Datei aktualisieren
+                    if corrections_made:
+                        self._save_connections()
+                        logger.info(
+                            "JSON-Datei nach MySQL Connection String Korrekturen aktualisiert"
+                        )
             else:
                 logger.info(
                     f"Keine gespeicherte Konfigurationsdatei gefunden: {self.config_file}"
@@ -173,6 +205,10 @@ class DatabaseManager:
     ) -> bool:
         """Ultra-einfaches Speichern einer Verbindung - SOFORT und ohne Umwege"""
         try:
+            # MySQL/MariaDB Connection String korrigieren falls notwendig
+            if db_type.lower() in ["mysql", "mariadb"]:
+                connection_string = self._fix_mysql_connection_string(connection_string)
+
             # Direkt in die Konfiguration einfügen
             with self._lock:
                 if name in self.connection_configs:
@@ -191,6 +227,28 @@ class DatabaseManager:
         except Exception as e:
             logger.error(f"❌ Fehler beim einfachen Speichern: {e}")
             return False
+
+    def _fix_mysql_connection_string(self, connection_string: str) -> str:
+        """
+        Korrigiert MySQL Connection Strings automatisch, um MySQLdb-Fehler zu vermeiden.
+        Wandelt 'mysql://' in 'mysql+mysqlconnector://' um.
+        """
+        if connection_string.startswith("mysql://"):
+            # Prüfe, ob bereits ein Treiber spezifiziert ist
+            if (
+                "+mysqlconnector://" not in connection_string
+                and "+pymysql://" not in connection_string
+            ):
+                # Ersetze mysql:// durch mysql+mysqlconnector://
+                corrected = connection_string.replace(
+                    "mysql://", "mysql+mysqlconnector://", 1
+                )
+                logger.info(
+                    f"MySQL Connection String automatisch korrigiert: {connection_string} -> {corrected}"
+                )
+                return corrected
+
+        return connection_string
 
     def _detect_database_type(self, config: Dict[str, Any]) -> DatabaseType:
         """Erkennt Datenbanktyp aus Konfiguration"""
@@ -230,6 +288,13 @@ class DatabaseManager:
     def _create_connector(self, db_type: DatabaseType, config: Dict[str, Any]):
         """Erstellt passenden Connector für Datenbanktyp - mit produktionsreifer Fehlerbehandlung"""
         try:
+            # MySQL Connection String korrigieren falls notwendig
+            connection_string = config["connection_string"]
+            if db_type == DatabaseType.MYSQL:
+                connection_string = self._fix_mysql_connection_string(connection_string)
+                # Korrigierten String in der Konfiguration verwenden
+                config = {**config, "connection_string": connection_string}
+
             if db_type == DatabaseType.MONGODB:
                 return MongoDBConnector(
                     connection_string=config["connection_string"],
@@ -447,6 +512,10 @@ class DatabaseManager:
         )
 
         try:
+            # MySQL/MariaDB Connection String korrigieren falls notwendig
+            if db_type.lower() in ["mysql", "mariadb"]:
+                conn_string = self._fix_mysql_connection_string(conn_string)
+
             # Temporären Connector erstellen, ohne ihn zu speichern
             config = {"connection_string": conn_string, "type": db_type}
             detected_type = self._detect_database_type(config)

@@ -1,45 +1,96 @@
 import pandas as pd
+import logging
+import json
+import os
+from typing import Dict, List, Any
 import pymongo
-from typing import Dict, Any
-class DatabaseManager:
-    def connect_to_ db(self, connection_name: str) -> sa.engine:
-        """Verbinde mit der SQL- oder NoSQL-Datenbank und returne das Engine-Objekt"""
-        raise NotImplementedError("Implement this method in subclass!")
-    def extract_ data(self, connection_name: str, query: str) -> pd.DataFrame:
-        """Extractor Daten aus der SQL- oder NoSQL-Datenbank und returne sie als Pandas Dataframe."""
-        raise NotImplementedError("Implement this method in subclass!")
-    def load_ data(self, connection_name: str, df: pd.DataFrame, target_config: Dict[str, Any]) -> int:
-        """Lädt die Daten aus einem Pandas Dataframe in eine SQL- oder NoSQL-Tabelle und returne die Anzahl der affectierten Zeilen."""
-        raise NotImplementedError("Implement this method in subclass!")
-class SQLManager(DatabaseManager):
-    def connect_to_db(self, connection_name: str) -> sa.engine:
-        """Verbinde mit einer SQL-Datenbank und returne das Engine-Objekt"""
-        # Verwenden des dataanalyzer API
-        return sa.engine.create_engine(config["connection-string"])
-    def extract_data(self, connection_name: str, query: str) -> pd.DataFrame:
-        """Extractor Daten aus der SQL-Datenbank und returne sie als Pandas Dataframe."""
-        # Verwenden des dataanalyzer API
-        engine = self.connect_to_db(connection_name)
-        return pd.read_sql(query, engine)
-    def load_data(self, connection_name: str, df: pd.DataFrame, target_config: Dict[str, Any]) -> int:
-        """Lädt die Daten aus einem Pandas Dataframe in eine SQL-Tabelle und returne die Anzahl der affectierten Zeilen."""
-        engine = self.connect_to_db(connection_name)
-        df.to_sql(target_config["table"], engine, if_exists=target_config.get("if_exists", "replace"), index=False)
-        return len(df)
-class NoSQLManager(DatabaseManager):
-    def connect_to_ db(self, connection_name: str) -> pymongo.collection:
-        """Verbinde mit einer NoSQL-Datenbank und returne das Collection-Objekt"""
-        # Verwenden des dataanalyzer API
-        return pymongo[conn["database"]]
-    def extract_data(self, connection_name: str, query: Dict[str, Any]) -> pd.DataFrame:
-        """Extractor Daten aus der NoSQL-Datenbank und returne sie als Pandas Dataframe."""
-        # Verwenden des dataanalyzer API
-        collection = self.connect_to_db(connection_name)[conn["collection"]]
-        return pd.DataFrame(list(collection.find()))
-    def load_data(self, connection_name: str, df: pd.DataFrame, target_config: Dict[str, Any]) -> int:
-        """Lädt die Daten aus einem Pandas Dataframe in eine NoSQL-Collection und returne die Anzahl der affectierten Zeilen."""
-        # Verwenden des dataanalyzer API
-        collection = self.connect_to_db(connection_name)[target_config["collection"]]
-        for row in df.to_dict("records"):
-            collection.insert_one(row)
-        return len(df)
+import sqlalchemy as sa
+
+logger = logging.getLogger(__name__)
+
+
+class SimpleDBManager:
+    def __init__(self, config_file: str = "db_connections.json"):
+        self.connection_configs = {}
+        self.config_file = config_file
+        self._load_connections()
+
+    def _load_connections(self):
+        if os.path.exists(self.config_file):
+            with open(self.config_file, "r", encoding="utf-8") as f:
+                self.connection_configs = json.load(f)
+
+    def extract_data(
+        self, connection_name: str, query_config: Dict[str, Any]
+    ) -> pd.DataFrame:
+        config = self.connection_configs[connection_name]
+        if config["type"] == "mysql":
+            engine = sa.create_engine(config["connection_string"])
+            return pd.read_sql(query_config["query"], engine)
+        elif config["type"] == "mongodb":
+            client = pymongo.MongoClient(config["connection_string"])
+            db_name = config["connection_string"].split("/")[-1] or "my_test_db"
+            db = client[db_name]
+            collection = db[query_config["collection"]]
+            data = list(
+                collection.find(query_config.get("query", {})).limit(
+                    query_config.get("limit", 1000)
+                )
+            )
+            client.close()
+            return pd.DataFrame(data)
+        else:
+            raise ValueError(f"Nicht unterstützter DB-Typ: {config['type']}")
+
+    def load_data(
+        self, connection_name: str, df: pd.DataFrame, target_config: Dict[str, Any]
+    ):
+        config = self.connection_configs[connection_name]
+        if config["type"] == "mongodb":
+            client = pymongo.MongoClient(config["connection_string"])
+            db_name = config["connection_string"].split("/")[-1] or "my_test_db"
+            collection_name = target_config.get("collection", "NEUTEST")
+            client[db_name][collection_name].insert_many(df.to_dict("records"))
+        else:
+            engine = sa.create_engine(config["connection_string"])
+            df.to_sql(
+                target_config["table"],
+                engine,
+                if_exists=target_config.get("if_exists", "replace"),
+                index=False,
+            )
+
+
+def etl_pipeline():
+    try:
+        logger.info("Starte ETL-Pipeline...")
+        db_manager = SimpleDBManager()
+
+        # EXTRACT
+        logger.info("Extrahiere Daten aus Quelle...")
+        extract_config = {"query": "SELECT * FROM users_test"}
+        df = db_manager.extract_data("MySQLTEST", extract_config)
+        logger.info(f" extrahiert: {len(df)} Datensätze")
+
+        # TRANSFORM
+        logger.info("Transformiere Daten...")
+        df["age"] = df["age"] + 2
+        logger.info(" podraten! Bitte beachte die Bedeutung von age!")
+
+        # LOAD
+        logger.info("Lade Daten in Ziel...")
+        load_config = {"collection": "NEUTEST", "operation": "replace"}
+        db_manager.load_data("mong4", df, load_config)
+        logger.info("Daten erfolgreich geladen")
+
+        logger.info("ETL-Pipeline erfolgreich abgeschlossen")
+        return [df, "NEUTEST"]
+
+    except Exception as e:
+        logger.error(f"ETL-Pipeline Fehler: {e}")
+        raise
+
+
+if __name__ == "__main__":
+    result = etl_pipeline()
+    print(f"ETL abgeschlossen. Verarbeitete Datensätze: {len(result[0])}")

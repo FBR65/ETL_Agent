@@ -1,6 +1,6 @@
 {
   "Jup": {
-    "connection_string": "mysql://dataanalyzer:dataanalyzer_pwd@localhost:3306/my_test_db",
+    "connection_string": "mysql+mysqlconnector://dataanalyzer:dataanalyzer_pwd@localhost:3306/my_test_db",
     "type": "mysql"
   },
   "mong4": {
@@ -18,5 +18,9 @@
   "mongo6": {
     "connection_string": "mongodb://user:pass@localhost:27017/my_test_db",
     "type": "mongodb"
+  },
+  "MYSQLTEST": {
+    "connection_string": "mysql+mysqlconnector://dataanalyzer:dataanalyzer_pwd@localhost:3306/my_test_db",
+    "type": "mariadb"
   }
 }

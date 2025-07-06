@@ -119,7 +119,7 @@ class ServiceManager:
                 for proc in psutil.process_iter(["pid", "name"]):
                     try:
                         # Sichere Abfrage der Verbindungen
-                        connections = proc.connections()
+                        connections = proc.net_connections()
                         for conn in connections:
                             if (
                                 hasattr(conn, "laddr")

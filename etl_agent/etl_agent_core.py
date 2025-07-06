@@ -98,16 +98,22 @@ class ETLAgent:
 
     def setup_agent(self):
         """PydanticAI Agent konfigurieren mit verbessertem System-Prompt"""
-        system_prompt = """Du bist ein Python-Code-Generator für ETL-Skripte.
+        system_prompt = """Du bist ein Python-Code-Generator für eigenständige ETL-Skripte.
 
-🚨 KRITISCHE FEHLER VERMEIDEN:
-- NIEMALS Leerzeichen in Methodennamen: "def connect_to_db" KORREKT, "def connect_to_ db" FALSCH
-- NIEMALS abstrakte Klassen oder NotImplementedError verwenden
-- NIEMALS Markdown-Blöcke (```python) verwenden
-- NIEMALS undefined variables wie config, conn, sa verwenden ohne sie zu definieren
-- NIEMALS komplexe Klassenhierarchien erstellen
+🚨 ABSOLUT VERBOTEN:
+- NIEMALS "from etl_agent" importieren
+- NIEMALS "import etl_agent" 
+- NIEMALS "DatabaseManager" verwenden
+- NIEMALS externe Abhängigkeiten
+- NIEMALS Markdown ```python``` Blöcke
 
-✅ GENAU DIESE STRUKTUR VERWENDEN:
+✅ ZWINGEND ERFORDERLICH:
+- NUR SimpleDBManager verwenden (im Code definiert)
+- NUR Standard-Libraries: pandas, pymongo, sqlalchemy, json, os, logging
+- IMMER vollständigen ausführbaren Code generieren
+- IMMER etl_pipeline() Funktionsaufruf am Ende
+
+🎯 EXAKTE TEMPLATE-STRUKTUR (NICHT ABWEICHEN!):
 
 import pandas as pd
 import logging
@@ -135,6 +141,14 @@ class SimpleDBManager:
         if config["type"] == "mysql":
             engine = sa.create_engine(config["connection_string"])
             return pd.read_sql(query_config["query"], engine)
+        elif config["type"] == "mongodb":
+            client = pymongo.MongoClient(config["connection_string"])
+            db_name = config["connection_string"].split("/")[-1] or "my_test_db"
+            db = client[db_name]
+            collection = db[query_config["collection"]]
+            data = list(collection.find(query_config.get("query", {})).limit(query_config.get("limit", 1000)))
+            client.close()
+            return pd.DataFrame(data)
         else:
             raise ValueError(f"Nicht unterstützter DB-Typ: {config['type']}")
     
@@ -187,153 +201,14 @@ if __name__ == "__main__":
     result = etl_pipeline()
     print(f"ETL abgeschlossen. Verarbeitete Datensätze: {len(result)}")
 
-🎯 AUFGABE: Modifiziere diesen Code basierend auf der Benutzerbeschreibung.
-- Ändere nur die nötigen Teile (Tabellennamen, Transformationen, Connection-Namen)
-- Behalte die exakte Struktur bei
-- Verwende echte Tabellennamen aus dem Schema
-- Antworte NUR mit dem vollständigen Python-Code - keine Erklärungen!
-- KEINE IMPORTS von etl_agent.database_manager
-- Verwende SimpleDBManager-Klasse im generierten Code
-- Code muss auf jedem Server ohne Abhängigkeiten laufen
-- Nur Standard-Libraries: pandas, pymongo, sqlalchemy, json, os
+🚨 KRITISCHE REGELN:
+1. VERWENDE EXAKT diese Struktur
+2. ÄNDERE NUR: Tabellennamen, Transformationen, Connection-Namen
+3. BEHALTE ALLES ANDERE: Imports, SimpleDBManager, etl_pipeline(), if __name__
+4. NIEMALS etl_agent importieren
+5. IMMER vollständigen ausführbaren Code generieren
 
-KRITISCHE REGELN FÜR CONNECTION-NAMEN:
-- VERWENDE IMMER die ursprünglichen Connection-Namen (z.B. 'Jup', 'mong4')
-- Connection-Namen exakt wie in der Datenbank-Konfiguration verwenden
-- NIEMALS abkürzen oder ändern!
-
-SQL Query Config:
-{"query": "SELECT column1, column2 FROM table_name WHERE condition"}
-
-MongoDB Query Config:
-{"database": "db_name", "collection": "collection_name", "query": {}, "limit": 1000}
-
-KRITISCHE REGELN FÜR LOAD CONFIG:
-- SQL-Datenbanken: {"table": "target_table_name", "if_exists": "replace"}
-- MongoDB: {"collection": "target_collection_name", "operation": "replace"}
-- MongoDB AUTOMATISCHE DB-ERKENNUNG aus Connection String
-- NIEMALS 'table' für MongoDB verwenden - nur 'collection'!
-- NIEMALS 'database' Parameter - wird automatisch erkannt!
-
-QUALITÄTSSTANDARDS:
-- Verwende EXAKTE Tabellennamen aus dem Schema (z.B. 'users_test' nicht 'user_test')
-- Verwende EXAKTE Spaltennamen aus dem Schema
-- Professionelle, fehlerfreie Kommentare
-- Robuste Fehlerbehandlung
-- Detailliertes Logging
-- Performance-optimiert
-
-SCHEMA-FIRST ANSATZ:
-1. ZUERST: Analysiere verfügbare Tabellen/Collections aus schema_context
-2. DANN: Wähle passende Tabellen für die ETL-Beschreibung
-3. DANACH: Verwende echte Spaltennamen in SQL/MongoDB Queries
-4. SCHLIESSLICH: Generiere Code mit echten Daten
-
-VOLLSTÄNDIGER CODE-TEMPLATE (VERWENDE EXAKT DIESE STRUKTUR):
-```python
-import pandas as pd
-import logging
-import json
-import os
-from typing import Dict, List, Any
-import pymongo
-import sqlalchemy as sa
-
-logger = logging.getLogger(__name__)
-
-class SimpleDBManager:
-    \"\"\"Eigenständiger Database Manager für ETL-Code\"\"\"
-    
-    def __init__(self, config_file: str = "db_connections.json"):
-        self.connection_configs = {}
-        self.config_file = config_file
-        self._load_connections()
-    
-    def _load_connections(self):
-        \"\"\"Lädt Verbindungen aus JSON-Datei\"\"\"
-        if os.path.exists(self.config_file):
-            with open(self.config_file, "r", encoding="utf-8") as f:
-                self.connection_configs = json.load(f)
-    
-    def extract_data(self, connection_name: str, query_config: Dict[str, Any]) -> pd.DataFrame:
-        \"\"\"Extrahiert Daten\"\"\"
-        config = self.connection_configs[connection_name]
-        
-        if config["type"] == "mysql":
-            engine = sa.create_engine(config["connection_string"])
-            return pd.read_sql(query_config["query"], engine)
-        else:
-            raise ValueError(f"Nicht unterstützter DB-Typ: {config['type']}")
-    
-    def load_data(self, connection_name: str, df: pd.DataFrame, target_config: Dict[str, Any]):
-        \"\"\"Lädt Daten\"\"\"
-        config = self.connection_configs[connection_name]
-        
-        if config["type"] == "mongodb":
-            client = pymongo.MongoClient(config["connection_string"])
-            db_name = config["connection_string"].split("/")[-1] or "my_test_db"
-            db = client[db_name]
-            collection = db[target_config["collection"]]
-            
-            records = df.to_dict("records")
-            if target_config.get("operation") == "replace":
-                collection.delete_many({})
-            collection.insert_many(records)
-            client.close()
-        else:
-            engine = sa.create_engine(config["connection_string"])
-            df.to_sql(target_config["table"], engine, if_exists=target_config.get("if_exists", "replace"), index=False)
-
-def etl_pipeline():
-    try:
-        logger.info("Starte ETL-Pipeline...")
-        db_manager = SimpleDBManager()
-        
-        # EXTRACT: Lade Daten aus [ECHTE_TABELLE] mit ursprünglichen Connection-Namen
-        logger.info("Extrahiere Daten aus Quelle...")
-        extract_config = {"query": "SELECT * FROM [ECHTE_TABELLE]"}
-        df = db_manager.extract_data("[ECHTER_CONNECTION_NAME]", extract_config)
-        logger.info(f"Extrahiert: {len(df)} Datensätze")
-        
-        # TRANSFORM: [BESCHREIBUNG_DER_TRANSFORMATION]
-        logger.info("Transformiere Daten...")
-        # [DETAILLIERTE_TRANSFORMATION_HIER]
-        logger.info("Transformation abgeschlossen")
-        
-        # LOAD: Lade in [ZIEL] mit korrekter Config
-        logger.info("Lade Daten in Ziel...")
-        load_config = {"collection": "[ZIEL_COLLECTION]", "operation": "replace"}  # Für MongoDB
-        # load_config = {"table": "[ZIEL_TABELLE]", "if_exists": "replace"}  # Für SQL
-        db_manager.load_data("[ZIEL_CONNECTION_NAME]", df, load_config)
-        logger.info("Daten erfolgreich geladen")
-        
-        logger.info("ETL-Pipeline erfolgreich abgeschlossen")
-        return df
-        
-    except Exception as e:
-        logger.error(f"ETL-Pipeline Fehler: {e}")
-        raise
-
-if __name__ == "__main__":
-    result = etl_pipeline()
-    print(f"ETL abgeschlossen. Verarbeitete Datensätze: {len(result)}")
-```
-
-KRITISCHE TEMPLATE-REGELN:
-- Verwende EXAKT die oben gezeigte Struktur
-- SimpleDBManager Klasse MUSS zuerst definiert werden
-- etl_pipeline() MUSS db_manager = SimpleDBManager() verwenden
-- Alle Transformationen innerhalb der etl_pipeline() Funktion
-- KEINE Transformationen in extract_data() - nur in etl_pipeline()
-- Vollständige try/except Blöcke mit Logging
-
-KRITISCHE REGELN:
-- Code MUSS mindestens 25 Zeilen haben
-- Code MUSS import, def, try/except, extract_data, load_data, logger enthalten
-- Code MUSS vollständig ausführbar sein
-- NIEMALS nur Fragmente oder unvollständige Funktionen senden
-
-ANTWORTE NUR MIT DEM VOLLSTÄNDIGEN PYTHON-CODE, KEINE MARKDOWN-BLÖCKE! KEINE ERKLÄRUNGEN!"""
+ANTWORTE NUR MIT VOLLSTÄNDIGEM PYTHON-CODE! KEINE ERKLÄRUNGEN! KEINE MARKDOWN!"""
 
         self.agent = Agent(
             model=self.model,
@@ -424,124 +299,21 @@ ANTWORTE NUR MIT DEM VOLLSTÄNDIGEN PYTHON-CODE, KEINE MARKDOWN-BLÖCKE! KEINE E
                 )
                 logger.info("=== AI-AGENT DEBUG END ===")
 
-                # AgentRunResult richtig verarbeiten
+                # AgentRunResult richtig verarbeiten - DIREKTES OUTPUT
                 if hasattr(raw_code, "output"):
-                    # PydanticAI AgentRunResult - extrahiere output
-                    code_content = raw_code.output
+                    # PydanticAI AgentRunResult - extrahiere output DIREKT
+                    clean_code = raw_code.output
                     logger.info(
-                        f"Extracted code from AgentRunResult.output: {len(str(code_content))} characters"
-                    )
-                    logger.info(
-                        f"EXTRACTED CODE CONTENT:\n{'-' * 30}\n{code_content}\n{'-' * 30}"
+                        f"Extracted code from AgentRunResult.output: {len(str(clean_code))} characters"
                     )
                 else:
                     # Fallback für String-Response
-                    code_content = str(raw_code)
+                    clean_code = str(raw_code)
                     logger.info(
-                        f"Using raw_code as string: {len(code_content)} characters"
+                        f"Using raw_code as string: {len(clean_code)} characters"
                     )
 
-                clean_code = self._clean_and_format_code(code_content)
-
-                # VERSTÄRKTE QUALITÄTSKONTROLLE: Prüfe auf kritische Probleme
-                quality_issues = []
-                
-                # 1. SYNTAX-FEHLER ERKENNEN
-                if "def connect_to_ db" in clean_code:
-                    quality_issues.append("SYNTAX-FEHLER: Leerzeichen im Methodennamen 'connect_to_ db'")
-                if "def extract_ data" in clean_code:
-                    quality_issues.append("SYNTAX-FEHLER: Leerzeichen im Methodennamen 'extract_ data'")
-                if "def load_ data" in clean_code:
-                    quality_issues.append("SYNTAX-FEHLER: Leerzeichen im Methodennamen 'load_ data'")
-                if "sa.engine" in clean_code and "import sqlalchemy" not in clean_code:
-                    quality_issues.append("IMPORT-FEHLER: 'sa.engine' verwendet aber 'sqlalchemy' nicht importiert")
-                if "sa." in clean_code and "import sqlalchemy as sa" not in clean_code:
-                    quality_issues.append("IMPORT-FEHLER: 'sa.' verwendet aber 'sqlalchemy as sa' nicht importiert")
-                
-                # 2. UNDEFINED VARIABLES ERKENNEN
-                if 'config["connection' in clean_code and "config =" not in clean_code:
-                    quality_issues.append("UNDEFINED VARIABLE: 'config' wird verwendet aber nicht definiert")
-                if 'conn["database"]' in clean_code and "conn =" not in clean_code:
-                    quality_issues.append("UNDEFINED VARIABLE: 'conn' wird verwendet aber nicht definiert")
-                
-                # 3. STRUKTUR-PROBLEME ERKENNEN
-                if "class DatabaseManager" in clean_code and "class SimpleDBManager" not in clean_code:
-                    quality_issues.append("STRUKTUR-FEHLER: Abstrakte 'DatabaseManager' Klasse statt 'SimpleDBManager'")
-                if "class SQLManager" in clean_code or "class NoSQLManager" in clean_code:
-                    quality_issues.append("STRUKTUR-FEHLER: Komplexe Klassen-Hierarchie statt einfache 'SimpleDBManager'")
-                if "raise NotImplementedError" in clean_code:
-                    quality_issues.append("STRUKTUR-FEHLER: Abstrakte Methoden mit NotImplementedError")
-                
-                # 4. TEMPLATE-VERLETZUNGEN ERKENNEN
-                if "def etl_pipeline():" not in clean_code:
-                    quality_issues.append("TEMPLATE-FEHLER: Haupt-Funktion 'etl_pipeline()' fehlt")
-                if "class SimpleDBManager:" not in clean_code:
-                    quality_issues.append("TEMPLATE-FEHLER: Erforderliche 'SimpleDBManager' Klasse fehlt")
-                if "if __name__ == '__main__':" not in clean_code:
-                    quality_issues.append("TEMPLATE-FEHLER: Haupt-Ausführungsblock fehlt")
-                
-                # 5. GRUNDLEGENDE QUALITÄTSPRÜFUNGEN
-                if "user_test" in clean_code and "users_test" not in clean_code:
-                    quality_issues.append("TABELLEN-FEHLER: 'user_test' statt 'users_test'")
-                if "### " in clean_code or "** " in clean_code:
-                    quality_issues.append("MARKDOWN-FORMATIERUNG: Markdown-Syntax im Code")
-                if len(clean_code.strip()) < 300:
-                    quality_issues.append("CODE-LÄNGE: Code zu kurz - unvollständig")
-                if clean_code.count("\n") < 20:
-                    quality_issues.append("CODE-ZEILEN: Zu wenige Zeilen - unvollständig")
-                if "extract_data" not in clean_code or "load_data" not in clean_code:
-                    quality_issues.append("ETL-OPERATIONEN: extract_data oder load_data fehlt")
-                if "from etl_agent.database_manager import" in clean_code:
-                    quality_issues.append("IMPORT-FEHLER: etl_agent Import statt eigenständige Klasse")
-                
-                # 6. VOLLSTÄNDIGKEITSPRÜFUNGEN
-                required_components = [
-                    "import pandas as pd",
-                    "import json",
-                    "import os",
-                    "import logging", 
-                    "class SimpleDBManager",
-                    "def __init__(self",
-                    "def _load_connections(self",
-                    "def extract_data(self",
-                    "def load_data(self",
-                    "def etl_pipeline():",
-                    "logger = logging.getLogger(__name__)"
-                ]
-                
-                missing_components = []
-                for component in required_components:
-                    if component not in clean_code:
-                        missing_components.append(component)
-                
-                if missing_components:
-                    quality_issues.append(f"VOLLSTÄNDIGKEIT: Fehlende Komponenten: {', '.join(missing_components)}")
-                
-                # 7. SYNTAX-VALIDIERUNG (vereinfacht)
-                try:
-                    import ast
-                    ast.parse(clean_code)
-                except SyntaxError as e:
-                    quality_issues.append(f"PYTHON-SYNTAX-FEHLER: {str(e)}")
-                except Exception as e:
-                    quality_issues.append(f"CODE-PARSE-FEHLER: {str(e)}")
-
-                if quality_issues:
-                    logger.error(
-                        f"KRITISCHE AI-QUALITÄTSPROBLEME: {', '.join(quality_issues)}"
-                    )
-                    logger.error(f"FEHLERHAFTER CODE: {clean_code}")
-                    etl_core_logger.log_error(
-                        Exception("AI Quality Issues"),
-                        f"CRITICAL AI QUALITY FAILURE: {', '.join(quality_issues)}",
-                    )
-                    # Bei kritischen Fehlern: Fehlerhafte Response zurückgeben
-                    return ETLResponse(
-                        status="error",
-                        error_message=f"AI-Agent generierte unvollständigen Code: {', '.join(quality_issues)}",
-                    )
-
-                if clean_code.strip():
+                if clean_code and str(clean_code).strip():
                     logger.info("ETL-Code erfolgreich generiert und bereinigt")
 
                     # Enhanced Logging: AI Success
@@ -1024,106 +796,13 @@ ANTWORTE NUR MIT DEM VOLLSTÄNDIGEN PYTHON-CODE, KEINE MARKDOWN-BLÖCKE! KEINE E
 
     def _clean_and_format_code(self, raw_code: str) -> str:
         """
-        Bereinigt und formatiert den generierten Code
-        ✅ Behandelt AgentRunResult-Output korrekt
-        ✅ Entfernt Markdown-Blöcke
-        ✅ Formatiert für Lesbarkeit
-        ✅ Qualitätskontrolle für Tabellennamen
+        Minimale Code-Bereinigung - nur das Nötigste
         """
-        # Sichere String-Konvertierung
         if raw_code is None:
             return ""
 
-        clean_code = str(raw_code).strip()
-
-        # AgentRunResult-spezifische Bereinigung
-        if "AgentRunResult(output=" in clean_code:
-            # Extrahiere Code aus AgentRunResult-String
-            import re
-
-            match = re.search(r"AgentRunResult\(output='([^']*)'", clean_code)
-            if match:
-                clean_code = match.group(1)
-            else:
-                # Fallback: versuche anderen Pattern
-                if "output='" in clean_code:
-                    start = clean_code.find("output='") + 8
-                    end = clean_code.rfind("')")
-                    if start < end:
-                        clean_code = clean_code[start:end]
-
-        # Escape-Sequenzen dekodieren
-        clean_code = (
-            clean_code.replace("\\n", "\n").replace("\\t", "\t").replace("\\'", "'")
-        )
-
-        # Markdown-Code-Blöcke entfernen
-        if clean_code.startswith("```python"):
-            clean_code = clean_code[9:]
-        elif clean_code.startswith("```"):
-            clean_code = clean_code[3:]
-
-        if clean_code.endswith("```"):
-            clean_code = clean_code[:-3]
-
-        # Zusätzliche Bereinigung
-        clean_code = clean_code.strip()
-
-        # Import pandas hinzufügen wenn noch nicht vorhanden
-        if "import pandas" not in clean_code and "pd." in clean_code:
-            clean_code = "import pandas as pd\n" + clean_code
-
-        # QUALITÄTSKONTROLLE: Häufige Fehler korrigieren
-        # Falsche Tabellennamen korrigieren
-        clean_code = clean_code.replace('"user_test"', '"users_test"')
-        clean_code = clean_code.replace("'user_test'", "'users_test'")
-        clean_code = clean_code.replace("FROM user_test", "FROM users_test")
-
-        # Erklärungstext und Markdown entfernen
-        lines = clean_code.split("\n")
-        code_lines = []
-
-        for line in lines:
-            original_line = line
-            line = line.strip()
-
-            # Behalte ALLE Python-Code-Zeilen
-            if line and not (
-                line.startswith("### ")
-                or line.startswith("## ")
-                or line.startswith("**")
-                or line.startswith("- **")
-                or line.startswith("Falls")
-                or line in ["### Erklärung", "### Logging", "### Fehlerbehandlung"]
-            ):
-                # Füge die ursprüngliche Zeile mit Einrückung hinzu
-                code_lines.append(original_line)
-
-        # Nur Python-Code zurückgeben
-        if code_lines:
-            clean_code = "\n".join(code_lines)
-
-        # Zusätzliche Validierung: Mindestens grundlegende ETL-Struktur
-        if clean_code and (
-            "def etl_pipeline" in clean_code
-            or "db_manager" in clean_code
-            or "extract_data" in clean_code
-            or "load_data" in clean_code
-        ):
-            # Code scheint vollständig zu sein
-            pass
-        else:
-            # Code ist zu fragmentiert
-            logger.error(f"Code-Bereinigung entfernte zu viel: {clean_code}")
-            # Versuche weniger aggressive Bereinigung
-            clean_code = str(raw_code).strip()
-            if clean_code.startswith("```python"):
-                clean_code = clean_code[9:]
-            if clean_code.endswith("```"):
-                clean_code = clean_code[:-3]
-            clean_code = clean_code.strip()
-
-        return clean_code
+        # Direkte Rückgabe des Codes ohne Bereinigung
+        return str(raw_code).strip()
 
 
 def create_etl_agent() -> ETLAgent:
