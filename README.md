@@ -155,17 +155,22 @@ uv run uvicorn etl_agent.agent_to_a2a:app --host 0.0.0.0 --port 8091
 Create a `.env` file in the project directory:
 
 ```env
-# OpenAI-compatible API (for code generation)
-OPENAI_API_KEY=your_api_key_here
-OPENAI_API_BASE=https://api.openai.com/v1
-LLM_MODEL_NAME=gpt-4
+# LLM Configuration
+BASE_URL=http://localhost:11434/v1
+API_KEY=ollama
+MODEL_NAME=qwen2.5:latest
 
-# Alternative: Local LLM endpoints
-# OPENAI_API_BASE=http://localhost:1234/v1
-# LLM_MODEL_NAME=qwen2.5
+# Database Connections
+MONGO_CONNECTION_STRING=mongodb://localhost:27017/
+SQL_CONNECTION_STRING=sqlite:///./test.db
 
-# Database Defaults
-DEFAULT_DB_CONFIG_FILE=db_connections.json
+# Server Configuration
+HOST=0.0.0.0
+PORT=8000
+
+# Logging
+LOG_LEVEL=INFO
+DEBUG=false
 ```
 
 ### Database Connections
