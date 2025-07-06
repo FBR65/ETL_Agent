@@ -1,96 +1,93 @@
 import pandas as pd
 import logging
-import json
-import os
-from typing import Dict, List, Any
+from typing import Dict, Any
 import pymongo
 import sqlalchemy as sa
 
+# Logger konfigurieren
+logging.basicConfig(level=logging.INFO, format='%(asctime)s - %(levelname)s - %(message)s')
 logger = logging.getLogger(__name__)
 
-
 class SimpleDBManager:
-    def __init__(self, config_file: str = "db_connections.json"):
-        self.connection_configs = {}
-        self.config_file = config_file
-        self._load_connections()
-
-    def _load_connections(self):
-        if os.path.exists(self.config_file):
-            with open(self.config_file, "r", encoding="utf-8") as f:
-                self.connection_configs = json.load(f)
-
-    def extract_data(
-        self, connection_name: str, query_config: Dict[str, Any]
-    ) -> pd.DataFrame:
+    def __init__(self):
+        self.connection_configs = {
+            "Jup": {"type": "mysql", "connection_string": "mysql+mysqlconnector://dataanalyzer:dataanalyzer_pwd@localhost:3306/my_test_db"},
+            "mong4": {"type": "mongodb", "connection_string": "mongodb://user:pass@localhost:27017/my_test_db"}
+        }
+    
+    def extract_data(self, connection_name: str, query_config: Dict[str, Any]) -> pd.DataFrame:
         config = self.connection_configs[connection_name]
-        if config["type"] == "mysql":
+        logger.info(f"Extrahiere Daten aus {connection_name} ({config['type']})")
+        
+        if config["type"] in ["mysql", "mariadb"]:
             engine = sa.create_engine(config["connection_string"])
-            return pd.read_sql(query_config["query"], engine)
+            df = pd.read_sql(query_config["query"], engine)
+            engine.dispose()
+            return df
         elif config["type"] == "mongodb":
             client = pymongo.MongoClient(config["connection_string"])
             db_name = config["connection_string"].split("/")[-1] or "my_test_db"
             db = client[db_name]
             collection = db[query_config["collection"]]
-            data = list(
-                collection.find(query_config.get("query", {})).limit(
-                    query_config.get("limit", 1000)
-                )
-            )
+            cursor = collection.find(query_config.get("query", {}))
+            if "limit" in query_config:
+                cursor = cursor.limit(query_config["limit"])
+            data = list(cursor)
             client.close()
             return pd.DataFrame(data)
         else:
             raise ValueError(f"Nicht unterstützter DB-Typ: {config['type']}")
-
-    def load_data(
-        self, connection_name: str, df: pd.DataFrame, target_config: Dict[str, Any]
-    ):
+    
+    def load_data(self, connection_name: str, df: pd.DataFrame, target_config: Dict[str, Any]):
         config = self.connection_configs[connection_name]
+        logger.info(f"Lade {len(df)} Datensätze nach {connection_name} ({config['type']})")
+        
         if config["type"] == "mongodb":
             client = pymongo.MongoClient(config["connection_string"])
             db_name = config["connection_string"].split("/")[-1] or "my_test_db"
-            collection_name = target_config.get("collection", "NEUTEST")
-            client[db_name][collection_name].insert_many(df.to_dict("records"))
+            db = client[db_name]
+            collection = db[target_config["collection"]]
+            records = df.to_dict("records")
+            if target_config.get("operation") == "replace":
+                collection.delete_many({})
+            collection.insert_many(records)
+            client.close()
+            logger.info(f"✅ MongoDB: {len(records)} Datensätze in '{target_config['collection']}' geladen")
         else:
             engine = sa.create_engine(config["connection_string"])
-            df.to_sql(
-                target_config["table"],
-                engine,
-                if_exists=target_config.get("if_exists", "replace"),
-                index=False,
-            )
-
+            df.to_sql(target_config["table"], engine, if_exists=target_config.get("if_exists", "replace"), index=False)
+            engine.dispose()
+            logger.info(f"✅ SQL: {len(df)} Datensätze in '{target_config['table']}' geladen")
 
 def etl_pipeline():
     try:
-        logger.info("Starte ETL-Pipeline...")
+        logger.info("=== ETL-Pipeline gestartet ===")
         db_manager = SimpleDBManager()
-
-        # EXTRACT
-        logger.info("Extrahiere Daten aus Quelle...")
+        
+        # EXTRACT - ECHTE TABELLE VERWENDEN
+        logger.info("Phase 1: Daten extrahieren")
         extract_config = {"query": "SELECT * FROM users_test"}
-        df = db_manager.extract_data("MySQLTEST", extract_config)
-        logger.info(f" extrahiert: {len(df)} Datensätze")
-
-        # TRANSFORM
-        logger.info("Transformiere Daten...")
-        df["age"] = df["age"] + 2
-        logger.info(" podraten! Bitte beachte die Bedeutung von age!")
-
-        # LOAD
-        logger.info("Lade Daten in Ziel...")
+        df = db_manager.extract_data("Jup", extract_config)
+        logger.info(f"Extrahiert: {len(df)} Datensätze")
+        
+        # TRANSFORM - ECHTE SPALTE VERWENDEN
+        logger.info("Phase 2: Daten transformieren")
+        df['age'] = df['age'] + 2
+        logger.info("Transformation abgeschlossen")
+        
+        # LOAD - ECHTE COLLECTION VERWENDEN
+        logger.info("Phase 3: Daten laden")
         load_config = {"collection": "NEUTEST", "operation": "replace"}
         db_manager.load_data("mong4", df, load_config)
         logger.info("Daten erfolgreich geladen")
-
-        logger.info("ETL-Pipeline erfolgreich abgeschlossen")
-        return [df, "NEUTEST"]
-
+        
+        logger.info("=== ETL-Pipeline erfolgreich abgeschlossen ===")
+        return df
+        
     except Exception as e:
         logger.error(f"ETL-Pipeline Fehler: {e}")
         raise
 
-
 if __name__ == "__main__":
     result = etl_pipeline()
-    print(f"ETL abgeschlossen. Verarbeitete Datensätze: {len(result[0])}")
+    print(f"ETL abgeschlossen. Verarbeitete Datensätze: {len(result)}")
