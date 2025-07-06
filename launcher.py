@@ -116,10 +116,16 @@ class ServiceManager:
             killed_processes = []
 
             for port in ports:
-                for proc in psutil.process_iter(["pid", "name", "connections"]):
+                for proc in psutil.process_iter(["pid", "name"]):
                     try:
-                        for conn in proc.info["connections"]:
-                            if conn.laddr.port == port:
+                        # Sichere Abfrage der Verbindungen
+                        connections = proc.connections()
+                        for conn in connections:
+                            if (
+                                hasattr(conn, "laddr")
+                                and conn.laddr
+                                and conn.laddr.port == port
+                            ):
                                 proc_name = proc.info["name"]
                                 proc_pid = proc.info["pid"]
                                 logger.info(
@@ -134,7 +140,12 @@ class ServiceManager:
                         psutil.NoSuchProcess,
                         psutil.AccessDenied,
                         psutil.ZombieProcess,
-                    ):
+                        AttributeError,
+                        OSError,
+                        Exception,
+                    ) as e:
+                        # Ignoriere alle Prozess-bezogenen Fehler beim Cleanup
+                        logger.debug(f"[DEBUG] Prozess-Fehler ignoriert: {e}")
                         continue
 
             if killed_processes:
